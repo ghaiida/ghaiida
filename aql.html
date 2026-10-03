@@ -1,0 +1,1989 @@
+<title>مهمة عقل المبرمج</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cairo:wght@600;700;800;900&family=Tajawal:wght@400;500;700;800&family=IBM+Plex+Mono:wght@500;600&display=swap">
+<style>
+/* Layout: a bright "control room" — light circuit-grid ground, one centered column of mission screens, a sticky HUD on top. Single committed light look. */
+:root{
+  --ground:#F3F6FD; --grid:#E3EAF8; --panel:#FFFFFF; --line:#D5DEF0; --line-2:#B9C6E2;
+  --ink:#0E1B3D; --ink-2:#4A5677; --ink-3:#7A86A6;
+  --royal:#1F4FD8; --royal-d:#0E2E8F; --royal-t:#E7EDFF;
+  --emerald:#0E9F7A; --emerald-d:#06704F; --emerald-t:#DDF6EE;
+  --amber:#F2A12E; --amber-d:#B86E00; --amber-t:#FFF2DB;
+  --rose:#E0475B; --rose-t:#FDE7EA;
+  --term:#0F1E44; --term-ink:#E6ECFF; --term-dim:#8D9BC7;
+  --f-display:"Cairo","Tajawal",system-ui,sans-serif;
+  --f-body:"Tajawal","Cairo","Segoe UI",Tahoma,sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;
+  --r:18px; --ease:cubic-bezier(.2,.8,.2,1);
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+html{direction:rtl}
+body{background-color:var(--ground);color:var(--ink);font-family:var(--f-body);font-size:17px;line-height:1.7;
+  background-image:radial-gradient(circle at 1px 1px,var(--line) 1.2px,transparent 1.3px),linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);
+  background-size:32px 32px,128px 128px,128px 128px;background-attachment:fixed}
+#app{max-width:960px;margin-inline:auto;padding-inline:16px;padding-block:0 80px;min-height:100vh}
+h1,h2,h3,h4{font-family:var(--f-display);line-height:1.3;text-wrap:balance;margin:0}
+p{margin:0 0 .5em}
+button{font-family:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--amber);outline-offset:3px}
+.num,.tab{font-variant-numeric:tabular-nums}
+.ltr{direction:ltr;unicode-bidi:isolate;display:inline-block}
+
+/* 3D buttons */
+.btn{--c:var(--panel);--cd:var(--line-2);--fg:var(--ink);font-family:var(--f-display);font-weight:800;font-size:1.02rem;line-height:1.2;
+  border:0;border-radius:14px;padding:.75em 1.3em;background:var(--c);color:var(--fg);cursor:pointer;position:relative;
+  box-shadow:0 5px 0 var(--cd),0 10px 20px rgba(14,27,61,.12);transform:translateY(0);transition:transform .12s var(--ease),box-shadow .12s var(--ease),filter .2s}
+.btn:hover:not(:disabled){filter:brightness(1.04);transform:translateY(-1px);box-shadow:0 6px 0 var(--cd),0 14px 24px rgba(14,27,61,.16)}
+.btn:active:not(:disabled){transform:translateY(4px);box-shadow:0 1px 0 var(--cd),0 4px 8px rgba(14,27,61,.12)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.btn.royal{--c:var(--royal);--cd:var(--royal-d);--fg:#fff}
+.btn.emerald{--c:var(--emerald);--cd:var(--emerald-d);--fg:#fff}
+.btn.amber{--c:var(--amber);--cd:var(--amber-d);--fg:var(--ink)}
+.btn.ghost{--c:transparent;--cd:transparent;box-shadow:none;border:2px solid var(--line-2)}
+.btn.sm{font-size:.88rem;padding:.5em .9em;border-radius:11px}
+.btn.lg{font-size:1.2rem;padding:.9em 1.8em;border-radius:18px}
+.row{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin-top:16px}
+.row.c{justify-content:center}
+.spacer{flex:1}
+
+/* HUD */
+.hud{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;display:flex;align-items:center;gap:10px;padding-block:10px;margin-bottom:8px;
+  background:linear-gradient(var(--ground) 70%,rgba(243,246,253,0))}
+.hud .back{flex:none;width:44px;height:44px;border-radius:13px;border:0;background:var(--panel);box-shadow:0 4px 0 var(--line-2);cursor:pointer;font-size:1.2rem;font-weight:800}
+.hud-title{flex:1;min-width:0;font-family:var(--f-display);font-weight:800;font-size:1.05rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.chips{display:flex;gap:6px;flex-wrap:nowrap}
+.chip{display:inline-flex;align-items:center;gap:4px;background:var(--panel);border-radius:999px;padding:4px 10px;font-weight:800;font-size:.86rem;box-shadow:0 2px 0 var(--line);white-space:nowrap}
+.chip .k{font-size:.95rem}
+.lvl-chip{background:var(--royal);color:#fff;box-shadow:0 2px 0 var(--royal-d)}
+@media(max-width:560px){.chip.opt{display:none}}
+
+/* panels */
+.panel{background:var(--panel);border-radius:var(--r);padding:20px;box-shadow:0 1px 0 var(--line),0 12px 30px rgba(14,27,61,.06);margin-bottom:18px;position:relative}
+.panel h3{font-size:1.25rem;margin-bottom:4px}
+.eyebrow{font-family:var(--f-display);font-weight:800;font-size:.78rem;letter-spacing:.06em;color:var(--royal);text-transform:uppercase}
+.muted{color:var(--ink-2)}
+.small{font-size:.9rem}
+.tag{display:inline-block;font-weight:800;font-size:.78rem;border-radius:999px;padding:2px 10px;background:var(--royal-t);color:var(--royal-d)}
+.tag.em{background:var(--emerald-t);color:var(--emerald-d)}
+.tag.am{background:var(--amber-t);color:var(--amber-d)}
+
+/* robot guide */
+.guide{display:flex;gap:14px;align-items:flex-end;margin-block:6px 18px}
+.guide .rb{flex:none}
+.say{flex:1;min-width:0;background:var(--panel);border-radius:20px 20px 6px 20px;padding:14px 18px;box-shadow:0 1px 0 var(--line),0 8px 20px rgba(14,27,61,.07);font-size:1.05rem;position:relative}
+.say b{color:var(--royal-d)}
+.rb svg{display:block;filter:drop-shadow(0 10px 12px rgba(14,27,61,.18))}
+.rb.idle svg{animation:hover 3s ease-in-out infinite}
+@keyframes hover{50%{transform:translateY(-6px)}}
+.rb.shake svg{animation:shake .4s}
+.rb.jump svg{animation:jump .5s}
+@keyframes jump{40%{transform:translateY(-16px) scale(1.04)}}
+@keyframes shake{20%{transform:translateX(-7px) rotate(-4deg)}40%{transform:translateX(7px) rotate(4deg)}60%{transform:translateX(-4px)}80%{transform:translateX(4px)}}
+.shakeit{animation:shake .4s}
+
+/* feedback & hints */
+.fb{margin-top:14px;padding:12px 16px;border-radius:14px;font-weight:600;display:flex;gap:10px;align-items:flex-start;animation:rise .3s var(--ease)}
+.fb.ok{background:var(--emerald-t);color:var(--emerald-d)}
+.fb.bad{background:var(--amber-t);color:#7A4A00}
+.fb.info{background:var(--royal-t);color:var(--royal-d)}
+.fb .i{font-size:1.2rem;line-height:1.4}
+@keyframes rise{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.hintbox{margin-top:12px;border:2px dashed var(--amber);border-radius:14px;padding:10px 14px;background:var(--amber-t)}
+.hintbox .hl{font-weight:800;color:var(--amber-d);font-size:.85rem}
+.hintbtn{position:absolute;top:14px;inset-inline-end:14px}
+
+/* reveal (discover → explain) */
+.reveal{border-radius:var(--r);padding:22px;margin-bottom:18px;background:linear-gradient(135deg,var(--royal) 0%,#2D63F0 55%,var(--emerald) 140%);color:#fff;position:relative;overflow:hidden;box-shadow:0 18px 40px rgba(31,79,216,.25);animation:rise .45s var(--ease)}
+.reveal::after{content:"";position:absolute;inset:auto -40px -60px auto;width:200px;height:200px;border-radius:50%;border:24px solid rgba(255,255,255,.08)}
+.reveal .k{font-family:var(--f-display);font-weight:800;font-size:.85rem;opacity:.85}
+.reveal h2{font-size:clamp(1.4rem,4vw,2rem);margin-block:2px 8px}
+.reveal p{max-width:62ch;font-size:1.08rem}
+.reveal .eq{display:inline-block;background:rgba(255,255,255,.14);border-radius:12px;padding:6px 14px;font-family:var(--f-display);font-weight:800;font-size:1.15rem;margin-block:6px}
+.life{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.life span{background:rgba(255,255,255,.16);border-radius:999px;padding:3px 12px;font-weight:700;font-size:.92rem}
+
+/* memory card */
+.memcard{perspective:900px;margin-bottom:18px}
+.memcard-in{background:var(--panel);border-radius:22px;padding:22px 22px 18px;display:grid;grid-template-columns:auto 1fr;gap:18px;align-items:center;
+  box-shadow:0 2px 0 var(--amber),0 18px 36px rgba(242,161,46,.18);border:2px solid var(--amber);transform-origin:center;animation:flip .7s var(--ease)}
+@keyframes flip{from{transform:rotateX(-80deg);opacity:0}to{transform:none;opacity:1}}
+.memcard .glyph{width:84px;height:84px;border-radius:22px;display:grid;place-items:center;font-size:2.6rem;background:linear-gradient(145deg,var(--amber-t),#FFE2AE);box-shadow:inset 0 -6px 0 rgba(184,110,0,.15)}
+.memcard .lbl{font-family:var(--f-display);font-weight:800;color:var(--amber-d);font-size:.85rem}
+.memcard h4{font-size:1.25rem}
+.memcard q{display:block;font-size:1.15rem;font-weight:700;quotes:"«" "»";margin-top:2px}
+@media(max-width:520px){.memcard-in{grid-template-columns:1fr;text-align:center}.memcard .glyph{margin-inline:auto}}
+
+/* reward toast */
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:60;background:var(--ink);color:#fff;border-radius:16px;padding:12px 18px;font-weight:800;display:flex;gap:12px;align-items:center;box-shadow:0 14px 40px rgba(14,27,61,.35);animation:toast 2.6s var(--ease) forwards;max-width:calc(100% - 32px)}
+.toast .xp{color:var(--amber);font-family:var(--f-display)}
+@keyframes toast{0%{opacity:0;transform:translate(-50%,20px)}10%,85%{opacity:1;transform:translate(-50%,0)}100%{opacity:0;transform:translate(-50%,10px)}}
+.burst{position:fixed;inset:0;pointer-events:none;z-index:55;overflow:hidden}
+.burst i{position:absolute;width:9px;height:9px;border-radius:2px;top:45%;left:50%;animation:burst 1.1s var(--ease) forwards}
+@keyframes burst{to{transform:translate(var(--dx),var(--dy)) rotate(400deg);opacity:0}}
+
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important}}
+</style>
+<style>
+/* ===== intro / boot ===== */
+.intro{min-height:calc(100vh - 40px);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:14px;padding-block:30px}
+.logo{display:flex;flex-direction:column;align-items:center;gap:4px}
+.logo .mark{font-family:var(--f-display);font-weight:900;font-size:clamp(2.6rem,10vw,4.6rem);line-height:1.05;letter-spacing:-.01em;
+  background:linear-gradient(180deg,var(--royal) 0%,var(--royal-d) 100%);-webkit-background-clip:text;background-clip:text;color:transparent;
+  filter:drop-shadow(0 4px 0 rgba(14,46,143,.18))}
+.logo .pre{font-family:var(--f-display);font-weight:800;color:var(--emerald);font-size:1.1rem;letter-spacing:.04em}
+.terminal{width:min(560px,100%);background:var(--term);color:var(--term-ink);border-radius:18px;padding:16px 18px;text-align:start;font-size:1rem;line-height:1.9;
+  box-shadow:0 24px 50px rgba(14,27,61,.28),inset 0 0 0 1px rgba(255,255,255,.06);min-height:150px}
+.terminal .bar{display:flex;gap:6px;margin-bottom:8px}
+.terminal .bar i{width:10px;height:10px;border-radius:50%;background:#3B4A78}
+.terminal .bar i:first-child{background:var(--rose)}
+.terminal .ln{display:block}
+.terminal .err{color:#FF9AA8}
+.terminal .ok{color:#7EE6C2}
+.terminal .cur::after{content:"▍";animation:blink 1s steps(2) infinite;color:var(--amber)}
+@keyframes blink{50%{opacity:0}}
+.core{width:140px;height:140px;position:relative;margin-block:6px}
+.core .ring{position:absolute;inset:0;border-radius:50%;border:6px solid var(--royal-t);border-top-color:var(--royal);animation:spin 2.4s linear infinite}
+.core .ring.r2{inset:18px;border-color:var(--emerald-t);border-bottom-color:var(--emerald);animation-duration:3.4s;animation-direction:reverse}
+.core .dot{position:absolute;inset:44px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#fff,var(--amber) 45%,var(--amber-d));box-shadow:0 0 30px rgba(242,161,46,.6)}
+.core.off .ring{animation-play-state:paused;border-top-color:var(--line-2)}
+.core.off .ring.r2{border-bottom-color:var(--line-2)}
+.core.off .dot{background:radial-gradient(circle at 35% 30%,#fff,#C9D1E6 50%,#8E9AB9);box-shadow:none}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* ===== home ===== */
+.home-head{display:grid;grid-template-columns:auto 1fr;gap:18px;align-items:center;margin-block:8px 22px}
+.home-head h1{font-size:clamp(1.6rem,5vw,2.3rem)}
+.me{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-bottom:22px}
+.stat{background:var(--panel);border-radius:16px;padding:12px 14px;box-shadow:0 1px 0 var(--line),0 8px 18px rgba(14,27,61,.05);display:flex;flex-direction:column;min-width:0}
+.stat .v{font-family:var(--f-display);font-weight:900;font-size:1.5rem;line-height:1.2}
+.stat .l{color:var(--ink-2);font-size:.82rem;font-weight:700}
+.xpbar{height:10px;border-radius:999px;background:var(--royal-t);overflow:hidden;margin-top:6px}
+.xpbar i{display:block;height:100%;background:linear-gradient(90deg,var(--royal),var(--emerald));border-radius:999px;transition:width .6s var(--ease)}
+@media(max-width:640px){.me{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.gates{display:grid;grid-template-columns:1fr 1fr;gap:22px;perspective:1200px;margin-bottom:22px}
+@media(max-width:700px){.gates{grid-template-columns:1fr}}
+.gate{position:relative;border:0;border-radius:28px;padding:26px 22px 22px;cursor:pointer;text-align:start;color:#fff;overflow:hidden;min-height:280px;
+  display:flex;flex-direction:column;gap:6px;transform-style:preserve-3d;transition:transform .35s var(--ease),box-shadow .35s var(--ease);
+  box-shadow:0 10px 0 var(--gd),0 26px 50px rgba(14,27,61,.22)}
+.gate:hover{transform:rotateX(4deg) rotateY(var(--ry,-5deg)) translateY(-4px)}
+.gate:active{transform:translateY(6px);box-shadow:0 4px 0 var(--gd),0 12px 24px rgba(14,27,61,.2)}
+.gate.g1{background:linear-gradient(150deg,#2D63F0,var(--royal) 50%,var(--royal-d));--gd:#0A2170;--ry:5deg}
+.gate.g2{background:linear-gradient(150deg,#19C394,var(--emerald) 50%,var(--emerald-d));--gd:#054C36}
+.gate .portal{position:absolute;inset-inline-end:-50px;top:-50px;width:230px;height:230px;border-radius:50%;
+  border:18px solid rgba(255,255,255,.12);box-shadow:inset 0 0 0 18px rgba(255,255,255,.06),0 0 0 18px rgba(255,255,255,.05);transform:translateZ(30px)}
+.gate .gicon{font-size:3rem;line-height:1;transform:translateZ(40px);filter:drop-shadow(0 8px 10px rgba(0,0,0,.25))}
+.gate .gk{font-family:var(--f-display);font-weight:800;font-size:.85rem;opacity:.85;margin-top:auto}
+.gate h2{font-size:clamp(1.5rem,4vw,1.9rem);font-weight:900;transform:translateZ(20px)}
+.gate .gs{opacity:.92;font-size:.98rem}
+.gate .gp{display:flex;align-items:center;gap:10px;margin-top:10px}
+.gate .gp .bar{flex:1;height:8px;border-radius:999px;background:rgba(255,255,255,.22);overflow:hidden}
+.gate .gp .bar i{display:block;height:100%;background:var(--amber);border-radius:999px}
+.gate .gp b{font-family:var(--f-display);font-size:.9rem}
+.side-row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:700px){.side-row{grid-template-columns:1fr}}
+.tile{display:flex;gap:14px;align-items:center;text-align:start;background:var(--panel);border:0;border-radius:18px;padding:16px;cursor:pointer;box-shadow:0 4px 0 var(--line-2),0 10px 22px rgba(14,27,61,.06);transition:transform .15s var(--ease)}
+.tile:hover{transform:translateY(-2px)}
+.tile .ti{width:52px;height:52px;flex:none;border-radius:16px;display:grid;place-items:center;font-size:1.6rem;background:var(--amber-t)}
+.tile b{font-family:var(--f-display);font-size:1.05rem;display:block}
+.tile span{color:var(--ink-2);font-size:.9rem}
+.tile.done .ti{background:var(--emerald-t)}
+
+/* ===== maps ===== */
+.path{list-style:none;margin:0 0 18px;padding:0;display:flex;flex-direction:column;gap:12px;position:relative}
+.path::before{content:"";position:absolute;inset-inline-start:31px;top:30px;bottom:30px;width:4px;border-radius:4px;background:repeating-linear-gradient(var(--line-2) 0 10px,transparent 10px 18px)}
+.node{width:100%;display:grid;grid-template-columns:64px 1fr auto;gap:14px;align-items:center;text-align:start;border:0;background:var(--panel);border-radius:20px;padding:12px 16px 12px 14px;cursor:pointer;
+  box-shadow:0 4px 0 var(--line-2),0 10px 22px rgba(14,27,61,.06);transition:transform .15s var(--ease)}
+.node:hover:not(:disabled){transform:translateX(-4px)}
+.node:disabled{cursor:not-allowed;opacity:.62}
+.node .ic{width:64px;height:64px;border-radius:20px;display:grid;place-items:center;font-size:1.9rem;background:var(--royal-t);position:relative;z-index:1;box-shadow:inset 0 -5px 0 rgba(14,46,143,.12)}
+.node.done .ic{background:var(--emerald-t)}
+.node.locked .ic{background:#EEF1F8;filter:grayscale(1)}
+.node .nb b{font-family:var(--f-display);font-size:1.12rem;display:block;line-height:1.35}
+.node .nb span{color:var(--ink-2);font-size:.92rem}
+.node .st{font-size:1.25rem}
+.stepno{font-family:var(--f-display);font-weight:800;font-size:.75rem;color:var(--royal);display:block}
+@media(max-width:520px){.node{grid-template-columns:52px 1fr auto}.node .ic{width:52px;height:52px;font-size:1.5rem;border-radius:16px}.path::before{inset-inline-start:25px}}
+
+/* ===== shared mechanics ===== */
+.stage{border-radius:18px;background:linear-gradient(180deg,#F7FAFF,#EDF2FD);padding:16px;box-shadow:inset 0 0 0 1px var(--line);position:relative}
+.cards{display:flex;flex-wrap:wrap;gap:10px;min-height:56px}
+.card{font:inherit;font-weight:700;font-size:1rem;border:0;border-radius:14px;padding:10px 14px;background:var(--panel);cursor:pointer;text-align:start;
+  box-shadow:0 4px 0 var(--line-2),0 8px 14px rgba(14,27,61,.06);transition:transform .15s var(--ease),background .2s}
+.card:hover:not(:disabled){transform:translateY(-2px)}
+.card.on{background:var(--amber-t);box-shadow:0 4px 0 var(--amber)}
+.card.ok{background:var(--emerald-t);box-shadow:0 4px 0 var(--emerald)}
+.card.bad{background:var(--rose-t);box-shadow:0 4px 0 var(--rose)}
+.card.sel{background:var(--royal);color:#fff;box-shadow:0 4px 0 var(--royal-d)}
+.card:disabled{cursor:default}
+.slots{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px;counter-reset:n}
+.slots li{display:flex;align-items:center;gap:10px}
+.slots li::before{counter-increment:n;content:counter(n,arabic-indic);width:32px;height:32px;flex:none;border-radius:10px;display:grid;place-items:center;background:var(--ink);color:#fff;font-weight:800;font-size:.9rem}
+.slots li.empty::before{background:var(--line)}
+.slots li.empty{color:var(--ink-3);font-size:.92rem}
+.slots .card{flex:1}
+.two{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px;align-items:start}
+@media(max-width:700px){.two{grid-template-columns:1fr}}
+.lbl{font-family:var(--f-display);font-weight:800;font-size:.82rem;color:var(--ink-2);margin-bottom:8px;display:block}
+.bigq{font-family:var(--f-display);font-weight:800;font-size:1.2rem;margin-bottom:10px}
+
+/* juice scene */
+.scene{display:flex;align-items:flex-end;justify-content:center;gap:22px;min-height:150px;flex-wrap:wrap;padding-top:10px}
+.prop{display:flex;flex-direction:column;align-items:center;gap:2px;min-width:72px;text-align:center}
+.prop .e{font-size:2.6rem;line-height:1.1;transition:transform .3s var(--ease),opacity .3s,filter .3s}
+.prop .e.off{opacity:.25;filter:grayscale(1)}
+.prop .e.pop{animation:jump .5s}
+.prop small{font-weight:700;font-size:.8rem;color:var(--ink-2)}
+.bubble2{position:absolute;top:10px;inset-inline-start:12px;background:var(--panel);border-radius:14px;padding:6px 12px;font-weight:800;box-shadow:0 6px 16px rgba(14,27,61,.12);animation:rise .3s var(--ease);max-width:70%}
+
+/* code / terminal lines */
+.code{background:var(--term);color:var(--term-ink);border-radius:16px;padding:12px 14px;font-size:1rem;line-height:1.95;overflow-x:auto}
+.code .cl{display:flex;gap:10px;align-items:center;border-radius:8px;padding-inline:8px;transition:background .2s,opacity .2s;cursor:default}
+.code .cl .n{color:var(--term-dim);font-family:var(--f-mono);font-size:.8rem;min-width:1.4em}
+.code .cl.ind{padding-inline-start:calc(8px + 1.8em)}
+.code .cl.ind2{padding-inline-start:calc(8px + 3.6em)}
+.code .cl.on{background:rgba(242,161,46,.28)}
+.code .cl.hit{background:rgba(14,159,122,.35)}
+.code .cl.miss{background:rgba(224,71,91,.28)}
+.code .cl.dim{opacity:.35}
+.code .cl.pick{cursor:zoom-in}
+.code .cl.pick:hover{background:rgba(255,255,255,.08)}
+.code .kw{color:var(--amber);font-weight:800}
+.code .vr{color:#7EE6C2;font-weight:700}
+.py{direction:ltr;text-align:left;font-family:var(--f-mono);white-space:pre;font-size:.88rem}
+.py .c{color:var(--term-dim)}
+
+/* grid world */
+.gridwrap{display:flex;justify-content:center}
+.grid{direction:ltr;display:grid;grid-template-columns:repeat(var(--w),1fr);grid-template-rows:repeat(var(--h),1fr);aspect-ratio:var(--w)/var(--h);width:100%;max-width:420px;
+  position:relative;border-radius:18px;overflow:hidden;background:#fff;box-shadow:0 0 0 3px var(--ink),0 14px 30px rgba(14,27,61,.15)}
+.cell{border:1px solid #EDF1FA;display:grid;place-items:center;font-size:clamp(1.1rem,5vw,1.9rem)}
+.cell.wall{background:linear-gradient(145deg,#2B3A66,#16224A);box-shadow:inset 0 -6px 0 rgba(0,0,0,.25)}
+.cell.goal{background:var(--emerald-t)}
+.cell.trail{background:var(--royal-t)}
+.gbot{position:absolute;inset:0 auto auto 0;width:calc(100% / var(--w));height:calc(100% / var(--h));transform:translate(calc(var(--x,0) * 100%),calc(var(--y,0) * 100%));transition:transform .34s var(--ease);display:grid;place-items:center;pointer-events:none;z-index:2}
+.gbot.nomove{transition:none}
+.gbot svg{width:74%;height:auto}
+.gbot.bump svg{animation:shake .4s}
+.palette{display:flex;flex-wrap:wrap;gap:8px}
+.blk{font-family:var(--f-display);font-weight:800;font-size:.98rem;border:0;border-radius:12px;padding:8px 12px;background:var(--royal);color:#fff;cursor:pointer;box-shadow:0 4px 0 var(--royal-d);transition:transform .12s}
+.blk:active{transform:translateY(3px);box-shadow:0 1px 0 var(--royal-d)}
+.blk.loop{background:var(--emerald);box-shadow:0 4px 0 var(--emerald-d)}
+.blk.on{background:var(--amber);color:var(--ink);box-shadow:0 4px 0 var(--amber-d);transform:scale(1.08)}
+.blk.bad{background:var(--rose);box-shadow:0 4px 0 #9E2234}
+.prog{display:flex;flex-wrap:wrap;gap:8px;min-height:60px;padding:10px;border-radius:14px;border:2px dashed var(--line-2);background:#FBFCFF;align-content:flex-start}
+.prog .ph{color:var(--ink-3);font-size:.92rem;align-self:center}
+.loopgrp{display:inline-flex;align-items:center;gap:6px;background:var(--emerald-t);border-radius:12px;padding:4px 6px;box-shadow:inset 0 0 0 2px var(--emerald)}
+.loopgrp .lx{font-family:var(--f-display);font-weight:800;color:var(--emerald-d);font-size:.9rem;padding-inline:4px}
+.counter{display:inline-flex;align-items:center;gap:8px;background:var(--panel);border-radius:12px;padding:4px 8px;box-shadow:0 2px 0 var(--line)}
+.counter button{width:30px;height:30px;border-radius:9px;border:0;background:var(--royal-t);font-weight:900;font-size:1.1rem;cursor:pointer;color:var(--royal-d)}
+.counter b{font-family:var(--f-display);font-size:1.2rem;min-width:1.6em;text-align:center}
+.meter{display:flex;align-items:center;gap:8px;font-weight:800;font-size:.9rem;color:var(--ink-2)}
+.meter .m{flex:1;height:8px;border-radius:999px;background:var(--line);overflow:hidden}
+.meter .m i{display:block;height:100%;background:var(--emerald);transition:width .3s}
+</style>
+<style>
+/* ===== loop: boxes ===== */
+.boxes{direction:ltr;display:grid;grid-template-columns:repeat(10,minmax(0,1fr));gap:6px;margin-block:10px}
+.box{aspect-ratio:1;border-radius:10px;display:grid;place-items:center;font-size:clamp(.9rem,3.6vw,1.6rem);background:linear-gradient(160deg,#C98A3E,#9A5F1E);box-shadow:inset 0 -5px 0 rgba(0,0,0,.2),0 4px 8px rgba(14,27,61,.12);transition:transform .3s var(--ease),background .3s}
+.box.open{background:linear-gradient(160deg,var(--amber-t),#FFE0A3);transform:translateY(-4px) rotate(-3deg)}
+.box.cur{outline:3px solid var(--royal);outline-offset:2px}
+.cmdlog{display:flex;flex-wrap:wrap;gap:6px;max-height:120px;overflow:auto;padding:8px;border-radius:12px;background:#FBFCFF;border:2px dashed var(--line-2);min-height:48px}
+.cmdlog span{background:var(--royal);color:#fff;border-radius:9px;padding:2px 10px;font-weight:800;font-size:.85rem}
+.loopcard{display:flex;flex-direction:column;gap:6px;background:var(--emerald);color:#fff;border-radius:16px;padding:12px 14px;box-shadow:0 5px 0 var(--emerald-d)}
+.loopcard .lh{display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-family:var(--f-display);font-weight:800;font-size:1.1rem}
+.loopcard .lb{background:rgba(255,255,255,.95);color:var(--ink);border-radius:12px;padding:8px 10px;margin-inline-start:18px;display:flex;flex-wrap:wrap;gap:6px;min-height:46px;align-items:center}
+.loopcard .counter{box-shadow:none;color:var(--ink)}
+input[type=range]{width:100%;accent-color:var(--royal);height:28px}
+
+/* ===== loop: dance ===== */
+.dancefloor{position:relative;height:230px;border-radius:20px;overflow:hidden;background:radial-gradient(ellipse at 50% 120%,#3E5BD6 0%,#1B2C70 55%,#101A45 100%);box-shadow:inset 0 0 0 1px rgba(255,255,255,.1)}
+.dancefloor .tiles{position:absolute;inset:auto 0 0 0;height:60px;background:repeating-linear-gradient(90deg,rgba(255,255,255,.08) 0 50px,rgba(255,255,255,.02) 50px 100px);transform:perspective(200px) rotateX(40deg);transform-origin:bottom}
+.dancefloor .spot{position:absolute;top:-40px;width:160px;height:300px;background:linear-gradient(rgba(242,161,46,.35),transparent);clip-path:polygon(45% 0,55% 0,100% 100%,0 100%);opacity:0;transition:opacity .3s}
+.dancefloor.beat .spot{opacity:1}
+.dancer{position:absolute;bottom:34px;left:50%;transform:translateX(-50%);transition:transform .28s var(--ease)}
+.dancer.R{transform:translateX(calc(-50% + 60px)) rotate(8deg)}
+.dancer.L{transform:translateX(calc(-50% - 60px)) rotate(-8deg)}
+.dancer.J{transform:translateX(-50%) translateY(-60px) scale(1.05)}
+.dancer.S{transform:translateX(-50%) rotate(360deg)}
+.notes{position:absolute;top:12px;right:14px;color:#fff;font-size:1.4rem;opacity:.8}
+.beatbar{display:flex;gap:6px;justify-content:center;margin-top:10px;flex-wrap:wrap}
+.beatbar i{font-style:normal;min-width:44px;text-align:center;border-radius:10px;padding:4px 8px;background:var(--royal-t);font-weight:800;font-size:.85rem;transition:background .2s}
+.beatbar i.on{background:var(--amber)}
+.beatbar i.ok{background:var(--emerald-t)}
+
+/* ===== if: scenes ===== */
+.street{position:relative;height:200px;border-radius:20px;overflow:hidden;background:linear-gradient(#BFE1FF,#EEF7FF);transition:background .5s;direction:ltr}
+.street.rain{background:linear-gradient(#6E7FA3,#B9C4DB)}
+.street .rainfx{position:absolute;inset:0;opacity:0;transition:opacity .4s;background-image:repeating-linear-gradient(100deg,transparent 0 12px,rgba(255,255,255,.7) 12px 14px);background-size:50px 50px;animation:rain .45s linear infinite}
+.street.rain .rainfx{opacity:1}
+@keyframes rain{to{background-position:-16px 50px}}
+.street .sun{position:absolute;top:14px;right:22px;font-size:2.6rem;transition:opacity .4s}
+.street.rain .sun{opacity:0}
+.street .ground{position:absolute;inset:auto 0 0 0;height:38px;background:linear-gradient(#9AD6A0,#6FBF7A)}
+.street .door{position:absolute;bottom:30px;left:16px;font-size:3.4rem}
+.street .who{position:absolute;bottom:34px;right:24px;transition:right 1.4s var(--ease);width:72px}
+.street .who.go{right:calc(100% - 170px)}
+.street .who .itm{position:absolute;top:-30px;left:6px;font-size:2.2rem}
+.ruleslot{display:flex;flex-wrap:wrap;align-items:center;gap:8px;font-family:var(--f-display);font-weight:800;font-size:1.1rem;background:var(--panel);border-radius:16px;padding:12px 14px;box-shadow:0 1px 0 var(--line)}
+.drop{min-width:150px;min-height:44px;border:2px dashed var(--line-2);border-radius:12px;display:inline-flex;align-items:center;justify-content:center;padding:4px 10px;color:var(--ink-3);font-size:.92rem;font-weight:700;cursor:pointer;transition:background .2s,border-color .2s}
+.drop.ready{border-color:var(--royal);background:var(--royal-t)}
+.drop.filled{border-style:solid;border-color:var(--emerald);background:var(--emerald-t);color:var(--ink)}
+.gatebox{position:relative;height:210px;border-radius:20px;overflow:hidden;background:linear-gradient(#EAF0FF,#D6E1FB);direction:ltr}
+.gatebox .wallL,.gatebox .wallR{position:absolute;bottom:0;width:calc(50% - 50px);height:150px;background:linear-gradient(145deg,#2B3A66,#16224A)}
+.gatebox .wallL{left:0}.gatebox .wallR{right:0}
+.gatebox .bars{position:absolute;bottom:0;left:calc(50% - 50px);width:100px;height:150px;background:repeating-linear-gradient(90deg,#8B97B8 0 8px,transparent 8px 20px);transition:transform .7s var(--ease);border-top:8px solid #5C6A92}
+.gatebox.open .bars{transform:translateY(-150px)}
+.gatebox .sign{position:absolute;top:12px;left:50%;transform:translateX(-50%);background:var(--term);color:var(--term-ink);border-radius:10px;padding:4px 12px;font-weight:800;font-size:.9rem;white-space:nowrap}
+.gatebox .hero{position:absolute;bottom:6px;right:20px;transition:right 1.2s var(--ease);width:64px}
+.gatebox.pass .hero{right:calc(50% - 32px)}
+.gatebox.through .hero{right:calc(100% - 90px)}
+.toggles{display:flex;flex-wrap:wrap;gap:8px}
+.tgl{font:inherit;font-weight:800;border:0;border-radius:12px;padding:8px 14px;background:var(--panel);cursor:pointer;box-shadow:0 3px 0 var(--line-2)}
+.tgl.on{background:var(--royal);color:#fff;box-shadow:0 3px 0 var(--royal-d)}
+.flowq{display:grid;grid-template-columns:1fr auto 1fr;gap:10px;align-items:center;margin-top:12px}
+.diamond{width:120px;height:120px;transform:rotate(45deg);border-radius:18px;background:var(--royal);display:grid;place-items:center;box-shadow:0 8px 0 var(--royal-d);margin:14px}
+.diamond span{transform:rotate(-45deg);color:#fff;font-family:var(--f-display);font-weight:800;text-align:center;font-size:.92rem;line-height:1.3;max-width:100px}
+.branch{border-radius:16px;padding:12px;text-align:center;font-weight:800;background:var(--panel);box-shadow:0 1px 0 var(--line);opacity:.45;transition:opacity .25s,transform .25s,background .25s}
+.branch.lit{opacity:1;transform:scale(1.04)}
+.branch.yes.lit{background:var(--emerald-t);box-shadow:0 0 0 3px var(--emerald)}
+.branch.no.lit{background:var(--royal-t);box-shadow:0 0 0 3px var(--royal)}
+.branch small{display:block;font-family:var(--f-display);font-size:.75rem;color:var(--ink-2)}
+.bignum{font-family:var(--f-display);font-weight:900;font-size:3.6rem;line-height:1;text-align:center}
+@media(max-width:520px){.flowq{grid-template-columns:1fr}.diamond{margin-inline:auto}}
+
+/* thermometer */
+.thermo{display:grid;grid-template-columns:90px 1fr;gap:18px;align-items:stretch}
+.tube{position:relative;width:40px;margin-inline:auto;height:220px;border-radius:20px;background:#fff;box-shadow:inset 0 0 0 3px var(--ink)}
+.tube i{position:absolute;bottom:4px;left:4px;right:4px;border-radius:16px;background:linear-gradient(0deg,var(--rose),var(--amber));transition:height .3s var(--ease)}
+.tube::after{content:"";position:absolute;bottom:-18px;left:-8px;width:56px;height:56px;border-radius:50%;background:var(--rose);box-shadow:inset 0 0 0 3px var(--ink)}
+.tval{font-family:var(--f-display);font-weight:900;font-size:1.6rem;text-align:center;margin-top:26px}
+.chain{display:flex;flex-direction:column;gap:8px}
+.crow{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;align-items:center;border-radius:14px;padding:10px 14px;background:var(--panel);box-shadow:0 1px 0 var(--line);transition:background .2s,opacity .2s,box-shadow .2s}
+.crow .cc{font-weight:800}
+.crow .cr{font-weight:800;font-size:.85rem;border-radius:999px;padding:2px 10px;background:var(--ground);white-space:nowrap}
+.crow.chk{box-shadow:0 0 0 3px var(--amber)}
+.crow.t{background:var(--emerald-t);box-shadow:0 0 0 3px var(--emerald)}
+.crow.t .cr{background:var(--emerald);color:#fff}
+.crow.f .cr{background:var(--rose-t);color:var(--rose)}
+.crow.skip{opacity:.4}
+.out{margin-top:12px;border-radius:16px;padding:14px;text-align:center;font-family:var(--f-display);font-weight:900;font-size:1.5rem;background:var(--term);color:var(--term-ink)}
+@media(max-width:520px){.thermo{grid-template-columns:1fr}}
+
+/* variables */
+.vars{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px;perspective:800px}
+.vbox{position:relative;border-radius:18px;padding:30px 12px 14px;text-align:center;background:linear-gradient(160deg,#FFFFFF,#EEF3FF);box-shadow:0 6px 0 var(--line-2),0 14px 26px rgba(14,27,61,.1);transform-style:preserve-3d}
+.vbox::before{content:"";position:absolute;top:-10px;left:12px;right:12px;height:22px;border-radius:10px 10px 6px 6px;background:linear-gradient(var(--royal),var(--royal-d));transform:rotateX(30deg);box-shadow:0 4px 0 rgba(0,0,0,.12)}
+.vbox .vn{font-weight:800;color:var(--ink-2);font-size:.88rem}
+.vbox .vv{font-family:var(--f-display);font-weight:900;font-size:1.8rem;line-height:1.3;word-break:break-word}
+.vbox.pulse{animation:vpulse .6s var(--ease)}
+@keyframes vpulse{30%{transform:translateY(-10px) scale(1.05);box-shadow:0 6px 0 var(--amber),0 20px 30px rgba(242,161,46,.35)}}
+.vbox input{font:inherit;font-weight:800;width:100%;border:2px solid var(--line-2);border-radius:10px;padding:4px 8px;text-align:center;margin-top:6px;background:#fff;color:var(--ink)}
+.coinfield{position:relative;height:150px;border-radius:18px;background:linear-gradient(#FFF7E8,#FFEFD1);overflow:hidden;cursor:crosshair}
+.coin{position:absolute;width:44px;height:44px;border:0;border-radius:50%;background:radial-gradient(circle at 35% 30%,#FFF3C4,var(--amber) 55%,var(--amber-d));box-shadow:0 4px 0 #8A5200;font-weight:900;cursor:pointer;color:var(--ink);font-size:.8rem}
+.coin.got{animation:coin .5s forwards}
+@keyframes coin{to{transform:translateY(-60px) scale(.3);opacity:0}}
+
+/* input / output machine */
+.machine{display:grid;grid-template-columns:1fr auto 1fr auto 1fr;gap:10px;align-items:center}
+.mstep{border-radius:16px;padding:14px;background:var(--panel);box-shadow:0 1px 0 var(--line),0 10px 20px rgba(14,27,61,.06);min-height:120px;display:flex;flex-direction:column;gap:6px;min-width:0}
+.mstep h4{font-size:1rem}
+.mstep.proc{background:var(--term);color:var(--term-ink)}
+.mstep.proc h4{color:var(--amber)}
+.marrow{font-size:1.6rem;color:var(--ink-3)}
+.field{font:inherit;width:100%;border:2px solid var(--line-2);border-radius:12px;padding:8px 10px;background:#fff;color:var(--ink);font-weight:700}
+.screen{border-radius:12px;padding:10px;background:#E9FFF6;color:var(--emerald-d);font-weight:800;min-height:48px}
+@media(max-width:760px){.machine{grid-template-columns:1fr}.marrow{transform:rotate(-90deg);justify-self:center}}
+
+/* tester table */
+.ttable{width:100%;border-collapse:collapse;font-size:.95rem}
+.ttable th,.ttable td{padding:8px 10px;border-bottom:1px solid var(--line);text-align:start}
+.ttable th{font-family:var(--f-display);font-size:.85rem;color:var(--ink-2)}
+.ttable td.ok{color:var(--emerald-d);font-weight:800}
+.ttable td.bad{color:var(--rose);font-weight:800}
+.tablewrap{overflow-x:auto}
+
+/* ===== final mission / city ===== */
+.chap{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px}
+.chap i{font-style:normal;flex:1;min-width:34px;height:8px;border-radius:999px;background:var(--line)}
+.chap i.done{background:var(--emerald)}
+.chap i.cur{background:var(--amber)}
+.city .cell{background:#F1F4FA}
+.city .cell.road{background:#DCE3F2}
+.ending{position:fixed;inset:0;z-index:70;background:radial-gradient(ellipse at 50% 30%,#1D3B9E,#0B1640 70%);color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:24px;gap:16px}
+.ending .line{font-family:var(--f-display);font-weight:800;font-size:clamp(1.2rem,4.4vw,2rem);opacity:0;transform:translateY(12px);transition:opacity .9s var(--ease),transform .9s var(--ease);max-width:30ch}
+.ending .line.show{opacity:1;transform:none}
+.ending .big{font-size:clamp(1.8rem,7vw,3.2rem);font-weight:900;color:var(--amber)}
+
+/* ===== teacher ===== */
+.tgrid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-bottom:18px}
+@media(max-width:700px){.tgrid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.bars{display:flex;flex-direction:column;gap:10px}
+.hbar{display:grid;grid-template-columns:130px 1fr 48px;gap:10px;align-items:center;font-size:.92rem}
+.hbar .t{height:14px;border-radius:999px;background:var(--royal-t);overflow:hidden}
+.hbar .t i{display:block;height:100%;border-radius:999px;background:var(--royal);transition:width .5s var(--ease)}
+.hbar .vlab{font-weight:800;text-align:end}
+.hbar[data-tip]{cursor:default}
+@media(max-width:520px){.hbar{grid-template-columns:96px 1fr 42px}}
+.stable{width:100%;border-collapse:collapse;min-width:620px;font-size:.93rem}
+.stable th,.stable td{padding:10px;border-bottom:1px solid var(--line);text-align:start;vertical-align:middle}
+.stable th{font-family:var(--f-display);font-size:.82rem;color:var(--ink-2)}
+.stable td{white-space:nowrap}
+.stable tr.sel td{background:var(--royal-t)}
+.stable tbody tr{cursor:pointer}
+.mini{height:8px;border-radius:999px;background:var(--line);overflow:hidden;width:90px;display:inline-block;vertical-align:middle;margin-inline-start:6px}
+.mini i{display:block;height:100%;background:var(--emerald)}
+.pill2{display:inline-block;border-radius:999px;padding:1px 9px;font-size:.8rem;font-weight:800;margin:2px}
+.pill2.m{background:var(--emerald-t);color:var(--emerald-d)}
+.pill2.s{background:var(--amber-t);color:var(--amber-d)}
+.demo-note{background:var(--amber-t);color:#7A4A00;border-radius:12px;padding:10px 14px;font-weight:700;margin-bottom:14px}
+.tip{position:fixed;z-index:80;background:var(--ink);color:#fff;border-radius:10px;padding:6px 10px;font-size:.85rem;font-weight:700;pointer-events:none;transform:translate(-50%,-120%)}
+</style>
+<div id="app" dir="rtl" lang="ar"></div>
+<script>
+document.documentElement.setAttribute('dir', 'rtl');
+document.documentElement.setAttribute('lang', 'ar');
+const $ = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+const app = $('#app');
+const AR = '٠١٢٣٤٥٦٧٨٩';
+const ar = n => String(n).replace(/\d/g, d => AR[d]);
+const rand = (a, b) => a + Math.floor(Math.random() * (b - a + 1));
+const shuffle = a => { a = [...a]; for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const REDUCE = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const today = () => { const d = new Date(); return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); };
+
+/* ---------- timers: cleared on every screen change ---------- */
+let timers = [];
+const later = (fn, ms) => { const id = setTimeout(fn, ms); timers.push(id); return id; };
+const wait = ms => new Promise(r => later(r, ms));
+
+/* ---------- player state (local first, cloud when available) ---------- */
+const KEY = 'aql-v1';
+const blank = () => ({ name: '', intro: false, xp: 0, logic: 0, bugs: 0, sound: true, streak: { last: '', count: 0 }, daily: { date: '', done: false }, missions: {} });
+let S = blank();
+try { const o = JSON.parse(localStorage.getItem(KEY) || 'null'); if (o) S = Object.assign(blank(), o); } catch (e) {}
+const M = id => (S.missions[id] = S.missions[id] || { done: false, stars: 0, attempts: 0, fails: 0, hints: 0, firstTry: false, bestMs: 0 });
+let syncTimer = null;
+function save() {
+  try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {}
+  clearTimeout(syncTimer); syncTimer = setTimeout(pushCloud, 1200);
+}
+
+/* cloud: each student writes progress/<their id>; owner + editors read all (teacher view) */
+const CLOUD = { db: null, user: null, uid: null, ready: false, teacher: false };
+async function initCloud() {
+  try {
+    if (!window.claude || !window.claude.use) return;
+    const [db, user] = await Promise.all([window.claude.use('db'), window.claude.use('user')]);
+    CLOUD.db = db; CLOUD.user = user;
+    if (user) {
+      CLOUD.uid = await user.id();
+      CLOUD.teacher = (await user.isOwner()) || (await user.canEdit());
+    }
+    if (db && CLOUD.uid) {
+      const snap = await db.doc('progress/' + CLOUD.uid).get();
+      if (snap.exists) mergeCloud(snap.data() || {});
+      CLOUD.ready = true;
+    }
+    if (typeof onCloudReady === 'function') onCloudReady();
+  } catch (e) { /* stay local */ }
+}
+function mergeCloud(d) {
+  S.xp = Math.max(S.xp, d.xp || 0); S.logic = Math.max(S.logic, d.logic || 0); S.bugs = Math.max(S.bugs, d.bugs || 0);
+  if (!S.name && d.name) S.name = d.name;
+  if (d.streak && (d.streak.last || '') > (S.streak.last || '')) S.streak = d.streak;
+  for (const [id, m] of Object.entries(d.missions || {})) {
+    const L = M(id);
+    L.done = L.done || !!m.done; L.stars = Math.max(L.stars, m.stars || 0);
+    L.attempts = Math.max(L.attempts, m.attempts || 0); L.fails = Math.max(L.fails, m.fails || 0); L.hints = Math.max(L.hints, m.hints || 0);
+    L.firstTry = L.firstTry || !!m.firstTry; if (m.bestMs && (!L.bestMs || m.bestMs < L.bestMs)) L.bestMs = m.bestMs;
+  }
+  try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {}
+}
+let cloudFailed = false;
+async function pushCloud() {
+  if (!CLOUD.db || !CLOUD.uid || cloudFailed) return;
+  try {
+    await CLOUD.db.doc('progress/' + CLOUD.uid).set({
+      name: S.name || '', xp: S.xp, logic: S.logic, bugs: S.bugs, streak: S.streak,
+      missions: S.missions, updatedAt: Date.now()
+    });
+  } catch (e) { if (e && e.code === 'invalid_argument') cloudFailed = true; }
+}
+
+/* ---------- levels ---------- */
+const LEVELS = [
+  [0, 'متدرّب'], [120, 'مستكشف'], [300, 'مفكّر منطقي'], [540, 'مصمّم خوارزميات'], [840, 'مبرمج'], [1200, 'صائد أخطاء محترف'], [1650, 'مهندس برمجيات'], [2200, 'عقل المبرمج']
+];
+function levelInfo(xp = S.xp) {
+  let i = 0; while (i < LEVELS.length - 1 && xp >= LEVELS[i + 1][0]) i++;
+  const cur = LEVELS[i][0], nxt = LEVELS[i + 1] ? LEVELS[i + 1][0] : cur;
+  return { n: i + 1, title: LEVELS[i][1], pct: nxt > cur ? Math.round((xp - cur) / (nxt - cur) * 100) : 100, toNext: Math.max(0, nxt - xp), max: !LEVELS[i + 1] };
+}
+function touchStreak() {
+  const t = today(); if (S.streak.last === t) return;
+  const y = new Date(Date.now() - 864e5); const ys = y.getFullYear() + '-' + String(y.getMonth() + 1).padStart(2, '0') + '-' + String(y.getDate()).padStart(2, '0');
+  S.streak = { last: t, count: S.streak.last === ys ? S.streak.count + 1 : 1 };
+}
+
+/* ---------- sound ---------- */
+let AC = null;
+function tone(f, d = .12, type = 'sine', v = .07, at = 0) {
+  if (!S.sound) return;
+  try {
+    AC = AC || new (window.AudioContext || window.webkitAudioContext)();
+    const t0 = AC.currentTime + at, o = AC.createOscillator(), g = AC.createGain();
+    o.type = type; o.frequency.value = f; g.gain.setValueAtTime(v, t0); g.gain.exponentialRampToValueAtTime(.0001, t0 + d);
+    o.connect(g).connect(AC.destination); o.start(t0); o.stop(t0 + d);
+  } catch (e) {}
+}
+const sfx = {
+  tap() { tone(520, .05, 'triangle', .04); },
+  ok() { tone(660, .1); tone(990, .14, 'sine', .07, .08); },
+  oops() { tone(300, .14, 'triangle', .06); tone(240, .18, 'triangle', .05, .1); },
+  step() { tone(440, .05, 'triangle', .045); },
+  win() { [523, 659, 784, 1046, 1318].forEach((f, i) => tone(f, .16, 'sine', .07, i * .09)); },
+  beat(i) { tone([392, 440, 523, 587][i % 4], .12, 'square', .03); },
+  bug() { tone(880, .06, 'square', .04); tone(1320, .1, 'square', .04, .07); }
+};
+
+/* ---------- the guide robot "رمز" ---------- */
+function robot(mood = 'happy', size = 90) {
+  const eye = {
+    happy: '<path d="M37 47 q6 -7 12 0 M55 47 q6 -7 12 0" stroke="#5CF2C2" stroke-width="4" fill="none" stroke-linecap="round"/>',
+    sad: '<path d="M37 44 q6 6 12 0 M55 44 q6 6 12 0" stroke="#FFB4BE" stroke-width="4" fill="none" stroke-linecap="round"/>',
+    wow: '<circle cx="43" cy="45" r="6" fill="#5CF2C2"/><circle cx="61" cy="45" r="6" fill="#5CF2C2"/>',
+    think: '<circle cx="43" cy="45" r="5" fill="#5CF2C2"/><path d="M55 45 h12" stroke="#5CF2C2" stroke-width="4" stroke-linecap="round"/>',
+    dizzy: '<path d="M38 40 l10 10 M48 40 l-10 10 M56 40 l10 10 M66 40 l-10 10" stroke="#FFD27A" stroke-width="3.5" stroke-linecap="round"/>'
+  }[mood] || '';
+  const mouth = mood === 'sad' || mood === 'dizzy' ? '<path d="M45 60 q7 -4 14 0" stroke="#5CF2C2" stroke-width="3" fill="none" stroke-linecap="round" opacity=".8"/>'
+    : mood === 'wow' ? '<ellipse cx="52" cy="60" rx="4" ry="4.5" fill="#5CF2C2"/>'
+    : '<path d="M44 58 q8 6 16 0" stroke="#5CF2C2" stroke-width="3" fill="none" stroke-linecap="round"/>';
+  return `<svg viewBox="0 0 104 124" width="${size}" height="${Math.round(size * 124 / 104)}" aria-hidden="true">
+<defs><linearGradient id="rh" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#4B7BFF"/><stop offset="1" stop-color="#1F4FD8"/></linearGradient>
+<linearGradient id="rb" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#F7F9FF"/><stop offset="1" stop-color="#D6DFF5"/></linearGradient></defs>
+<line x1="52" y1="6" x2="52" y2="20" stroke="#0E2E8F" stroke-width="4" stroke-linecap="round"/><circle cx="52" cy="7" r="6" fill="#F2A12E"/>
+<rect x="6" y="36" width="10" height="20" rx="5" fill="#0E9F7A"/><rect x="88" y="36" width="10" height="20" rx="5" fill="#0E9F7A"/>
+<rect x="13" y="18" width="78" height="62" rx="24" fill="url(#rh)"/><rect x="13" y="66" width="78" height="14" rx="7" fill="#0E2E8F" opacity=".25"/>
+<rect x="22" y="28" width="60" height="42" rx="16" fill="#0F1E44"/><rect x="26" y="31" width="22" height="6" rx="3" fill="#fff" opacity=".12"/>
+${eye}${mouth}
+<rect x="30" y="84" width="44" height="32" rx="12" fill="url(#rb)"/><circle cx="52" cy="99" r="7" fill="#F2A12E"/><circle cx="52" cy="99" r="3" fill="#fff" opacity=".7"/>
+</svg>`;
+}
+const guide = (html, mood = 'happy', id = 'guide') => `<div class="guide" id="${id}"><div class="rb idle">${robot(mood, 76)}</div><div class="say">${html}</div></div>`;
+function say(html, mood = 'happy', id = 'guide') {
+  const g = document.getElementById(id); if (!g) return;
+  g.querySelector('.rb').innerHTML = robot(mood, 76); g.querySelector('.say').innerHTML = html;
+  const rb = g.querySelector('.rb'); rb.classList.remove('shake', 'jump'); void rb.offsetWidth;
+  rb.classList.add(mood === 'sad' || mood === 'dizzy' ? 'shake' : mood === 'happy' || mood === 'wow' ? 'jump' : 'idle');
+}
+function fbox(el, html, kind = 'info', icon) {
+  const ic = icon || { ok: '✅', bad: '🔍', info: '💬' }[kind];
+  el.innerHTML = `<div class="fb ${kind}"><span class="i">${ic}</span><div>${html}</div></div>`;
+}
+function shake(el) { el.classList.remove('shakeit'); void el.offsetWidth; el.classList.add('shakeit'); }
+function burst() {
+  if (REDUCE) return;
+  const b = document.createElement('div'); b.className = 'burst';
+  const cols = ['#1F4FD8', '#0E9F7A', '#F2A12E', '#FFFFFF', '#5CF2C2'];
+  for (let i = 0; i < 36; i++) { const s = document.createElement('i'); const a = Math.random() * Math.PI * 2, r = 120 + Math.random() * 220; s.style.setProperty('--dx', Math.cos(a) * r + 'px'); s.style.setProperty('--dy', Math.sin(a) * r + 'px'); s.style.background = cols[i % 5]; b.appendChild(s); }
+  document.body.appendChild(b); setTimeout(() => b.remove(), 1300);
+}
+function toast(html) {
+  $$('.toast').forEach(t => t.remove());
+  const t = document.createElement('div'); t.className = 'toast'; t.innerHTML = html; document.body.appendChild(t); setTimeout(() => t.remove(), 2700);
+}
+
+/* ---------- router ---------- */
+const ROUTES = {};
+let routeParam = null;
+function go(r, param) {
+  timers.forEach(clearTimeout); timers = [];
+  routeParam = param ?? null;
+  const [name, arg] = String(r).split(':');
+  if (!ROUTES[name]) return go('home');
+  ROUTES[name](arg);
+  window.scrollTo(0, 0);
+  try { history.replaceState(null, '', '#' + String(r).replace(':', '-')); } catch (e) {}
+}
+document.addEventListener('click', e => {
+  const s = e.target.closest('[data-sound]');
+  if (s) { S.sound = !S.sound; save(); s.textContent = S.sound ? '🔊' : '🔇'; return; }
+  const g = e.target.closest('[data-go]');
+  if (g && !g.disabled) { sfx.tap(); go(g.dataset.go); }
+});
+function hud(title, back) {
+  const L = levelInfo();
+  return `<header class="hud">${back ? `<button class="back" data-go="${back}" aria-label="رجوع">→</button>` : ''}
+    <div class="hud-title">${title}</div>
+    <div class="chips"><span class="chip lvl-chip" title="مستواك">م${ar(L.n)}</span><span class="chip" title="نقاط الخبرة"><span class="k">⭐</span><span class="num">${ar(S.xp)}</span></span>
+    <span class="chip opt" title="أيام متتالية"><span class="k">🔥</span>${ar(S.streak.count || 0)}</span>
+    <button class="chip" data-sound aria-label="الصوت" style="border:0;cursor:pointer">${S.sound ? '🔊' : '🔇'}</button></div></header>`;
+}
+
+/* ---------- mission engine ----------
+   Every mission = Experience (mechanic) → Discover (reveal "what you just did is…") → Explain (memory card) → Practice (inside mechanic) → Master (rewards).
+   Mechanics are registered by name; content (CONTENT below, in 12-content.js) only references them, so new lessons are data, not code. */
+const MECH = {};
+const CONCEPTS = {
+  problem: 'فهم المشكلة', io: 'المدخلات والمخرجات', algo: 'الخوارزمية', code: 'كتابة البرنامج', test: 'الاختبار',
+  debug: 'تصحيح الأخطاء', optimize: 'تحسين الحل', loop: 'التكرار Loop', if: 'الشرط If', ifelse: 'If / Else', elseif: 'Else If', var: 'المتغيرات', inout: 'الإدخال والإخراج'
+};
+const missionById = id => CONTENT.missions.find(m => m.id === id);
+const gateMissions = g => CONTENT.missions.filter(m => m.gate === g);
+function isUnlocked(m) {
+  if (m.gate === 'final') return gateMissions('build').every(x => M(x.id).done) && gateMissions('think').every(x => M(x.id).done);
+  const list = gateMissions(m.gate), i = list.indexOf(m);
+  return i <= 0 || M(list[i - 1].id).done;
+}
+
+ROUTES.m = id => {
+  const def = missionById(id); if (!def) return go('home');
+  if (!isUnlocked(def)) return go(def.gate === 'think' ? 'think' : 'build');
+  const back = def.gate === 'think' ? 'think' : def.gate === 'final' ? 'home' : 'build';
+  const list = gateMissions(def.gate), idx = list.indexOf(def);
+  app.innerHTML = hud(`${def.icon} ${def.title}`, back) + `
+    ${guide(def.intro, def.mood || 'happy')}
+    <section class="panel" id="stage-panel"><button class="btn sm amber hintbtn" id="hintbtn">💡 أعطني تلميحًا</button>
+      <span class="eyebrow">${def.gate === 'final' ? 'المهمة الأخيرة' : def.gate === 'build' ? `المهمة ${ar(idx + 1)} من ${ar(list.length)}` : `العالم ${ar(idx + 1)} من ${ar(list.length)}`}</span>
+      <h3 style="padding-inline-end:150px">${def.task}</h3>
+      <div id="stage" style="margin-top:14px"></div><div id="hint"></div><div id="fb"></div></section>
+    <div id="after"></div>`;
+  const rec = M(id); rec.attempts++; save();
+  const t0 = Date.now(); let hintLv = 0, fails = 0, revealed = false, completed = false;
+  const hintBtn = $('#hintbtn');
+  hintBtn.onclick = () => {
+    if (hintLv >= def.hints.length) return;
+    const labels = ['تلميح بسيط', 'توجيه أوضح', 'مثال مشابه'];
+    hintLv++; rec.hints++; save(); sfx.tap();
+    $('#hint').innerHTML = def.hints.slice(0, hintLv).map((h, i) => `<div class="hintbox"><div class="hl">💡 ${labels[i]}</div>${h}</div>`).join('');
+    if (hintLv >= def.hints.length) { hintBtn.disabled = true; hintBtn.textContent = '💡 استخدمت كل التلميحات'; }
+  };
+  const ctx = {
+    def, cfg: def.cfg || {}, host: $('#stage'), fbEl: $('#fb'),
+    say: (h, m) => say(h, m),
+    info(h) { fbox($('#fb'), h, 'info'); },
+    clear() { $('#fb').innerHTML = ''; },
+    ok(h) { sfx.ok(); fbox($('#fb'), h, 'ok'); },
+    fail(h, opts = {}) {
+      fails++; rec.fails++; save(); sfx.oops();
+      const extra = fails >= 2 && hintLv < def.hints.length ? '<br><small>تحتاج دفعة صغيرة؟ اضغط 💡 أعطني تلميحًا.</small>' : '';
+      fbox($('#fb'), `${h}${opts.noCheck ? '' : '<br><b>هل تريد فحص خطواتك؟</b> 🔍'}${extra}`, 'bad');
+      if (fails >= 2) { shake(hintBtn); }
+    },
+    bug() { S.bugs++; save(); sfx.bug(); },
+    reveal() {
+      if (revealed) return; revealed = true;
+      const r = def.reveal; if (!r) return;
+      $('#after').insertAdjacentHTML('beforeend', `<section class="reveal"><div class="k">${r.k || 'اكتشفت للتو…'}</div><h2>${r.title}</h2>${r.text ? `<p>${r.text}</p>` : ''}${r.eq ? `<div class="eq">${r.eq}</div>` : ''}${r.life ? `<div class="life">${r.life.map(x => `<span>${x}</span>`).join('')}</div>` : ''}</section>`);
+      later(() => $('#after').lastElementChild?.scrollIntoView({ behavior: REDUCE ? 'auto' : 'smooth', block: 'center' }), 150);
+    },
+    complete(bonus = {}) {
+      if (completed) return; completed = true; ctx.reveal();
+      const ms = Date.now() - t0, first = !rec.done;
+      const stars = bonus.stars ?? (fails === 0 && hintLv === 0 ? 3 : fails <= 2 && hintLv <= 1 ? 2 : 1);
+      let xp = first ? def.xp || 40 : 10; let logic = 0;
+      if (fails === 0) { logic = def.logic || 2; if (first) rec.firstTry = true; }
+      if (first && hintLv === 0) xp += 10;
+      rec.done = true; rec.stars = Math.max(rec.stars, stars); if (!rec.bestMs || ms < rec.bestMs) rec.bestMs = ms;
+      const before = levelInfo().n; S.xp += xp; S.logic += logic; touchStreak(); save();
+      const after = levelInfo();
+      sfx.win(); burst();
+      const mem = def.memory;
+      const next = list[idx + 1];
+      $('#after').insertAdjacentHTML('beforeend', `
+        ${mem ? `<div class="memcard"><div class="memcard-in"><div class="glyph">${mem.glyph}</div><div><div class="lbl">🧠 احفظها في عقلك</div><h4>${mem.title}</h4><q>${mem.text}</q></div></div></div>` : ''}
+        <section class="panel"><div class="row" style="margin-top:0">
+          <span class="chip">⭐ +${ar(xp)} خبرة</span>${logic ? `<span class="chip">🧠 +${ar(logic)} تفكير منطقي</span>` : ''}<span class="chip">⚡ ${ar(Math.round(ms / 1000))} ث</span>
+          <span class="chip" aria-label="${ar(stars)} نجوم">${'★'.repeat(stars)}${'☆'.repeat(3 - stars)}</span></div>
+          <p class="muted small" style="margin-top:10px">${fails ? `جرّبت ${ar(fails + 1)} مرات حتى نجحت. هكذا يعمل المبرمجون: تجربة، ثم فحص، ثم إصلاح.` : 'نجحت من أول محاولة! عقلك المنطقي يعمل بقوة.'}</p>
+          <div class="row">${next ? `<button class="btn royal" data-go="m:${next.id}">المهمة التالية: ${next.title} ←</button>` : `<button class="btn royal" data-go="${back}">رجوع إلى الخريطة ←</button>`}
+          <button class="btn ghost" data-go="m:${id}">العب مرة أخرى ↻</button></div></section>`);
+      if (after.n > before) later(() => toast(`🏆 مستوى جديد: <span class="xp">م${ar(after.n)} · ${after.title}</span>`), 900);
+      else later(() => toast(`<span class="xp">+${ar(xp)} ⭐</span> ${def.title} اكتملت`), 600);
+    }
+  };
+  MECH[def.mech](ctx);
+};
+
+/* ---------- CONTENT: curriculum as data ----------
+   To add a lesson: add a unit (optional) and push a mission object that names an existing mechanic in `mech`.
+   Fields: id, gate ('build' | 'think' | 'final'), unit, stage (shown on map), icon, title, sub, concept (key of CONCEPTS),
+   mech, cfg (mechanic options), intro, task, hints[3], reveal{k,title,text,eq,life[]}, memory{glyph,title,text}, xp. */
+const CONTENT = {
+  units: [
+    { id: 'u1', title: 'الوحدة ١: الخوارزميات' }, { id: 'u2', title: 'الوحدة ٢: البرمجة المرئية' },
+    { id: 'u3', title: 'الوحدة ٣: الشروط' }, { id: 'u4', title: 'الوحدة ٤: التكرار' }, { id: 'u5', title: 'الوحدة ٥: المتغيرات والإدخال' }
+  ],
+  missions: [
+    /* ===== Gate 1: how a programmer builds a program ===== */
+    { id: 'b1', gate: 'build', unit: 'u1', stage: '١', icon: '🕵️', title: 'فهم المشكلة', sub: 'وصلتك رسالة استغاثة مشوّشة', concept: 'problem', mech: 'pickSentence', xp: 40,
+      intro: 'وصلت رسالة من <b>مقصف المدرسة</b> إلى النظام المعطّل… لكنها طويلة ومشوّشة. المبرمج لا يبدأ بالكود، يبدأ بسؤال: <b>ما المطلوب بالضبط؟</b>',
+      task: 'اضغط على الجملة التي تحتوي <b>المطلوب الحقيقي</b> من البرنامج.',
+      hints: ['المطلوب هو الشيء الذي يريد صاحب الرسالة أن يفعله البرنامج.', 'ابحث عن جملة فيها فعل طلب مثل «نريد» أو «نحتاج».', 'مثال: في «أنا جائع واليوم حار، أريد تطبيقًا يطلب لي بيتزا» المطلوب هو: تطبيق يطلب بيتزا.'],
+      reveal: { k: 'ما فعلته الآن اسمه…', title: 'فهم المشكلة', text: 'فصلت <b>المطلوب</b> عن الكلام الزائد. لو بدأ المبرمج بالكود قبل هذه الخطوة، سيبني برنامجًا لا يحتاجه أحد.' },
+      memory: { glyph: '🎯', title: 'فهم المشكلة', text: 'قبل أن تحل… اسأل: ما المطلوب بالضبط؟' } },
+    { id: 'b2', gate: 'build', unit: 'u1', stage: '٢', icon: '📥', title: 'المدخلات والمخرجات', sub: 'ماذا ندخل؟ وماذا نريد أن يخرج؟', concept: 'io', mech: 'sortBins', xp: 40,
+      intro: 'الآن عرفنا المطلوب: <b>برنامج يحسب سعر طلب المقصف</b>. كل برنامج آلة: شيء يدخل، وشيء يخرج.',
+      task: 'وزّع البطاقات: اختر بطاقة، ثم اختر الصندوق المناسب.',
+      hints: ['المدخلات = ما يعطيه المستخدم للبرنامج ليبدأ.', 'المخرجات = النتيجة التي يعرضها البرنامج في النهاية. وبعض المعلومات لا تهمنا أبدًا.', 'مثال: آلة حساب: الأرقام التي تكتبها = مدخلات، الناتج على الشاشة = مخرجات، لون الآلة = لا يهم.'],
+      reveal: { title: 'المدخلات ← المعالجة ← المخرجات', text: 'كل برنامج في الدنيا يأخذ <b>مدخلات</b>، يعالجها، ثم يعطي <b>مخرجات</b>.', eq: 'السعر × الكمية ← الإجمالي' },
+      memory: { glyph: '🔄', title: 'المدخلات والمخرجات', text: 'ماذا يدخل؟ ماذا يحدث؟ ماذا يخرج؟' } },
+    { id: 'b3', gate: 'build', unit: 'u1', stage: '٣', icon: '🧃', title: 'روبوت العصير', sub: 'رتّب… ودع الروبوت ينفّذ', concept: 'algo', mech: 'juice', xp: 60, logic: 4,
+      intro: '«أنا أعرف ماذا أريد: كوب عصير برتقال 🍊… لكن لا أعرف ماذا أفعل أولًا!»', mood: 'think',
+      task: 'رتّب البطاقات بالترتيب الذي سينفّذه الروبوت، ثم اضغط ▶ نفّذ.',
+      hints: ['فكّر: هل يمكن عصر برتقال لم نقطعه بعد؟', 'الكوب يجب أن يكون موجودًا قبل أن نضع فيه أي شيء.', 'مثال مشابه لصنع شاي: أحضر الكوب ← ضع الشاي ← اسكب الماء ← حرّك. كل خطوة تحتاج ما قبلها.'],
+      reveal: { k: 'مبروك!', title: 'لقد صنعت أول خوارزمية لك', eq: 'الخوارزمية = خطوات مرتّبة وواضحة لحل مشكلة أو تنفيذ مهمة', life: ['🍳 وصفة الطبخ', '🔐 تسجيل الدخول', '🎮 تشغيل لعبة', '🗺️ الوصول إلى مكان'], text: 'الخوارزمية ليست كلمة برمجية غريبة. أنت تستخدمها كل يوم دون أن تسمّيها.' },
+      memory: { glyph: '🪜', title: 'الخوارزمية', text: 'رتّب الخطوات… حتى يعرف البرنامج ماذا يفعل.' } },
+    { id: 'b3b', gate: 'build', unit: 'u1', stage: '٣', icon: '🔋', title: 'أعطني الأوامر… وسأتحرك', sub: 'متاهة البطارية', concept: 'algo', mech: 'maze', xp: 60, logic: 4,
+      intro: 'بطاريتي توشك أن تنفد! 🪫 البطارية الجديدة في آخر المتاهة. أنا أتحرك فقط بالأوامر التي تعطيني إياها.', mood: 'sad',
+      task: 'ابنِ سلسلة أوامر توصلني إلى 🔋 ثم اضغط ▶ تشغيل الخوارزمية.',
+      cfg: { levels: [{ w: 5, h: 5, start: [0, 4], goal: [4, 0], walls: [[1, 4], [1, 3], [3, 1], [3, 2], [2, 0]] }, { w: 6, h: 5, start: [0, 0], goal: [5, 4], walls: [[1, 0], [1, 1], [1, 2], [3, 4], [3, 3], [3, 2], [5, 2], [4, 0]] }] },
+      hints: ['تتبّع الطريق بإصبعك على الشاشة أولًا، ثم حوّله إلى أوامر.', 'عُدّ المربعات: كم خطوة للأعلى؟ كم خطوة لليمين؟ الجدران الداكنة لا يمكن عبورها.', 'مثال: للوصول من الزاوية السفلية إلى العلوية في شبكة ٣×٣ بلا جدران: أعلى، أعلى، يمين، يمين.'],
+      reveal: { title: 'الخوارزمية تعمل! 🎯', text: 'لاحظت؟ أمر واحد في غير مكانه يجعل الروبوت يصطدم. الخوارزمية تحتاج <b>ترتيبًا</b> و<b>دقة</b> و<b>تحققًا</b>.' },
+      memory: { glyph: '🧭', title: 'الدقة', text: 'خطوة واحدة خاطئة… تغيّر الطريق كله.' } },
+    { id: 'b3c', gate: 'build', unit: 'u1', stage: '٣', icon: '🎒', title: 'هل تستطيع أن تشرحها لروبوت؟', sub: 'روبوت حرفي جدًا', concept: 'algo', mech: 'literal', xp: 60, logic: 4,
+      intro: 'أريد أن أذهب إلى المدرسة مثلك! لكن انتبه… أنا <b>حرفي جدًا</b>. لا أفهم إلا خطوات أستطيع تنفيذها.', mood: 'wow',
+      task: 'اكتب خوارزمية الاستعداد للمدرسة: اختر الخطوة التالية في كل مرة.',
+      hints: ['الروبوت يرفض الأوامر العامة مثل «استعد» لأنه لا يعرف كيف.', 'اختر الأوامر التي فيها فعل واضح يمكن تنفيذه مباشرة.', 'مثال: بدل «نظّف أسنانك» قل: أمسك الفرشاة، ضع المعجون، نظّف لمدة دقيقتين.'],
+      reveal: { title: 'الخوارزمية = واضحة + مرتّبة + قابلة للتنفيذ', text: 'الحاسب مثل هذا الروبوت تمامًا: <b>لا يخمّن</b>. إذا لم تكن الخطوة واضحة، لن ينفّذها.' },
+      memory: { glyph: '🤖', title: 'الوضوح', text: 'إذا لم يفهمها الروبوت… فهي ليست خطوة.' } },
+    { id: 'b4', gate: 'build', unit: 'u2', stage: '٤', icon: '⌨️', title: 'كتابة البرنامج', sub: 'ترجم الخوارزمية للغة الحاسب', concept: 'code', mech: 'translate', xp: 50,
+      intro: 'الخوارزمية جاهزة، لكن الحاسب لا يفهم العربية العادية. نحتاج <b>مترجمًا</b>… وهو أنت!',
+      task: 'لكل خطوة، اختر سطر الكود الذي يطابقها.',
+      hints: ['ابحث في الكود عن الكلمة التي تشبه معنى الخطوة.', '<span class="ltr">input</span> تعني إدخال، <span class="ltr">print</span> تعني اطبع/اعرض.', 'مثال: «اعرض كلمة مرحبا» تصبح <span class="ltr">print("مرحبا")</span>.'],
+      reveal: { title: 'كتابة البرنامج = ترجمة الخوارزمية إلى لغة برمجة', text: 'الفكرة واحدة، واللغات كثيرة: بايثون، سكراتش، جافاسكربت… المبرمج يفكّر أولًا ثم يكتب.' },
+      memory: { glyph: '🌐', title: 'البرمجة', text: 'فكّر بلغتك… واكتب بلغة الحاسب.' } },
+    { id: 'b5', gate: 'build', unit: 'u2', stage: '٥', icon: '🧪', title: 'اختبار البرنامج', sub: 'جرّب قبل أن تثق', concept: 'test', mech: 'tester', xp: 50, logic: 3,
+      intro: 'زميلك كتب برنامجًا يقول للطالب إن كان <b>ناجحًا</b> (الدرجة ٥٠ فأكثر). يقول: «برنامجي ممتاز!»… هل نصدّقه؟',
+      task: 'جرّب البرنامج بدرجات مختلفة، واكتشف الحالة التي يخطئ فيها.',
+      hints: ['جرّب درجات بعيدة: صغيرة جدًا وكبيرة جدًا. ثم جرّب درجات قريبة من الحد.', 'الحالات الحدّية هي أخطر الحالات. ماذا عن الدرجة ٥٠ بالضبط؟', 'مثال: برنامج «إذا العمر أكبر من ١٨ يدخل» يخطئ مع من عمره ١٨ بالضبط إذا كان المطلوب ١٨ فأكثر.'],
+      reveal: { title: 'الاختبار = تجربة البرنامج بحالات مختلفة', text: 'البرنامج نجح مع ٣٠ و٨٠… لكنه أخطأ مع ٥٠! المبرمج المحترف يختبر <b>الحالات الحدّية</b> دائمًا.' },
+      memory: { glyph: '🧪', title: 'الاختبار', text: 'لا تقل «يعمل» حتى تجرّبه.' } },
+    { id: 'b6', gate: 'build', unit: 'u2', stage: '٦', icon: '🐞', title: 'اكتشاف الأخطاء وتصحيحها', sub: 'العدسة المكبّرة', concept: 'debug', mech: 'debugGrid', xp: 50, logic: 3,
+      cfg: { L: { w: 5, h: 4, start: [0, 3], goal: [4, 0], walls: [[1, 2], [2, 2], [3, 0], [3, 1]] }, good: ['R', 'R', 'R', 'U', 'R', 'U', 'U'], bugAt: 3, wrong: 'L' },
+      intro: 'برنامج الوصول إلى البطارية فيه <b>خطأ واحد</b>. شغّله أولًا، ثم استخدم العدسة 🔍 لتجده.',
+      task: 'شغّل البرنامج، ثم اضغط على السطر الذي تظنه خاطئًا.',
+      hints: ['راقب الروبوت أثناء التشغيل: عند أي سطر بدأ يبتعد عن الطريق الصحيح؟', 'السطر الخاطئ يجعل الروبوت يتحرك في اتجاه يصطدم بعده.', 'مثال: إذا كان الهدف للأعلى ووجدت سطر «أسفل» في منتصف الطريق، فهو مشتبه به.'],
+      reveal: { k: 'لقد وجدت Bug! 🐞', title: 'Debugging = اكتشاف الأخطاء وتصحيحها', text: 'كل المبرمجين في العالم يكتبون أخطاء. الفرق أن المبرمج الجيد <b>يبحث عنها بهدوء</b> ويصلحها.' },
+      memory: { glyph: '🔍', title: 'Debugging', text: 'الخطأ ليس النهاية… ابحث عنه وأصلحه.' } },
+    { id: 'b7', gate: 'build', unit: 'u2', stage: '٧', icon: '🚀', title: 'تحسين الحل', sub: 'نفس النتيجة… بأوامر أقل', concept: 'optimize', mech: 'optimize', xp: 60, logic: 4,
+      cfg: { L: { w: 6, h: 6, start: [0, 5], goal: [5, 0], walls: [] }, long: ['R', 'U', 'R', 'U', 'R', 'U', 'R', 'U', 'R', 'U'], max: 3 },
+      intro: 'البرنامج يعمل! لكنه طويل جدًا: <b>١٠ أوامر</b>. المبرمج الذكي يسأل: هل يوجد حل أقصر وأوضح؟',
+      task: 'أعد كتابة البرنامج بـ <b>٣ قطع أو أقل</b>. استخدم قطعة 🔁 كرر.',
+      hints: ['انظر إلى البرنامج الطويل: هل ترى شيئًا يتكرر؟', 'الزوج «يمين، أعلى» يتكرر. كم مرة؟', 'مثال: «صفّق، صفّق، صفّق، صفّق» = «كرر ٤ مرات: صفّق».'],
+      reveal: { title: 'تحسين الحل', text: 'البرنامج الجيد ليس الذي يعمل فقط، بل الذي يعمل <b>بأبسط طريقة</b>. وهنا قابلت قوة جديدة اسمها <b>التكرار</b>، وستتعمق فيها في البوابة الثانية.' },
+      memory: { glyph: '✨', title: 'التحسين', text: 'إذا عمل… اسأل: هل يمكن أبسط؟' } },
+
+    /* ===== Gate 2: how a program thinks ===== */
+    { id: 't1', gate: 'think', unit: 'u4', stage: '🔁', icon: '📦', title: 'عالم LOOP: الصناديق العشرة', sub: 'افتحها كلها', concept: 'loop', mech: 'boxes', xp: 50, logic: 3,
+      intro: 'أمامي ١٠ صناديق مغلقة، وفي أحدها <b>مفتاح النظام</b> 🔑. أعطني أوامر لأفتحها كلها!',
+      task: 'اجعل الروبوت يفتح الصناديق العشرة.',
+      hints: ['كل ضغطة «افتح» تفتح صندوقًا واحدًا.', 'هل لاحظت أنك تكرر الأمر نفسه؟ ابحث عن الزر الجديد 🔁.', 'مثال: بدل كتابة «اقفز» ٥ مرات نكتب «كرر ٥ مرات: اقفز».'],
+      reveal: { title: 'Loop = تكرار مجموعة أوامر عدة مرات', text: 'بدل أن تكتب الأمر نفسه ١٠ مرات، كتبته <b>مرة واحدة</b> وأخبرت البرنامج كم مرة يكرره.', eq: 'كرر ١٠ مرات: افتح الصندوق' },
+      memory: { glyph: '🔁', title: 'Loop', text: 'إذا كررت نفس الشيء كثيرًا… فكّر في LOOP.' } },
+    { id: 't1b', gate: 'think', unit: 'u4', stage: '🔁', icon: '🎵', title: 'الروبوت الراقص', sub: 'حلقة فيها أكثر من حركة', concept: 'loop', mech: 'dance', xp: 50, logic: 3,
+      intro: 'الحفلة بدأت! 🎶 رقصتي المفضلة: <b>يمين ← يسار ← قفزة</b>… ثلاث مرات!', mood: 'wow',
+      task: 'برمج الرقصة: يمين، يسار، قفزة × ٣ مرات. استخدم أقل عدد من القطع.',
+      hints: ['ضع الحركات الثلاث داخل الحلقة الخضراء.', 'الحلقة تكرر <b>كل</b> ما بداخلها بالترتيب. عدّل عدد المرات إلى ٣.', 'مثال: «كرر مرتين: صفّق، اقفز» ينفّذ: صفّق، اقفز، صفّق، اقفز.'],
+      reveal: { title: 'جسم الحلقة', text: 'الحلقة تستطيع تكرار <b>مجموعة</b> أوامر معًا. ٩ حركات… كتبتها في ٤ قطع فقط!', eq: 'كرر ٣ مرات: { يمين، يسار، قفزة }' },
+      memory: { glyph: '💃', title: 'جسم الحلقة', text: 'كل ما بداخل الحلقة… يتكرر معًا.' } },
+    { id: 't2', gate: 'think', unit: 'u3', stage: '🤔', icon: '☔', title: 'عالم IF: باب الخروج', sub: 'خذ المظلة… أو لا', concept: 'if', mech: 'ifDrag', xp: 50, logic: 3,
+      intro: 'أنا أمام باب المدرسة. السماء تتغير كل يوم… كيف أعرف متى آخذ المظلة؟', mood: 'think',
+      task: 'ركّب القاعدة: اسحب الشرط والنتيجة إلى مكانهما، ثم جرّب الطقس.',
+      hints: ['القاعدة تبدأ بـ «إذا» ثم سؤال جوابه نعم أو لا.', 'الشرط هو حالة الطقس، والنتيجة هي ما يفعله الروبوت.', 'مثال: إذا كان الهاتف بطاريته منخفضة ← اشحنه.'],
+      reveal: { k: 'القرار الذي صنعته اسمه…', title: 'IF = إذا تحقق الشرط، نفّذ الأمر', text: 'عندما كان الشرط <b>صحيحًا</b> أخذ الروبوت المظلة. وعندما كان <b>خطأ</b> تخطّى الأمر.', eq: 'إذا كان الجو ممطرًا ← خذ المظلة ☔' },
+      memory: { glyph: '🤔', title: 'IF', text: 'إذا تحقق الشرط… اتخذ قرارًا.' } },
+    { id: 't2b', gate: 'think', unit: 'u3', stage: '🤔', icon: '🚪', title: 'البوابة الذكية', sub: 'الشرط ← القرار ← النتيجة', concept: 'if', mech: 'ifGate', xp: 50, logic: 3,
+      intro: 'هذه بوابة النظام. لا تُفتح لأي أحد! جرّب حالات مختلفة ولاحظ متى تُفتح.',
+      task: 'جرّب كل الحالات، ثم توقّع قرار البوابة.',
+      hints: ['غيّر الحالة (مفتاح / بدون مفتاح) واضغط «اقترب من البوابة».', 'في المرحلة الثانية: انظر إلى العلامة ≥ ، وتعني «أكبر من أو يساوي».', 'مثال: إذا كان الرصيد ≥ ٥ ريالات ← اشترِ العصير. الرصيد ٥ ← يشتري.'],
+      reveal: { title: 'الشرط ← القرار ← النتيجة', text: 'البوابة لا «تفكر». هي تفحص <b>شرطًا</b> جوابه صح أو خطأ، ثم تنفّذ النتيجة.', eq: 'إذا النقاط ≥ ١٠ ← افتح المستوى التالي' },
+      memory: { glyph: '🚪', title: 'الشرط', text: 'سؤال جوابه صح أو خطأ… يفتح الطريق أو يغلقه.' } },
+    { id: 't3', gate: 'think', unit: 'u3', stage: '⚖️', icon: '⚖️', title: 'عالم IF / ELSE: قرار الروبوت', sub: 'طريقان لا ثالث لهما', concept: 'ifelse', mech: 'ifElse', xp: 50, logic: 3,
+      intro: 'أنا أرى رقمًا… ويجب أن أقول عنه شيئًا <b>دائمًا</b>. لا يوجد خيار «لا شيء».',
+      task: 'حرّك الرقم وشاهد القرار، ثم كن أنت المعالج.',
+      hints: ['حرّك الشريط ولاحظ متى يتحول القرار.', 'الرقم ٥ نفسه: هل هو «أكبر من ٥»؟', 'مثال: إذا كان الضوء أخضر ← امشِ، وإلا ← قف. دائمًا يحدث واحد منهما.'],
+      reveal: { title: 'IF = إذا · ELSE = وإلا', text: 'مع <b>وإلا</b> يوجد دائمًا طريق للحالة الأخرى. البرنامج يسلك <b>طريقًا واحدًا فقط</b> في كل مرة.', eq: 'إذا الرقم > ٥ ← «كبير» · وإلا ← «صغير»' },
+      memory: { glyph: '⚖️', title: 'IF / ELSE', text: 'طريقان… والبرنامج يمشي في واحد فقط.' } },
+    { id: 't4', gate: 'think', unit: 'u3', stage: '🔀', icon: '🌡️', title: 'عالم IF / ELSE IF: جهاز الحرارة', sub: 'شروط بالترتيب', concept: 'elseif', mech: 'elseIf', xp: 60, logic: 4,
+      intro: 'جهاز الطقس الذكي يحتاج أن يقول أكثر من كلمتين: حار جدًا، معتدل، أو بارد.',
+      task: 'غيّر الحرارة وراقب الجهاز وهو يفحص الشروط، ثم أصلح البرنامج المقلوب.',
+      hints: ['راقب الأسطر وهي تُضاء: الفحص يبدأ من الأعلى دائمًا.', 'عندما يجد الجهاز أول شرط صحيح يتوقف، حتى لو كانت شروط أخرى صحيحة.', 'مثال: إذا ≥ ٩٠ ممتاز، وإلا إذا ≥ ٨٠ جيد جدًا. لو قلبناهما، طالب الـ ٩٥ يأخذ «جيد جدًا»!'],
+      reveal: { title: 'ELSE IF = شروط تُفحص بالترتيب', text: 'البرنامج يفحص من الأعلى إلى الأسفل، و<b>يتوقف عند أول شرط صحيح</b>. لذلك ترتيب الشروط يغيّر النتيجة.' },
+      memory: { glyph: '🔀', title: 'ELSE IF', text: 'من الأعلى للأسفل… وأول صحيح يفوز.' } },
+    { id: 't5', gate: 'think', unit: 'u5', stage: '📦', icon: '📦', title: 'عالم المتغيرات', sub: 'الصناديق السحرية', concept: 'var', mech: 'vars', xp: 60, logic: 3,
+      intro: 'لكل لعبة ذاكرة. اسمك، نقاطك، سرعتك… أين تحفظها اللعبة؟ في <b>صناديق سحرية</b> لها أسماء.',
+      task: 'اجمع العملات، وغيّر قيم الصناديق، وراقب ما يحدث.',
+      hints: ['اضغط على العملات الذهبية وراقب صندوق «النقاط».', 'كل صندوق له اسم ثابت وقيمة تتغير.', 'مثال: «عدد_الطلاب = ٣٠» ثم جاء طالب جديد ← «عدد_الطلاب = ٣١». الاسم بقي، والقيمة تغيّرت.'],
+      reveal: { title: 'المتغير = مكان يحفظ فيه البرنامج قيمة يمكن أن تتغير', text: 'الاسم ثابت (النقاط)، والقيمة تتغير (١٠ ← ١٥). واللعبة كلها تقرأ من هذه الصناديق.', eq: 'النقاط = النقاط + ٥' },
+      memory: { glyph: '📦', title: 'Variable', text: 'صندوق له اسم… يحفظ قيمة يمكن أن تتغير.' } },
+    { id: 't6', gate: 'think', unit: 'u5', stage: '🎮', icon: '🎮', title: 'عالم المدخلات والمخرجات', sub: 'آلة البطاقات الذكية', concept: 'inout', mech: 'io', xp: 50, logic: 3,
+      intro: 'النظام يحتاج أن <b>يتكلم</b> مع البشر: يسمع منهم، ثم يرد عليهم.',
+      task: 'أدخل بيانات للآلة وشاهد كيف تعالجها وتخرج النتيجة، ثم أصلح الآلة.',
+      hints: ['اكتب اسمك وعمرك في خانة المدخلات واضغط تشغيل.', 'لاحظ أن المخرجات تتغير عندما تتغير المدخلات.', 'مثال: في آلة الحاسبة: ٣ و ٤ مدخلات، الجمع معالجة، ٧ مخرجات.'],
+      reveal: { title: 'Input ← Processing ← Output', text: 'كل ما تكتبه أو تضغطه هو <b>مدخلات</b>. وكل ما تراه أو تسمعه من البرنامج هو <b>مخرجات</b>.' },
+      memory: { glyph: '🎮', title: 'الإدخال والإخراج', text: 'البرنامج يسمع (Input)… ثم يتكلم (Output).' } },
+    { id: 't7', gate: 'think', unit: 'u2', stage: '🐞', icon: '🐞', title: 'عالم الأخطاء: صائد الحشرات', sub: 'ثلاثة برامج… ثلاث حشرات', concept: 'debug', mech: 'bugHunt', xp: 70, logic: 5,
+      intro: 'الحشرات اقتحمت النظام! 🐞 ثلاثة برامج تتصرف بغرابة. خذ العدسة وابدأ الصيد.', mood: 'wow',
+      task: 'اقرأ ما يجب أن يفعله البرنامج، شغّله، ثم اضغط على السطر المسبب للخطأ.',
+      hints: ['قارن: ماذا كان يجب أن يحدث؟ وماذا حدث فعلًا؟', 'الخطأ غالبًا في رقم، أو علامة مقارنة، أو ترتيب.', 'مثال: «كرر ٤ مرات» لرسم مثلث خطأ، لأن المثلث له ٣ أضلاع.'],
+      reveal: { title: 'المبرمج المحترف = صائد حشرات صبور', text: 'وجدت أخطاء في <b>الأرقام</b> و<b>الشروط</b> و<b>الترتيب</b>. الخطأ جزء طبيعي من البرمجة، والبحث عنه مهارة.' },
+      memory: { glyph: '🐞', title: 'Debugging', text: 'الخطأ ليس النهاية… ابحث عنه وأصلحه.' } },
+
+    /* ===== Final ===== */
+    { id: 'final', gate: 'final', unit: 'u5', stage: '🧠', icon: '🧠', title: 'مهمة المبرمج الأخيرة', sub: 'أعد تشغيل النظام', concept: 'algo', mech: 'final', xp: 150, logic: 10,
+      intro: 'كل ما تعلمته سيجتمع الآن. روبوت التوصيل في <b>المدينة الرقمية</b> يجب أن يوصل نواة الطاقة إلى مركز النظام. ٧ خطوات… وتعود الحياة للنظام.', mood: 'wow',
+      task: 'أكمل الفصول السبعة لإعادة تشغيل النظام.',
+      hints: ['كل فصل يستخدم مفهومًا واحدًا تعلمته. اقرأ اسم الفصل.', 'ارجع إلى بطاقات «احفظها في عقلك» في عقلك: رتّب، كرر، قرر، احفظ، افحص.', 'إذا علقت في فصل، جرّب، وراقب النتيجة، ثم عدّل. هذا كل سر البرمجة.'],
+      reveal: null, memory: null }
+  ]
+};
+
+/* ---------- shared: tap (or drag) a card, then a zone ---------- */
+function pairPick(cardsHost, zones, onDrop) {
+  let sel = null;
+  const clear = () => { $$('.card', cardsHost).forEach(c => c.classList.remove('sel')); zones.forEach(z => z.classList.remove('ready')); };
+  cardsHost.addEventListener('click', e => {
+    const c = e.target.closest('.card'); if (!c || c.disabled) return;
+    clear(); sel = c; c.classList.add('sel'); zones.forEach(z => z.classList.add('ready')); sfx.tap();
+  });
+  cardsHost.addEventListener('dragstart', e => { const c = e.target.closest('.card'); if (!c) return; sel = c; e.dataTransfer.setData('text/plain', c.dataset.k || ''); zones.forEach(z => z.classList.add('ready')); });
+  zones.forEach(z => {
+    const act = () => { if (!sel) return false; const c = sel; sel = null; clear(); onDrop(c, z); return true; };
+    z.addEventListener('click', () => { if (!act()) shake(z); });
+    z.addEventListener('dragover', e => e.preventDefault());
+    z.addEventListener('drop', e => { e.preventDefault(); act(); });
+    z.setAttribute('tabindex', '0'); z.setAttribute('role', 'button');
+    z.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); act(); } });
+  });
+}
+/* ordered builder: tap pool cards to append; tap a placed card to return it */
+function orderBuilder(host, items, onChange) {
+  let pool = shuffle(items), seq = [];
+  host.innerHTML = `<div class="two"><div><span class="lbl">البطاقات</span><div class="cards b-pool"></div></div><div><span class="lbl">خوارزميتك</span><ol class="slots b-seq"></ol></div></div>`;
+  const P = $('.b-pool', host), Q = $('.b-seq', host);
+  const api = { locked: false, get seq() { return seq; }, mark(i, c) { const el = Q.children[i]?.querySelector('.card'); if (el) el.classList.add(c); }, unmark() { $$('.card', Q).forEach(c => c.classList.remove('on', 'ok', 'bad')); } };
+  const draw = () => {
+    P.innerHTML = pool.map(it => `<button class="card" data-id="${it.id}">${it.t}</button>`).join('') || '<span class="muted small">كل البطاقات في مكانها ✓</span>';
+    Q.innerHTML = seq.map(it => `<li><button class="card" data-id="${it.id}">${it.t}</button></li>`).join('') + (pool.length ? `<li class="empty">${seq.length ? 'الخطوة التالية…' : 'اضغط بطاقة لتضعها هنا'}</li>` : '');
+    onChange && onChange(seq, pool);
+  };
+  P.onclick = e => { const b = e.target.closest('[data-id]'); if (!b || api.locked) return; const i = pool.findIndex(x => String(x.id) === b.dataset.id); seq.push(pool.splice(i, 1)[0]); sfx.tap(); draw(); };
+  Q.onclick = e => { const b = e.target.closest('[data-id]'); if (!b || api.locked) return; const i = seq.findIndex(x => String(x.id) === b.dataset.id); pool.push(seq.splice(i, 1)[0]); draw(); };
+  draw(); return api;
+}
+/* a quick practice question inside a mission */
+function practiceQ(ctx, html, opts, onRight) {
+  const box = document.createElement('section'); box.className = 'panel';
+  box.innerHTML = `<span class="eyebrow">طبّق الآن</span><div class="bigq" style="margin-top:4px">${html}</div><div class="cards">${opts.map((o, i) => `<button class="card" data-i="${i}">${o.t}</button>`).join('')}</div><div class="pfb"></div>`;
+  $('#after').appendChild(box);
+  later(() => box.scrollIntoView({ behavior: REDUCE ? 'auto' : 'smooth', block: 'center' }), 500);
+  let done = false;
+  $('.cards', box).onclick = e => {
+    const b = e.target.closest('.card'); if (!b || done || b.disabled) return; const o = opts[+b.dataset.i];
+    if (o.ok) { done = true; b.classList.add('ok'); sfx.ok(); fbox($('.pfb', box), o.r || 'صحيح!', 'ok'); $$('.card', box).forEach(x => x.disabled = true); later(onRight, 700); }
+    else { b.classList.add('bad'); b.disabled = true; sfx.oops(); fbox($('.pfb', box), o.r || 'ليس تمامًا… جرّب خيارًا آخر.', 'bad'); }
+  };
+}
+
+/* ---------- b1: pick the real request ---------- */
+MECH.pickSentence = ctx => {
+  const ROUNDS = [
+    { from: 'مسؤول المقصف', s: [
+      ['مرحبًا أيها النظام! 👋', 'هذه تحية فقط.'],
+      ['أنا مسؤول المقصف، وأعمل هنا منذ عشر سنوات.', 'معلومة عن الكاتب، لا تخبرنا ماذا يريد.'],
+      ['الطلاب يحبون عصير البرتقال كثيرًا، وفطيرة الجبن أيضًا.', 'معلومة لطيفة، لكنها ليست طلبًا.'],
+      ['كل يوم يتكوّن طابور طويل، ونتأخر في حساب سعر كل طلب.', 'قريب جدًا! هذا <b>سبب</b> المشكلة، لكن أين الطلب نفسه؟'],
+      ['نريد برنامجًا يحسب السعر الإجمالي لطلب كل طالب بسرعة.', null],
+      ['بالمناسبة، لون المقصف الجديد أزرق 💙', 'لا علاقة له بالبرنامج إطلاقًا 😄']] },
+    { from: 'أمينة المكتبة', s: [
+      ['السلام عليكم، أنا أمينة مكتبة المدرسة.', 'تعريف بالكاتبة.'],
+      ['عندنا أكثر من ألفي كتاب، وأغلبها قصص.', 'معلومة عن المكتبة فقط.'],
+      ['نحتاج تطبيقًا يذكّر الطالب بموعد إرجاع الكتاب قبل يوم.', null],
+      ['بعض الطلاب ينسون الكتب في البيت أسابيع!', 'هذا سبب المشكلة، وليس المطلوب.']] }
+  ];
+  let r = 0;
+  function show() {
+    const R = ROUNDS[r];
+    ctx.host.innerHTML = `${r ? '<span class="tag em">تدريب: رسالة جديدة</span>' : ''}
+      <div class="stage" style="margin-top:8px"><div class="small muted" style="margin-bottom:8px">📩 رسالة من: <b>${R.from}</b></div>
+      <div class="cards" style="flex-direction:column;align-items:stretch">${R.s.map((x, i) => `<button class="card" data-i="${i}" style="font-weight:500">${x[0]}</button>`).join('')}</div></div>`;
+    $('.cards', ctx.host).onclick = e => {
+      const b = e.target.closest('.card'); if (!b || b.disabled) return; const [, why] = R.s[+b.dataset.i];
+      if (why === null) {
+        b.classList.add('ok'); $$('.card', ctx.host).forEach(x => x.disabled = true);
+        if (r === 0) { ctx.ok('هذا هو! «<b>برنامج يحسب السعر الإجمالي</b>». كل الباقي تفاصيل.'); ctx.say('رائع! الآن أعرف ماذا أبني. وانتبه: الطابور الطويل هو <b>السبب</b>، والبرنامج هو <b>الحل المطلوب</b>.', 'happy'); ctx.reveal(); later(() => { r++; show(); ctx.clear(); }, 2200); }
+        else { ctx.ok('ممتاز! المطلوب: تطبيق يذكّر بموعد الإرجاع.'); ctx.complete(); }
+      } else { b.classList.add('bad'); b.disabled = true; ctx.fail(why, { noCheck: true }); }
+    };
+  }
+  show();
+};
+
+/* ---------- b2: inputs / outputs ---------- */
+MECH.sortBins = ctx => {
+  const ITEMS = shuffle([
+    ['سعر الصنف', 'in', 'نعم، البرنامج يحتاجه ليحسب.'], ['الكمية المطلوبة', 'in', 'صحيح! ٣ عصائر تختلف عن عصير واحد.'], ['نوع الصنف (عصير أو فطيرة)', 'in', 'صحيح، منه نعرف السعر.'],
+    ['السعر الإجمالي', 'out', 'بالضبط! هذا ما ينتظره الطالب على الشاشة.'], ['رسالة «طلبك جاهز ✅»', 'out', 'صحيح! يعرضها البرنامج في النهاية.'],
+    ['لون المقصف', 'no', 'صحيح، اللون لا يغيّر السعر 😄'], ['عمر مسؤول المقصف', 'no', 'صحيح، لا علاقة له بالحساب.'], ['حالة الطقس', 'no', 'صحيح، الطقس لا يغيّر الفاتورة.']
+  ]).map((x, i) => ({ t: x[0], b: x[1], r: x[2], i }));
+  const HINT = { in: 'هل يحتاج البرنامج هذه المعلومة <b>ليبدأ</b> الحساب؟', out: 'هل هذا شيء نعطيه للبرنامج، أم شيء <b>ننتظره منه</b>؟', no: 'هل تغيّر هذه المعلومة الفاتورة فعلًا؟' };
+  ctx.host.innerHTML = `<div class="cards" id="pool">${ITEMS.map(x => `<button class="card" draggable="true" data-i="${x.i}">${x.t}</button>`).join('')}</div>
+    <div class="two" style="grid-template-columns:repeat(3,minmax(0,1fr));margin-top:14px" id="zones">
+      ${[['in', '📥 مدخلات', 'ما نعطيه للبرنامج'], ['out', '📤 مخرجات', 'ما يعطينا إياه'], ['no', '🗑️ لا تهمنا', 'لا تؤثر في الحل']].map(([k, t, s]) => `<div class="drop" data-z="${k}" style="flex-direction:column;align-items:stretch;min-height:150px;justify-content:flex-start;padding:10px"><b style="color:var(--ink)">${t}</b><small>${s}</small><div class="cards zin" style="margin-top:8px;min-height:0"></div></div>`).join('')}</div>`;
+  const zones = $$('.drop', ctx.host);
+  if (innerWidth < 560) $('#zones').style.gridTemplateColumns = '1fr';
+  let placed = 0;
+  pairPick($('#pool'), zones, (c, z) => {
+    const it = ITEMS[+c.dataset.i];
+    if (it.b === z.dataset.z) {
+      c.remove(); $('.zin', z).insertAdjacentHTML('beforeend', `<span class="card ok" style="cursor:default;font-size:.85rem;padding:6px 10px">${it.t}</span>`);
+      ctx.ok(it.r); placed++;
+      if (placed === ITEMS.length) {
+        ctx.say('الآن صار عندي «مخطط الآلة»: أعرف ماذا يدخل وماذا يخرج.', 'happy'); ctx.reveal();
+        practiceQ(ctx, 'دخلت للبرنامج: <b>سعر العصير ٣ ريال</b> و<b>الكمية ٢</b>. ماذا سيخرج؟', [{ t: '٥ ريال', r: 'جمعت بدل أن تضرب! السعر × الكمية.' }, { t: '٦ ريال', ok: true, r: '٣ × ٢ = ٦. مدخلات ← معالجة ← مخرجات!' }, { t: '٣٢ ريال', r: 'هذا لصق للرقمين، لا حساب 😄' }], () => ctx.complete());
+      }
+    } else { shake(z); ctx.fail('ليس هنا. ' + HINT[it.b], { noCheck: true }); }
+  });
+};
+
+/* ---------- b3: juice robot (sequence + funny execution) ---------- */
+MECH.juice = ctx => {
+  const CARDS = [{ id: 'or', t: '🍊 أحضر البرتقال' }, { id: 'cut', t: '🔪 اقطع البرتقال' }, { id: 'cup', t: '🥤 أحضر الكوب' }, { id: 'sq', t: '🧃 اعصر البرتقال' }, { id: 'sug', t: '🥄 أضف السكر' }, { id: 'pour', t: '🫗 اسكب العصير في الكوب' }];
+  ctx.host.innerHTML = `<div id="bd"></div>
+    <div class="stage" style="margin-top:14px"><div id="bub"></div><div class="scene">
+      <div class="prop"><span class="e off" id="p-or">🍊</span><small id="s-or">البرتقال</small></div>
+      <div class="prop"><span class="e off" id="p-sq">🫙</span><small id="s-sq">العصّارة فارغة</small></div>
+      <div class="prop"><span class="e off" id="p-cup">🥤</span><small id="s-cup">لا يوجد كوب</small></div>
+      <div class="prop" id="rbx">${robot('think', 70)}</div></div></div>
+    <div class="row"><button class="btn emerald" id="run" disabled>▶ نفّذ</button></div>`;
+  let bd = null;
+  bd = orderBuilder($('#bd'), CARDS, (seq, pool) => { $('#run').disabled = pool.length > 0 || !!(bd && bd.locked); });
+  const P = (k, on, txt, emo) => { const e = $('#p-' + k); e.classList.toggle('off', !on); if (emo) e.textContent = emo; e.classList.remove('pop'); void e.offsetWidth; e.classList.add('pop'); if (txt) $('#s-' + k).textContent = txt; };
+  const bub = t => { $('#bub').innerHTML = `<div class="bubble2">${t}</div>`; };
+  const rb = m => { $('#rbx').innerHTML = robot(m, 70); };
+  function reset() { ['or', 'sq', 'cup'].forEach(k => $('#p-' + k).classList.add('off')); $('#p-or').textContent = '🍊'; $('#p-sq').textContent = '🫙'; $('#p-cup').textContent = '🥤'; $('#s-or').textContent = 'البرتقال'; $('#s-sq').textContent = 'العصّارة فارغة'; $('#s-cup').textContent = 'لا يوجد كوب'; $('#bub').innerHTML = ''; rb('think'); }
+  function step(id, st) {
+    switch (id) {
+      case 'or': st.or = 1; P('or', 1, 'برتقال كامل'); return ['أحضرت البرتقال 🍊'];
+      case 'cut': if (!st.or) return [null, 'أقطع ماذا؟ لا يوجد برتقال! 🔪😵']; st.cut = 1; P('or', 1, 'برتقال مقطّع'); return ['قطّعته قطعًا 🔪'];
+      case 'cup': st.cup = 1; P('cup', 1, 'كوب فارغ'); return ['أحضرت الكوب 🥤'];
+      case 'sq': if (!st.or) return [null, 'أعصر… الهواء؟ لا يوجد برتقال! 🤲']; if (!st.cut) return [null, 'عصرت برتقالة كاملة بقشرها… فطار العصير على وجهي! 💥🍊']; st.juice = 1; P('sq', 1, 'فيها عصير', '🧃'); P('or', 0, 'قشور'); return ['عصرته! 🧃'];
+      case 'sug': if (!st.cup) return [null, 'لحظة! أين سأضع السكر؟ 😵 لا يوجد كوب! (انسكب السكر على الطاولة)']; st.sug = 1; P('cup', 1, st.pour ? 'عصير + سكر' : 'فيه سكر'); return ['أضفت السكر 🥄'];
+      case 'pour': if (!st.juice) return [null, 'أسكب ماذا؟ العصّارة فارغة! 🫙']; if (!st.cup) return [null, 'سكبت العصير على الطاولة! 💦 أين الكوب؟']; st.pour = 1; P('cup', 1, st.sug ? 'عصير + سكر' : 'فيه عصير', '🧋'); return ['سكبت العصير 🫗'];
+    }
+  }
+  $('#run').onclick = async () => {
+    bd.locked = true; $('#run').disabled = true; bd.unmark(); ctx.clear(); reset();
+    const st = {};
+    for (let i = 0; i < bd.seq.length; i++) {
+      bd.mark(i, 'on'); await wait(750);
+      const [okMsg, err] = step(bd.seq[i].id, st);
+      bd.unmark(); for (let j = 0; j < i; j++) bd.mark(j, 'ok');
+      if (err) {
+        bd.mark(i, 'bad'); bub(err); rb('dizzy');
+        ctx.fail(`الروبوت توقّف عند الخطوة <b>${ar(i + 1)}</b>.`);
+        ctx.say(err, 'dizzy'); bd.locked = false; $('#run').disabled = false; return;
+      }
+      bd.mark(i, 'ok'); bub(okMsg); sfx.step();
+    }
+    rb('happy'); bub('تفضّل! عصير برتقال طازج 🧋😋');
+    ctx.ok('نجح الروبوت! كل خطوة جاءت في وقتها.'); ctx.say('أخيرًا عرفت ماذا أفعل أولًا! شكرًا لك 🧋', 'happy');
+    ctx.reveal();
+    practiceQ(ctx, 'خوارزمية <b>تسجيل الدخول</b> في تطبيق: ما الخطوة <b>الأولى</b>؟', [{ t: 'اضغط زر «دخول»', r: 'تضغط دخول قبل أن تكتب شيئًا؟' }, { t: 'افتح التطبيق', ok: true, r: 'نعم! ثم اكتب الاسم، ثم كلمة المرور، ثم اضغط دخول. خوارزمية تستخدمها كل يوم.' }, { t: 'اكتب كلمة المرور', r: 'في أي مكان ستكتبها والتطبيق مغلق؟' }], () => ctx.complete());
+  };
+};
+
+/* ---------- b3c: literal robot (clear + ordered + executable) ---------- */
+MECH.literal = ctx => {
+  const R = [
+    [['قم من السرير', 1], ['استعد للمدرسة', 'v', 'أستعد كيف؟ 😐 أعطني خطوة أستطيع تنفيذها.'], ['امشِ إلى موقف الحافلة', 'o', 'أمشي… وأنا ما زلت نائمًا في السرير؟ 😴']],
+    [['البس الزي المدرسي', 1], ['كن مرتّبًا', 'v', 'مرتّبًا كيف؟ أعطني فعلًا أنفّذه 😐'], ['أغلق سحّاب الحقيبة', 'o', 'أغلقت حقيبة فارغة… وأنا بملابس النوم! 🩳']],
+    [['ضع الكتب والدفاتر في الحقيبة', 1], ['جهّز أغراضك', 'v', 'أي أغراض؟ وأين أضعها؟ 🤨'], ['ارتدِ الحقيبة على ظهرك', 'o', 'ارتديت حقيبة فارغة! الكتب ما زالت على المكتب 📚']],
+    [['أغلق سحّاب الحقيبة', 1], ['انتبه لحقيبتك', 'v', 'أنتبه لها… ثم ماذا؟ 👀 أنا أنظر إليها الآن.'], ['افتح الباب واخرج', 'o', 'خرجت… والحقيبة مفتوحة وتساقطت الكتب! 📚💨']],
+    [['ارتدِ الحقيبة على ظهرك', 1], ['اذهب إلى المدرسة', 'v', 'كيف؟ 😐 أعطني خطوات يمكنني تنفيذها.'], ['امشِ إلى موقف الحافلة', 'o', 'وصلت الموقف… ونسيت الحقيبة في الغرفة! 🎒']],
+    [['افتح الباب واخرج', 1], ['اذهب إلى المدرسة', 'v', 'كيف؟ 😐 قلت لك: أنا لا أفهم إلا خطوات صغيرة!'], ['قم من السرير', 'o', 'أقوم من السرير… مرة ثانية؟ 🤔 أنا مستيقظ أصلًا!']],
+    [['امشِ إلى موقف الحافلة', 1], ['لا تتأخر', 'v', 'هذه نصيحة جميلة 🙂 لكنها ليست خطوة أنفّذها.'], ['البس الزي المدرسي', 'o', 'ألبسه مرة ثانية فوق الأولى؟ 🥵']]
+  ];
+  let r = 0, vague = 0, order = 0; const done = [];
+  function show() {
+    const opts = shuffle(R[r]);
+    ctx.host.innerHTML = `<div class="two"><div><span class="lbl">ما الخطوة التالية؟</span><div class="cards" style="flex-direction:column;align-items:stretch">${opts.map(o => `<button class="card" data-t="${o[0]}">${o[0]}</button>`).join('')}</div>
+      <div class="meter" style="margin-top:12px">التقدم <div class="m"><i style="width:${r / R.length * 100}%"></i></div>${ar(r)}/${ar(R.length)}</div></div>
+      <div><span class="lbl">خوارزمية الروبوت حتى الآن</span><ol class="slots">${done.map(t => `<li><span class="card ok" style="cursor:default">${t}</span></li>`).join('') || '<li class="empty">لم تكتب أي خطوة بعد</li>'}</ol></div></div>`;
+    $('.cards', ctx.host).onclick = e => {
+      const b = e.target.closest('.card'); if (!b || b.disabled) return; const o = R[r].find(x => x[0] === b.dataset.t);
+      if (o[1] === 1) { sfx.ok(); done.push(o[0]); ctx.clear(); ctx.say(['تمّ! ✅ هذه خطوة أفهمها.', 'نفّذت! واضحة ومرتّبة 👌', 'هذه خطوة حقيقية، أحببتها!'][r % 3], 'happy'); r++; if (r < R.length) show(); else finish(); }
+      else { b.classList.add('bad'); b.disabled = true; if (o[1] === 'v') vague++; else order++; ctx.say(o[2], o[1] === 'v' ? 'think' : 'dizzy'); ctx.fail(o[1] === 'v' ? 'هذا أمر <b>غير واضح</b>: الروبوت لا يعرف كيف ينفّذه.' : 'هذه خطوة واضحة… لكن <b>في غير وقتها</b>.', { noCheck: true }); }
+    };
+  }
+  async function finish() {
+    ctx.host.innerHTML = `<span class="lbl">الروبوت ينفّذ خوارزميتك…</span><ol class="slots" id="run">${done.map(t => `<li><span class="card" style="cursor:default">${t}</span></li>`).join('')}</ol>`;
+    const cs = $$('#run .card');
+    for (const c of cs) { c.classList.add('on'); sfx.step(); await wait(380); c.classList.remove('on'); c.classList.add('ok'); }
+    ctx.ok(`وصل الروبوت إلى موقف الحافلة! 🚌 لاحظ: رفض ${ar(vague)} أوامر غير واضحة، وتلخبط في ${ar(order)} أوامر جاءت في غير وقتها.`);
+    ctx.say('الآن أستطيع الذهاب إلى المدرسة وحدي! 🎒🚌', 'happy');
+    ctx.complete();
+  }
+  show();
+};
+
+/* ---------- grid world (robot + battery) ---------- */
+const DIRS = { U: [0, -1, '⬆️', 'تقدّم'], D: [0, 1, '⬇️', 'ارجع'], R: [1, 0, '➡️', 'يمين'], L: [-1, 0, '⬅️', 'يسار'] };
+const dl = k => `${DIRS[k][2]} ${DIRS[k][3]}`;
+function makeGrid(host, L, opt = {}) {
+  const walls = new Set((L.walls || []).map(([x, y]) => x + ',' + y)), roads = new Set((L.roads || []).map(([x, y]) => x + ',' + y));
+  let cells = '';
+  for (let y = 0; y < L.h; y++) for (let x = 0; x < L.w; x++) {
+    const k = x + ',' + y, w = walls.has(k), g = x === L.goal[0] && y === L.goal[1];
+    cells += `<div class="cell${w ? ' wall' : ''}${g ? ' goal' : ''}${roads.has(k) ? ' road' : ''}" data-k="${k}">${w ? (opt.wallIcon || '') : g ? (opt.goalIcon || '🔋') : (L.deco && L.deco[k]) || ''}</div>`;
+  }
+  host.innerHTML = `<div class="gridwrap"><div class="grid${opt.cls ? ' ' + opt.cls : ''}" style="--w:${L.w};--h:${L.h}" role="img" aria-label="متاهة">${cells}<div class="gbot">${robot('happy', 44)}</div></div></div>`;
+  const B = $('.gbot', host); let pos;
+  const place = (x, y) => { pos = [x, y]; B.style.setProperty('--x', x); B.style.setProperty('--y', y); };
+  const mood = m => { B.innerHTML = robot(m, 44); };
+  const trail = (x, y, on) => { const c = $(`.cell[data-k="${x},${y}"]`, host); if (c && !c.classList.contains('goal')) c.classList.toggle('trail', on); };
+  function reset() { $$('.cell.trail', host).forEach(c => c.classList.remove('trail')); B.classList.add('nomove'); place(L.start[0], L.start[1]); void B.offsetWidth; B.classList.remove('nomove'); mood('happy'); }
+  async function run(cmds, onStep, speed = 400) {
+    reset(); await wait(250);
+    for (let i = 0; i < cmds.length; i++) {
+      onStep && onStep(i);
+      const [dx, dy] = DIRS[cmds[i]], nx = pos[0] + dx, ny = pos[1] + dy;
+      if (nx < 0 || ny < 0 || nx >= L.w || ny >= L.h || walls.has(nx + ',' + ny)) {
+        mood('dizzy'); B.classList.remove('bump'); void B.offsetWidth; B.classList.add('bump'); sfx.oops();
+        return { ok: false, i, why: nx < 0 || ny < 0 || nx >= L.w || ny >= L.h ? 'edge' : 'wall' };
+      }
+      trail(pos[0], pos[1], true); place(nx, ny); sfx.step(); await wait(speed);
+    }
+    const ok = pos[0] === L.goal[0] && pos[1] === L.goal[1]; mood(ok ? 'happy' : 'sad');
+    return { ok, i: cmds.length - 1, why: ok ? '' : 'short', pos: [...pos] };
+  }
+  reset();
+  return { run, reset };
+}
+const gridWhy = r => r.why === 'short' ? 'انتهت الأوامر… والروبوت لم يصل بعد.' : r.why === 'wall' ? `اصطدم الروبوت بجدار عند الأمر رقم <b>${ar(r.i + 1)}</b> 💥` : `خرج الروبوت من حدود المتاهة عند الأمر رقم <b>${ar(r.i + 1)}</b>`;
+
+/* program editor: plain blocks + optional loop blocks. items: {t:'U'} | {t:'loop', n, body:[{t}]} */
+function progEditor(host, { allowLoop = false, max = 24, onChange } = {}) {
+  let prog = [], open = -1, locked = false;
+  host.innerHTML = `<span class="lbl">الأوامر · اضغط لإضافتها</span><div class="palette">${['U', 'D', 'R', 'L'].map(k => `<button class="blk" data-add="${k}">${dl(k)}</button>`).join('')}${allowLoop ? '<button class="blk loop" data-loop>🔁 كرر</button>' : ''}</div>
+    <span class="lbl" style="margin-top:12px">برنامجك <span class="cnt"></span></span><div class="prog"></div>`;
+  const P = $('.prog', host);
+  const count = () => prog.reduce((s, it) => s + (it.t === 'loop' ? 1 + it.body.length : 1), 0);
+  function flat() { const f = []; prog.forEach((it, i) => { if (it.t === 'loop') { for (let r = 0; r < it.n; r++) it.body.forEach((b, j) => f.push({ c: b.t, ref: [i, j], rep: r })); } else f.push({ c: it.t, ref: [i, null] }); }); return f; }
+  function draw() {
+    $('.cnt', host).textContent = `(${ar(count())} قطعة)`;
+    P.innerHTML = prog.map((it, i) => it.t === 'loop'
+      ? `<span class="loopgrp" data-i="${i}"><span class="lx">🔁 كرر</span><span class="counter"><button data-dec="${i}" aria-label="أقل">−</button><b>${ar(it.n)}</b><button data-inc="${i}" aria-label="أكثر">+</button></span><span class="lx">مرات:</span>${it.body.map((b, j) => `<button class="blk" data-i="${i}" data-j="${j}">${dl(b.t)}</button>`).join('') || '<span class="ph">ضع الأوامر هنا</span>'}${open === i ? `<button class="btn sm ghost" data-close="${i}">تم ✓</button>` : `<button class="btn sm ghost" data-open="${i}">✎</button>`}<button class="btn sm ghost" data-del="${i}" aria-label="حذف الحلقة">✕</button></span>`
+      : `<button class="blk" data-i="${i}">${dl(it.t)}</button>`).join('') || '<span class="ph">برنامجك فارغ… اضغط الأوامر بالأعلى</span>';
+    onChange && onChange();
+  }
+  host.addEventListener('click', e => {
+    if (locked) return;
+    const t = e.target.closest('button'); if (!t) return;
+    const d = t.dataset;
+    if (d.add) { if (count() >= max) return; if (open >= 0) prog[open].body.push({ t: d.add }); else prog.push({ t: d.add }); sfx.tap(); }
+    else if ('loop' in d) { if (count() >= max) return; prog.push({ t: 'loop', n: 2, body: [] }); open = prog.length - 1; sfx.tap(); }
+    else if (d.inc) prog[+d.inc].n = Math.min(12, prog[+d.inc].n + 1);
+    else if (d.dec) prog[+d.dec].n = Math.max(1, prog[+d.dec].n - 1);
+    else if (d.close) open = -1;
+    else if (d.open) open = +d.open;
+    else if (d.del) { prog.splice(+d.del, 1); open = -1; }
+    else if (d.i !== undefined && t.classList.contains('blk')) { if (d.j !== undefined) prog[+d.i].body.splice(+d.j, 1); else { prog.splice(+d.i, 1); if (open > +d.i) open--; } }
+    else return;
+    draw();
+  });
+  draw();
+  return {
+    get prog() { return prog; }, set prog(p) { prog = p; open = -1; draw(); }, count, flat,
+    lock(v) { locked = v; }, clear() { prog = []; open = -1; draw(); },
+    mark(ref, cls) { $$('.blk', P).forEach(b => b.classList.remove('on', 'bad')); if (!ref) return; const sel = ref[1] === null ? `.blk[data-i="${ref[0]}"]:not([data-j])` : `.blk[data-i="${ref[0]}"][data-j="${ref[1]}"]`; const el = $(sel, P); if (el) el.classList.add(cls); }
+  };
+}
+
+/* ---------- b3b: maze ---------- */
+MECH.maze = ctx => {
+  const LV = ctx.cfg.levels; let lv = 0;
+  function start() {
+    ctx.host.innerHTML = `<span class="tag">${lv ? 'تدريب: متاهة أصعب' : 'المتاهة ١'}</span><div class="two" style="margin-top:10px"><div id="g"></div><div><div id="ed"></div>
+      <div class="row"><button class="btn emerald" id="run">▶ تشغيل الخوارزمية</button><button class="btn ghost sm" id="clr">مسح</button></div></div></div>`;
+    const g = makeGrid($('#g'), LV[lv]); const ed = progEditor($('#ed'), { max: 24 });
+    let busy = false;
+    $('#clr').onclick = () => { if (busy) return; ed.clear(); g.reset(); ctx.clear(); };
+    $('#run').onclick = async () => {
+      if (busy) return; const f = ed.flat(); if (!f.length) { ctx.info('أضف أوامر أولًا، ثم شغّل.'); return; }
+      busy = true; ed.lock(true); ctx.clear();
+      const r = await g.run(f.map(x => x.c), i => ed.mark(f[i].ref, 'on'));
+      busy = false; ed.lock(false);
+      if (r.ok) {
+        ed.mark(null); ctx.ok('الخوارزمية تعمل! 🎯 وصل الروبوت إلى البطارية.'); ctx.say('بطارية كاملة! ⚡ شكرًا لأنك أعطيتني أوامر دقيقة.', 'happy');
+        if (lv === 0) { ctx.reveal(); lv++; later(() => { start(); ctx.info('متاهة جديدة للتدريب. نفس الفكرة… طريق أطول.'); }, 2400); } else ctx.complete();
+      } else {
+        if (r.why !== 'short') ed.mark(f[r.i].ref, 'bad');
+        ctx.fail(`الروبوت لم يصل للهدف 🤖 ${gridWhy(r)}<br>راجع خطواتك… أين أعطيت الروبوت أمرًا غير مناسب؟`, { noCheck: true });
+        ctx.say(r.why === 'short' ? 'توقفت في منتصف الطريق… ما زلت أحتاج أوامر!' : 'آخ! 💫 أحد الأوامر لم يكن مناسبًا.', r.why === 'short' ? 'sad' : 'dizzy');
+      }
+    };
+  }
+  start();
+};
+
+/* ---------- b4: translate algorithm to code ---------- */
+MECH.translate = ctx => {
+  const ROWS = [
+    ['اطلب من الطالب سعر الصنف', ['price = input("السعر؟")', 'print(price)', 'price = 3 + 3'], 0, 'print تعرض شيئًا، لكننا نريد أن <b>نستقبل</b> قيمة.'],
+    ['اطلب منه الكمية', ['qty = print("الكمية")', 'qty = input("الكمية؟")', 'input = qty'], 1, 'لاستقبال قيمة من المستخدم نستخدم <span class="ltr">input</span>.'],
+    ['احسب الإجمالي = السعر × الكمية', ['total = price + qty', 'print("total")', 'total = price * qty'], 2, 'انتبه للعملية: الضرب في البرمجة نكتبه <span class="ltr">*</span>.'],
+    ['اعرض الإجمالي على الشاشة', ['input(total)', 'print(total)', 'total = 0'], 1, 'العرض على الشاشة = <span class="ltr">print</span>.']
+  ];
+  let r = 0; const chosen = [];
+  function show() {
+    ctx.host.innerHTML = `<div class="two"><div><span class="lbl">الخوارزمية (بالعربي)</span><ol class="slots">${ROWS.map((x, i) => `<li${i > r ? ' class="empty"' : ''}><span class="card${i < r ? ' ok' : i === r ? ' on' : ''}" style="cursor:default">${x[0]}</span></li>`).join('')}</ol></div>
+      <div><span class="lbl">البرنامج (بايثون)</span><div class="code py" id="py">${chosen.map(c => esc(c)).join('\n') || '<span class="c"># سيظهر برنامجك هنا</span>'}</div>
+      ${r < ROWS.length ? `<span class="lbl" style="margin-top:12px">أي سطر يطابق: «${ROWS[r][0]}»؟</span><div class="cards" style="flex-direction:column;align-items:stretch">${ROWS[r][1].map((c, i) => `<button class="card" data-i="${i}" style="direction:ltr;text-align:left;font-family:var(--f-mono);font-size:.9rem">${esc(c)}</button>`).join('')}</div>` : ''}</div></div>`;
+    const cs = $$('.cards .card', ctx.host);
+    cs.forEach(b => b.onclick = () => {
+      if (b.disabled) return;
+      if (+b.dataset.i === ROWS[r][2]) { sfx.ok(); chosen.push(ROWS[r][1][ROWS[r][2]]); r++; ctx.clear(); if (r < ROWS.length) show(); else runPhase(); }
+      else { b.classList.add('bad'); b.disabled = true; ctx.fail(ROWS[r][3], { noCheck: true }); }
+    });
+  }
+  function runPhase() {
+    show(); ctx.say('البرنامج مكتوب! الآن جرّبه بنفسك: أنت المستخدم.', 'wow'); ctx.reveal();
+    const box = document.createElement('section'); box.className = 'panel';
+    box.innerHTML = `<span class="eyebrow">شغّل برنامجك</span><div class="two" style="margin-top:8px"><div><label class="lbl" for="pr">السعر؟</label><input class="field" id="pr" type="number" value="3" min="0"><label class="lbl" for="qt" style="margin-top:8px">الكمية؟</label><input class="field" id="qt" type="number" value="4" min="0"><div class="row"><button class="btn emerald" id="go">▶ شغّل</button></div></div>
+      <div><span class="lbl">ماذا يحدث داخل الحاسب</span><div class="code" id="trace"></div><div class="out" id="out" style="margin-top:10px">—</div></div></div>`;
+    $('#after').appendChild(box); later(() => box.scrollIntoView({ behavior: REDUCE ? 'auto' : 'smooth', block: 'center' }), 600);
+    let ran = false;
+    $('#go', box).onclick = async () => {
+      const p = +$('#pr').value || 0, q = +$('#qt').value || 0, T = $('#trace');
+      const lines = [`price = ${p}  ← من المستخدم`, `qty = ${q}  ← من المستخدم`, `total = ${p} × ${q} = ${p * q}`, `print(${p * q})`];
+      T.innerHTML = ''; $('#out').textContent = '…';
+      for (const l of lines) { T.insertAdjacentHTML('beforeend', `<div class="cl on">${esc(l)}</div>`); sfx.step(); await wait(450); T.lastElementChild.classList.remove('on'); }
+      $('#out').textContent = `الإجمالي: ${ar(p * q)} ريال`;
+      if (!ran) { ran = true; ctx.complete(); }
+    };
+  }
+  show();
+};
+
+/* ---------- b5: testing (boundary case) ---------- */
+MECH.tester = ctx => {
+  let fixed = false, found = false;
+  const prog = () => [['<span class="vr">الدرجة</span> = أدخل()', ''], [`<span class="kw">إذا</span> <span class="vr">الدرجة</span> ${fixed ? '≥' : '>'} ٥٠:`, ''], ['اطبع «ناجح ✅»', 'ind'], ['<span class="kw">وإلا</span>:', ''], ['اطبع «راسب ❌»', 'ind']];
+  const run = g => (fixed ? g >= 50 : g > 50) ? 'ناجح ✅' : 'راسب ❌';
+  const expect = g => g >= 50 ? 'ناجح ✅' : 'راسب ❌';
+  const rows = [];
+  ctx.host.innerHTML = `<div class="two"><div><span class="lbl">برنامج زميلك</span><div class="code" id="code"></div>
+      <p class="small muted" style="margin-top:8px">المطلوب: الطالب <b>ناجح</b> إذا كانت درجته <b>٥٠ أو أكثر</b>.</p></div>
+    <div><span class="lbl">اختر درجة لتجربتها</span><div class="cards" id="vals">${[10, 30, 49, 50, 51, 80, 100].map(v => `<button class="card" data-v="${v}">${ar(v)}</button>`).join('')}</div>
+      <div class="row" style="margin-top:10px"><input class="field" id="cv" type="number" min="0" max="100" placeholder="أو اكتب درجة" style="max-width:150px"><button class="btn sm royal" id="try">جرّب</button></div></div></div>
+    <div class="tablewrap" style="margin-top:14px"><table class="ttable"><thead><tr><th>الدرجة</th><th>المتوقّع</th><th>ناتج البرنامج</th><th>النتيجة</th></tr></thead><tbody id="tb"><tr><td colspan="4" class="muted">لم تُجرِ أي اختبار بعد</td></tr></tbody></table></div><div id="fix"></div>`;
+  const drawCode = () => { $('#code').innerHTML = prog().map(([t, c], i) => `<div class="cl ${c}"><span class="n">${i + 1}</span>${t}</div>`).join(''); };
+  drawCode();
+  function test(g) {
+    if (isNaN(g) || g < 0 || g > 100) { ctx.info('اختر درجة من ٠ إلى ١٠٠.'); return; }
+    const out = run(g), ex = expect(g), ok = out === ex;
+    rows.unshift(`<tr><td class="num">${ar(g)}</td><td>${ex}</td><td>${out}</td><td class="${ok ? 'ok' : 'bad'}">${ok ? '✓ صحيح' : '✗ خطأ!'}</td></tr>`);
+    $('#tb').innerHTML = rows.join(''); ok ? sfx.step() : sfx.oops();
+    if (!ok && !found && !fixed) {
+      found = true; ctx.bug();
+      ctx.say('وجدتها! 😮 الطالب الذي درجته ٥٠ ناجح، لكن البرنامج قال «راسب»!', 'wow');
+      fbox(ctx.fbEl, 'اكتشفت <b>حالة حدّية</b> يخطئ فيها البرنامج. الآن: كيف نصلحه؟', 'info', '🐞');
+      $('#fix').innerHTML = `<div class="stage" style="margin-top:14px"><span class="lbl">ما الإصلاح الصحيح للسطر ٢؟</span><div class="cards" id="fx">
+        <button class="card" data-f="1">غيّر <span class="ltr">&gt;</span> إلى <span class="ltr">≥</span> (أكبر من أو يساوي)</button><button class="card" data-f="0">احذف «وإلا» والسطر الذي بعدها</button><button class="card" data-f="2">غيّر ٥٠ إلى ٦٠</button></div></div>`;
+      $('#fx').onclick = async e => {
+        const b = e.target.closest('.card'); if (!b || b.disabled) return;
+        if (b.dataset.f === '1') {
+          fixed = true; drawCode(); $$('#fx .card').forEach(x => x.disabled = true); b.classList.add('ok');
+          ctx.ok('تم الإصلاح. لنعِد كل الاختبارات للتأكد…'); rows.length = 0;
+          for (const g of [30, 49, 50, 51, 80]) { test(g); await wait(350); }
+          ctx.ok('كل الاختبارات صحيحة الآن ✓ البرنامج جاهز فعلًا.'); ctx.complete();
+        } else { b.classList.add('bad'); b.disabled = true; ctx.fail(b.dataset.f === '0' ? 'بدون «وإلا» لن يطبع البرنامج شيئًا للراسبين!' : 'هذا يجعل البرنامج يخطئ مع درجات أكثر (٥٠ إلى ٥٩)!', { noCheck: true }); }
+      };
+    } else if (ok && !found && rows.length >= 3 && rows.length % 3 === 0) ctx.info('كل اختباراتك صحيحة حتى الآن… هل جرّبت درجة <b>على الحدّ</b> تمامًا؟');
+  }
+  $('#vals').onclick = e => { const b = e.target.closest('.card'); if (b) test(+b.dataset.v); };
+  $('#try').onclick = () => test(parseInt($('#cv').value, 10));
+};
+
+/* ---------- b6: debug with magnifier ---------- */
+MECH.debugGrid = ctx => {
+  const { L, good, bugAt, wrong } = ctx.cfg; const prog = [...good]; prog[bugAt] = wrong;
+  let ran = false, found = false, busy = false;
+  ctx.host.innerHTML = `<div class="two"><div id="g"></div><div><span class="lbl">البرنامج <span id="mode" class="tag am">شغّله أولًا</span></span><div class="code" id="code"></div>
+    <div class="row"><button class="btn emerald" id="run">▶ شغّل</button></div><div id="repair"></div></div></div>`;
+  const g = makeGrid($('#g'), L);
+  const draw = () => { $('#code').innerHTML = prog.map((k, i) => `<div class="cl${ran && !found ? ' pick' : ''}" data-i="${i}"><span class="n">${ar(i + 1)}</span>${dl(k)}</div>`).join(''); };
+  draw();
+  $('#run').onclick = async () => {
+    if (busy) return; busy = true; ctx.clear();
+    const lines = () => $$('#code .cl');
+    const r = await g.run(prog, i => lines().forEach((l, j) => l.classList.toggle('on', j === i)));
+    busy = false; lines().forEach(l => l.classList.remove('on'));
+    if (r.ok) { ctx.ok('الروبوت وصل! الإصلاح نجح ✓'); ctx.say('أعمل بشكل ممتاز الآن! 🔋', 'happy'); ctx.complete(); return; }
+    if (!ran) { ran = true; $('#mode').textContent = '🔍 العدسة مفعّلة: اضغط على السطر المشبوه'; draw(); }
+    else if (found) { draw(); }
+    ctx.say('الروبوت لم يصل… 🤖 الخطأ ليس بالضرورة في السطر الذي اصطدم عنده. تتبّع الطريق.', 'think');
+    fbox(ctx.fbEl, `${gridWhy(r)} استخدم العدسة 🔍 واضغط على السطر الذي تظنه سبب المشكلة.`, 'bad');
+  };
+  $('#code').onclick = e => {
+    const l = e.target.closest('.cl'); if (!l || !ran || found || busy) return; const i = +l.dataset.i;
+    if (i === bugAt) {
+      found = true; ctx.bug(); l.classList.add('hit'); $$('#code .cl').forEach(x => x.classList.remove('pick'));
+      $('#mode').textContent = '🐞 وجدت الحشرة!'; ctx.say('لقد وجدت Bug! 🐞 الآن اختر الأمر الصحيح لهذا السطر.', 'wow');
+      fbox(ctx.fbEl, `السطر <b>${ar(i + 1)}</b> يحرّك الروبوت في الاتجاه الخطأ.`, 'ok', '🐞');
+      $('#repair').innerHTML = `<span class="lbl" style="margin-top:12px">بدّل السطر ${ar(i + 1)} بـ:</span><div class="palette">${['U', 'D', 'R', 'L'].map(k => `<button class="blk" data-k="${k}">${dl(k)}</button>`).join('')}</div>`;
+      $('#repair').onclick = ev => { const b = ev.target.closest('[data-k]'); if (!b || busy) return; prog[i] = b.dataset.k; draw(); $$('#code .cl')[i].classList.add('hit'); ctx.info('بدّلت السطر. شغّل البرنامج لتتأكد أن الإصلاح يعمل ▶'); };
+    } else { l.classList.add('miss'); later(() => l.classList.remove('miss'), 700); ctx.fail(`السطر ${ar(i + 1)} سليم ✓ استمر في البحث.`, { noCheck: true }); }
+  };
+};
+
+/* ---------- b7: optimize with a loop ---------- */
+MECH.optimize = ctx => {
+  const { L, long, max } = ctx.cfg;
+  ctx.host.innerHTML = `<div class="two"><div id="g"></div><div><span class="lbl">البرنامج الحالي (${ar(long.length)} أوامر) ✓ يعمل</span><div class="prog" style="border-style:solid">${long.map(k => `<span class="blk" style="cursor:default">${dl(k)}</span>`).join('')}</div>
+    <div class="row" style="margin-top:8px"><button class="btn sm ghost" id="demo">▶ شاهده يعمل</button></div>
+    <div id="ed" style="margin-top:14px"></div><div class="row"><button class="btn emerald" id="run">▶ شغّل نسختك</button><button class="btn ghost sm" id="clr">مسح</button></div></div></div>`;
+  const g = makeGrid($('#g'), L); const ed = progEditor($('#ed'), { allowLoop: true, max: 12 });
+  let busy = false;
+  $('#demo').onclick = async () => { if (busy) return; busy = true; await g.run(long, null, 230); busy = false; };
+  $('#clr').onclick = () => { if (busy) return; ed.clear(); g.reset(); ctx.clear(); };
+  $('#run').onclick = async () => {
+    if (busy) return; const f = ed.flat(); if (!f.length) { ctx.info('ابنِ نسختك أولًا.'); return; }
+    busy = true; ed.lock(true); ctx.clear();
+    const r = await g.run(f.map(x => x.c), i => ed.mark(f[i].ref, 'on'), 300);
+    busy = false; ed.lock(false); ed.mark(null);
+    if (!r.ok) { if (r.why !== 'short') ed.mark(f[r.i].ref, 'bad'); ctx.fail(gridWhy(r) + ' هل وضعت الأوامر داخل الحلقة؟ وهل عدد المرات صحيح؟'); return; }
+    const n = ed.count();
+    if (n > max) { ctx.info(`يعمل! 👍 لكن نسختك ${ar(n)} قطع. هل تستطيع الوصول إلى ${ar(max)} قطع أو أقل؟`); ctx.say('أقصر قليلًا… أنا متأكد أنك تستطيع!', 'think'); return; }
+    ctx.ok(`رائع! من ${ar(long.length)} أوامر إلى ${ar(n)} قطع فقط، ونفس النتيجة تمامًا.`); ctx.say('برنامج أقصر = أسهل في القراءة وأسهل في الإصلاح ✨', 'happy'); ctx.complete();
+  };
+};
+
+/* ---------- t1: ten boxes (manual → discover the loop) ---------- */
+MECH.boxes = ctx => {
+  const N = 10; let opened = 0, manual = 0, phase = 1, busy = false;
+  const keyAt = rand(5, 9);
+  ctx.host.innerHTML = `<div class="stage"><div class="boxes" id="bx">${Array.from({ length: N }, () => '<div class="box">📦</div>').join('')}</div>
+    <div class="two" style="margin-top:10px"><div><span class="lbl">أوامرك</span><div class="cmdlog" id="log"><span style="background:none;color:var(--ink-3)">لا أوامر بعد</span></div></div>
+    <div id="ctl"><span class="lbl">الأوامر المتاحة</span><div class="palette"><button class="blk" id="open">📦 افتح صندوقًا</button><button class="blk loop" id="rep" hidden>🔁 كرر</button></div></div></div></div>`;
+  const boxes = $$('.box', ctx.host);
+  const openBox = i => { const b = boxes[i]; b.classList.add('open'); b.textContent = i === keyAt ? '🔑' : '✨'; sfx.step(); };
+  const logAdd = t => { const L = $('#log'); if (!L.querySelector('span[data-c]')) L.innerHTML = ''; L.insertAdjacentHTML('beforeend', `<span data-c>${t}</span>`); L.scrollTop = L.scrollHeight; };
+  $('#open').onclick = () => {
+    if (busy || phase !== 1 || opened >= N) return;
+    openBox(opened); opened++; manual++; logAdd('افتح');
+    if (manual === 3) ctx.say('افتح… افتح… افتح… 😮‍💨 أصابعك ستتعب! ألا توجد طريقة أذكى؟', 'think');
+    if (manual === 4) { $('#rep').hidden = false; shake($('#rep')); ctx.info('ظهر زر جديد: <b>🔁 كرر</b>. جرّبه!'); }
+    if (opened >= N) { ctx.say('فتحتها كلها يدويًا! لكن تخيّل ١٠٠ صندوق… جرّب زر 🔁 كرر في المرة القادمة.', 'wow'); loopPhase(); }
+  };
+  $('#rep').onclick = () => { if (!busy) loopPhase(); };
+  function loopPhase() {
+    phase = 2;
+    $('#ctl').innerHTML = `<span class="lbl">الطريقة الذكية</span><div class="loopcard"><div class="lh">🔁 كرر <span class="counter"><button id="dn" aria-label="أقل">−</button><b id="n">${ar(N - opened || N)}</b><button id="up" aria-label="أكثر">+</button></span> مرات</div><div class="lb"><span class="blk" style="cursor:default">📦 افتح صندوقًا</span></div></div>
+      <div class="row"><button class="btn emerald" id="go">▶ شغّل</button></div>`;
+    let n = N - opened || N;
+    const setN = v => { n = Math.max(1, Math.min(20, v)); $('#n').textContent = ar(n); };
+    $('#dn').onclick = () => setN(n - 1); $('#up').onclick = () => setN(n + 1);
+    $('#go').onclick = async () => {
+      if (busy) return; busy = true;
+      if (opened >= N) { boxes.forEach(b => { b.classList.remove('open'); b.textContent = '📦'; }); opened = 0; }
+      $('#log').innerHTML = ''; logAdd(`كرر ${ar(n)} مرات: افتح`);
+      for (let i = 0; i < n; i++) {
+        if (opened >= N) { ctx.say('لم يبقَ صناديق! 😅 كررت أكثر من اللازم، فالأوامر الزائدة لا تجد ما تفتحه.', 'dizzy'); break; }
+        boxes[opened].classList.add('cur'); await wait(220); boxes[opened].classList.remove('cur'); openBox(opened); opened++;
+      }
+      busy = false;
+      if (opened >= N) {
+        ctx.ok(`فُتحت الصناديق كلها بأمر واحد يتكرر! والمفتاح 🔑 كان في الصندوق ${ar(keyAt + 1)}.`);
+        ctx.say('سطر واحد بدل عشرة أسطر! هذه قوة خارقة 🔁', 'happy'); ctx.reveal(); practice();
+      } else ctx.fail(`فتح الروبوت ${ar(n)} فقط وبقي ${ar(N - opened)} مغلقة. عدّل عدد مرات التكرار وشغّل مرة أخرى.`, { noCheck: true });
+    };
+  }
+  function practice() {
+    const box = document.createElement('section'); box.className = 'panel';
+    const target = rand(4, 9);
+    box.innerHTML = `<span class="eyebrow">طبّق الآن: غيّر عدد التكرارات وشاهد النتيجة مباشرة</span>
+      <div class="bigq" style="margin-top:6px">الروبوت يريد أن يقفز <b>${ar(target)}</b> قفزات بالضبط على الحبل.</div>
+      <div class="loopcard" style="max-width:420px"><div class="lh">🔁 كرر <b id="pv">١</b> مرات</div><div class="lb"><span class="blk" style="cursor:default">🦘 اقفز</span></div></div>
+      <input type="range" id="pr" min="1" max="12" value="1" aria-label="عدد التكرار" style="max-width:420px;margin-top:10px">
+      <div class="cmdlog" id="jl" style="margin-top:8px"></div><div class="row"><button class="btn emerald" id="pj">▶ شغّل</button></div><div class="pfb"></div>`;
+    $('#after').appendChild(box); later(() => box.scrollIntoView({ behavior: REDUCE ? 'auto' : 'smooth', block: 'center' }), 500);
+    const draw = () => { const v = +$('#pr', box).value; $('#pv', box).textContent = ar(v); $('#jl', box).innerHTML = Array.from({ length: v }, (_, i) => `<span>🦘 ${ar(i + 1)}</span>`).join(''); };
+    $('#pr', box).oninput = draw; draw();
+    $('#pj', box).onclick = () => {
+      const v = +$('#pr', box).value;
+      if (v === target) { sfx.ok(); fbox($('.pfb', box), `بالضبط! غيّرت رقمًا واحدًا… والبرنامج كله تغيّر.`, 'ok'); ctx.complete(); }
+      else { sfx.oops(); fbox($('.pfb', box), v < target ? 'قفزات أقل من المطلوب. زِد عدد التكرار.' : 'قفزات أكثر من المطلوب! قلّل عدد التكرار.', 'bad'); }
+    };
+  }
+};
+
+/* ---------- t1b: dancing robot ---------- */
+MECH.dance = ctx => {
+  const MOVES = { R: ['👉 يمين', 'R'], L: ['👈 يسار', 'L'], J: ['⬆️ قفزة', 'J'], S: ['🌀 دوران', 'S'] };
+  const TARGET = ['R', 'L', 'J', 'R', 'L', 'J', 'R', 'L', 'J'];
+  let body = [], n = 1, busy = false, tries = 0;
+  ctx.host.innerHTML = `<div class="dancefloor" id="df"><div class="spot" style="left:calc(50% - 80px)"></div><div class="tiles"></div><span class="notes">♪ ♫</span><div class="dancer" id="dn">${robot('happy', 84)}</div></div>
+    <div class="beatbar" id="bb">${TARGET.map(m => `<i>${MOVES[m][0]}</i>`).join('')}</div>
+    <div class="two" style="margin-top:14px"><div><span class="lbl">الحركات</span><div class="palette">${Object.entries(MOVES).map(([k, v]) => `<button class="blk" data-m="${k}">${v[0]}</button>`).join('')}</div>
+      <p class="small muted" style="margin-top:8px">الحركات تدخل داخل الحلقة الخضراء. اضغط حركة داخل الحلقة لحذفها.</p></div>
+    <div><div class="loopcard"><div class="lh">🔁 كرر <span class="counter"><button id="mn" aria-label="أقل">−</button><b id="nv">١</b><button id="pl" aria-label="أكثر">+</button></span> مرات</div><div class="lb" id="body"></div></div>
+      <div class="row"><button class="btn emerald" id="go">▶ ابدأ الرقص</button><span class="chip" id="pc"></span></div></div></div>`;
+  const draw = () => {
+    $('#nv').textContent = ar(n);
+    $('#body').innerHTML = body.map((m, i) => `<button class="blk" data-i="${i}">${MOVES[m][0]}</button>`).join('') || '<span class="muted small">ضع الحركات هنا</span>';
+    $('#pc').textContent = `القطع: ${ar(1 + body.length)}`;
+  };
+  ctx.host.querySelector('.palette').onclick = e => { const b = e.target.closest('[data-m]'); if (!b || busy || body.length >= 4) return; body.push(b.dataset.m); sfx.tap(); draw(); };
+  $('#body').onclick = e => { const b = e.target.closest('[data-i]'); if (!b || busy) return; body.splice(+b.dataset.i, 1); draw(); };
+  $('#mn').onclick = () => { if (!busy) { n = Math.max(1, n - 1); draw(); } };
+  $('#pl').onclick = () => { if (!busy) { n = Math.min(6, n + 1); draw(); } };
+  $('#go').onclick = async () => {
+    if (busy || !body.length) { if (!body.length) ctx.info('ضع حركة واحدة على الأقل داخل الحلقة.'); return; }
+    busy = true; tries++; ctx.clear();
+    const seq = []; for (let r = 0; r < n; r++) seq.push(...body);
+    const D = $('#dn'), F = $('#df'), beats = $$('#bb i'); beats.forEach(b => b.classList.remove('on', 'ok'));
+    let match = seq.length === TARGET.length;
+    for (let i = 0; i < seq.length; i++) {
+      const m = seq[i]; F.classList.add('beat'); sfx.beat(i);
+      D.className = 'dancer ' + m; if (beats[i]) { beats[i].classList.add('on'); }
+      $$('#body .blk').forEach((b, j) => b.classList.toggle('on', j === i % body.length));
+      await wait(420); D.className = 'dancer'; F.classList.remove('beat');
+      if (beats[i]) { beats[i].classList.remove('on'); if (TARGET[i] === m) beats[i].classList.add('ok'); else match = false; } else match = false;
+      await wait(120);
+    }
+    $$('#body .blk').forEach(b => b.classList.remove('on')); busy = false;
+    if (match) {
+      D.className = 'dancer S'; later(() => D.className = 'dancer', 600);
+      ctx.ok(`رقصة كاملة! ${ar(seq.length)} حركات من ${ar(1 + body.length)} قطع فقط. 🎉`); ctx.say('هل رأيت حركاتي؟ 🕺 الحلقة كررت الرقصة كلها ثلاث مرات!', 'happy'); ctx.complete({ stars: tries === 1 ? 3 : tries <= 3 ? 2 : 1 });
+    } else {
+      ctx.say(seq.length > TARGET.length ? 'رقصت أكثر من اللازم! 🥵 الموسيقى توقفت وأنا ما زلت أرقص.' : 'توقفت الموسيقى… أو تلخبطت الخطوات! 😵‍💫', 'dizzy');
+      ctx.fail(seq.length !== TARGET.length ? `نفّذ الروبوت ${ar(seq.length)} حركات، والرقصة ${ar(TARGET.length)}. راجع عدد المرات وما داخل الحلقة.` : 'العدد صحيح لكن الترتيب مختلف. انظر إلى شريط الإيقاع: الحركات الخضراء صحيحة.');
+    }
+  };
+  draw();
+};
+
+/* ---------- t2: IF — build the rule by dragging, then test ---------- */
+MECH.ifDrag = ctx => {
+  const PARTS = [{ k: 'rain', t: '🌧️ الجو ممطر', z: 'c' }, { k: 'umb', t: '☔ خذ المظلة', z: 'a' }, { k: 'hot', t: '🔥 الجو حار', z: 'x' }, { k: 'ice', t: '🍦 كُل آيسكريم', z: 'x' }];
+  let filled = { c: null, a: null }, weather = 'sun', tried = new Set(), busy = false;
+  ctx.host.innerHTML = `<div class="ruleslot"><span>إذا</span><span class="drop" data-z="c">ضع الشرط هنا</span><span>←</span><span class="drop" data-z="a">ضع النتيجة هنا</span></div>
+    <div class="cards" id="parts" style="margin-top:12px">${shuffle(PARTS).map(p => `<button class="card" draggable="true" data-k="${p.k}">${p.t}</button>`).join('')}</div>
+    <div id="sim" hidden style="margin-top:16px"><div class="two"><div><span class="lbl">غيّر الطقس</span><div class="toggles"><button class="tgl on" data-w="sun">☀️ مشمس</button><button class="tgl" data-w="rain">🌧️ ممطر</button></div>
+      <div class="row"><button class="btn emerald" id="go">🚪 اخرج من الباب</button></div><div id="eval" class="small" style="margin-top:10px"></div></div>
+      <div class="street" id="st"><div class="rainfx"></div><span class="sun">☀️</span><div class="ground"></div><span class="door">🏫</span><div class="who" id="who"><span class="itm" hidden>☂️</span>${robot('happy', 64)}</div></div></div></div>`;
+  pairPick($('#parts'), $$('.drop', ctx.host), (c, z) => {
+    const p = PARTS.find(x => x.k === c.dataset.k);
+    if (p.z !== z.dataset.z) { shake(z); ctx.fail(p.z === 'x' ? 'هذه البطاقة لا علاقة لها بالمظلة 🙂' : p.z === 'c' ? 'هذا <b>شرط</b> (سؤال: هل…؟)، ضعه بعد «إذا».' : 'هذه <b>نتيجة</b> (فعل ننفّذه)، ضعها بعد السهم.', { noCheck: true }); return; }
+    z.textContent = p.t; z.classList.add('filled'); c.remove(); filled[p.z] = p.k; sfx.ok();
+    if (filled.c && filled.a) { $('#sim').hidden = false; ctx.ok('القاعدة جاهزة! الآن جرّب الطقسين واخرج من الباب.'); ctx.say('سأتبع القاعدة حرفيًا. غيّر الطقس وشاهد!', 'happy'); }
+  });
+  ctx.host.addEventListener('click', e => {
+    const t = e.target.closest('[data-w]'); if (!t || busy) return; weather = t.dataset.w;
+    $$('[data-w]', ctx.host).forEach(x => x.classList.toggle('on', x === t)); $('#st').classList.toggle('rain', weather === 'rain'); $('#who').classList.remove('go'); $('#who .itm').hidden = true; $('#eval').innerHTML = '';
+  });
+  ctx.host.addEventListener('click', async e => {
+    if (!e.target.closest('#go') || busy) return; busy = true;
+    const W = $('#who'); W.style.transition = 'none'; W.classList.remove('go'); void W.offsetWidth; W.style.transition = ''; $('.itm', W).hidden = true;
+    const rain = weather === 'rain';
+    $('#eval').innerHTML = `هل الجو ممطر؟ ← <b style="color:var(--${rain ? 'emerald' : 'rose'})">${rain ? 'نعم ✓' : 'لا ✗'}</b>`;
+    await wait(700);
+    if (rain) { $('.itm', W).hidden = false; sfx.ok(); $('#eval').innerHTML += ' ← خذ المظلة ☔'; } else $('#eval').innerHTML += ' ← تخطَّ الأمر';
+    await wait(500); W.classList.add('go'); await wait(1500);
+    tried.add(weather); busy = false;
+    if (tried.size === 1) ctx.info('جرّب الطقس الآخر الآن. ماذا سيتغيّر؟');
+    if (tried.size === 2) {
+      ctx.say('عندما كان الجو ممطرًا أخذت المظلة، وعندما كان مشمسًا تجاهلتها. أنا لم أفكّر… أنا <b>فحصت شرطًا</b>!', 'wow'); ctx.reveal();
+      practiceQ(ctx, '<span class="ltr" style="font-family:var(--f-mono)">إذا البطارية &lt; ٢٠ ← اشحن الهاتف</span><br>البطارية الآن <b>٦٥</b>. ماذا يحدث؟', [{ t: 'يُشحن الهاتف', r: 'هل ٦٥ أصغر من ٢٠؟' }, { t: 'لا شيء، يتخطى الأمر', ok: true, r: 'صحيح! الشرط خطأ، فلا يُنفّذ الأمر.' }], () => ctx.complete());
+    }
+  });
+};
+
+/* ---------- t2b: smart gate (key, then points ≥ 10) ---------- */
+MECH.ifGate = ctx => {
+  let phase = 1, hasKey = false, pts = 7, busy = false; const seen = new Set();
+  function view() {
+    ctx.host.innerHTML = `<div class="two"><div>
+      <span class="lbl">${phase === 1 ? 'الحالة' : 'نقاط اللاعب'}</span>
+      ${phase === 1 ? `<div class="toggles"><button class="tgl${hasKey ? ' on' : ''}" data-key="1">🔑 معه مفتاح</button><button class="tgl${!hasKey ? ' on' : ''}" data-key="0">🚫 بدون مفتاح</button></div>`
+        : `<div class="bignum num" id="pv">${ar(pts)}</div><input type="range" id="pr" min="0" max="20" value="${pts}" aria-label="النقاط">`}
+      <div class="code" style="margin-top:12px">${phase === 1
+        ? '<div class="cl" id="l0"><span class="kw">إذا</span> معه مفتاح:</div><div class="cl ind" id="l1">افتح الباب 🔓</div>'
+        : '<div class="cl" id="l0"><span class="kw">إذا</span> <span class="vr">النقاط</span> ≥ ١٠:</div><div class="cl ind" id="l1">افتح المستوى التالي 🔓</div><div class="cl" id="l2"><span class="kw">وإلا</span>:</div><div class="cl ind" id="l3">أعد المحاولة ↻</div>'}</div>
+      <div class="row"><button class="btn emerald" id="go">🚶 اقترب من البوابة</button></div></div>
+      <div><div class="gatebox" id="gb"><span class="sign">${phase === 1 ? 'تُفتح بمفتاح فقط' : 'المستوى ٢ ← ١٠ نقاط'}</span><div class="wallL"></div><div class="wallR"></div><div class="bars"></div><div class="hero" id="hr">${robot('happy', 60)}</div></div>
+      <div class="flowq" style="grid-template-columns:1fr 1fr"><div class="branch yes" id="by"><small>الشرط صحيح</small>تُفتح البوابة</div><div class="branch no" id="bn"><small>الشرط خطأ</small>${phase === 1 ? 'تبقى مغلقة' : 'أعد المحاولة'}</div></div></div></div>`;
+    ctx.host.querySelectorAll('[data-key]').forEach(b => b.onclick = () => { if (busy) return; hasKey = b.dataset.key === '1'; view(); });
+    const pr = $('#pr'); if (pr) pr.oninput = () => { pts = +pr.value; $('#pv').textContent = ar(pts); };
+    $('#go').onclick = approach;
+  }
+  async function approach() {
+    if (busy) return; busy = true; ctx.clear();
+    const G = $('#gb'), cond = phase === 1 ? hasKey : pts >= 10;
+    $$('.branch', ctx.host).forEach(b => b.classList.remove('lit')); $$('.code .cl', ctx.host).forEach(l => l.classList.remove('hit', 'miss', 'dim', 'on'));
+    const H = $('#hr'); H.style.transition = 'none'; G.classList.remove('open', 'pass', 'through'); H.innerHTML = robot('happy', 60); void H.offsetWidth; H.style.transition = '';
+    await wait(50); G.classList.add('pass'); $('#l0').classList.add('on'); await wait(1200);
+    $('#l0').classList.remove('on');
+    $(cond ? '#by' : '#bn').classList.add('lit');
+    if (cond) { $('#l1').classList.add('hit'); G.classList.add('open'); sfx.ok(); await wait(700); G.classList.add('through'); $('#hr').innerHTML = robot('happy', 60); }
+    else { if (phase === 2) $('#l3').classList.add('miss'); else $('#l1').classList.add('dim'); $('#hr').innerHTML = robot('sad', 60); sfx.oops(); }
+    await wait(1200);
+    seen.add(phase === 1 ? String(hasKey) : String(cond)); busy = false;
+    if (phase === 1) {
+      ctx.info(cond ? 'المفتاح موجود ← الشرط <b>صحيح</b> ← البوابة فُتحت.' : 'لا يوجد مفتاح ← الشرط <b>خطأ</b> ← البوابة لم تتحرك.');
+      if (seen.size === 2) { later(() => { phase = 2; seen.clear(); view(); ctx.say('الآن البوابة أذكى: تفحص <b>النقاط</b>. حرّك الشريط وجرّب أرقامًا مختلفة… جرّب ١٠ بالضبط!', 'think'); ctx.info('غيّر النقاط وجرّب حالة تُفتح فيها وحالة لا تُفتح.'); }, 1400); }
+    } else {
+      ctx.info(`${ar(pts)} ≥ ١٠؟ ${cond ? '<b>صحيح</b> ← افتح المستوى' : '<b>خطأ</b> ← أعد المحاولة'}${pts === 10 ? '. لاحظ: ١٠ ≥ ١٠ صحيحة لأن العلامة تشمل «يساوي».' : ''}`);
+      if (seen.size === 2) {
+        ctx.reveal();
+        practiceQ(ctx, 'لاعب معه <b>٩</b> نقاط ومعه مفتاح. البوابة تفحص: <span class="ltr">إذا النقاط ≥ ١٠</span>. هل تُفتح؟', [{ t: 'نعم، لأن معه مفتاح', r: 'البوابة لا تسأل عن المفتاح هنا! تفحص الشرط المكتوب فقط.' }, { t: 'لا، لأن ٩ أقل من ١٠', ok: true, r: 'صحيح! البرنامج يفحص الشرط المكتوب فقط: ٩ ≥ ١٠ خطأ.' }], () => ctx.complete());
+      }
+    }
+  }
+  view();
+};
+
+/* ---------- t3: IF / ELSE number decision ---------- */
+MECH.ifElse = ctx => {
+  let v = 3, moved = new Set(), quiz = 0, busy = false;
+  ctx.host.innerHTML = `<div class="two"><div><span class="lbl">الرقم الذي يراه الروبوت</span><div class="bignum num" id="nv">${ar(v)}</div><input type="range" id="nr" min="0" max="10" value="${v}" aria-label="الرقم">
+    <div class="code" style="margin-top:12px"><div class="cl" id="c0"><span class="kw">إذا</span> الرقم &gt; ٥:</div><div class="cl ind" id="c1">قل «الرقم كبير» 🟢</div><div class="cl" id="c2"><span class="kw">وإلا</span>:</div><div class="cl ind" id="c3">قل «الرقم صغير» 🔵</div></div></div>
+    <div><div class="flowq"><div class="branch yes" id="by"><small>IF · نعم</small>🟢 الرقم كبير</div><div class="diamond"><span id="dq">${ar(v)} &gt; ٥ ؟</span></div><div class="branch no" id="bn"><small>ELSE · لا</small>🔵 الرقم صغير</div></div>
+    <div class="out" id="out">—</div></div></div><div id="q"></div>`;
+  function decide() {
+    const big = v > 5; $('#nv').textContent = ar(v); $('#dq').innerHTML = `${ar(v)} &gt; ٥ ؟`;
+    $('#by').classList.toggle('lit', big); $('#bn').classList.toggle('lit', !big);
+    ['#c1', '#c3'].forEach(s => $(s).classList.remove('hit', 'dim')); $(big ? '#c1' : '#c3').classList.add('hit'); $(big ? '#c3' : '#c1').classList.add('dim');
+    $('#out').textContent = big ? '🟢 الرقم كبير' : '🔵 الرقم صغير';
+  }
+  $('#nr').oninput = () => { v = +$('#nr').value; decide(); moved.add(v > 5); if (v === 5) ctx.info('لاحظ الرقم ٥: هل ٥ أكبر من ٥؟ لا، لذلك ذهب إلى «وإلا».'); if (moved.size === 2 && !quiz) startQuiz(); };
+  decide();
+  const Q = [8, 5, 6, 0].map(n => ({ n, a: n > 5 }));
+  function startQuiz() {
+    quiz = 1; ctx.say('رأيت؟ في كل مرة يسلك البرنامج طريقًا <b>واحدًا فقط</b>. الآن أنت المعالج: أين يذهب كل رقم؟', 'wow');
+    let i = 0;
+    const show = () => {
+      const it = Q[i];
+      $('#q').innerHTML = `<div class="stage" style="margin-top:14px"><span class="lbl">أنت المعالج · ${ar(i + 1)} من ${ar(Q.length)}</span><div class="bignum num">${ar(it.n)}</div><div class="row c"><button class="btn emerald" data-a="1">🟢 كبير</button><button class="btn royal" data-a="0">🔵 صغير</button></div></div>`;
+      $('#q').onclick = e => {
+        const b = e.target.closest('[data-a]'); if (!b || busy) return;
+        if ((b.dataset.a === '1') === it.a) { sfx.ok(); v = it.n; $('#nr').value = v; decide(); i++; ctx.clear(); if (i < Q.length) show(); else { $('#q').innerHTML = ''; ctx.reveal(); ctx.complete(); } }
+        else ctx.fail(it.n === 5 ? '٥ ليس أكبر من ٥، فيذهب إلى «وإلا».' : `هل ${ar(it.n)} أكبر من ٥؟ فكّر مرة أخرى.`, { noCheck: true });
+      };
+    };
+    show();
+  }
+};
+
+/* ---------- t4: ELSE IF thermometer ---------- */
+MECH.elseIf = ctx => {
+  let t = 20, busy = false, phase = 1; const seen = new Set();
+  const GOOD = [[35, 'حار جدًا 🔥'], [25, 'معتدل ☀️'], [null, 'بارد ❄️']];
+  const BAD = [[25, 'معتدل ☀️'], [35, 'حار جدًا 🔥'], [null, 'بارد ❄️']];
+  function view() {
+    const C = phase === 1 ? GOOD : BAD;
+    ctx.host.innerHTML = `${phase === 2 ? '<p class="bigq">🛠️ زميلك قلب ترتيب الشروط! جرّب ٤٠° وشاهد ماذا يحدث، ثم أصلحه.</p>' : ''}
+      <div class="thermo"><div><div class="tube"><i id="tf"></i></div><div class="tval num" id="tv">${ar(t)}°</div></div>
+      <div><input type="range" id="tr" min="0" max="50" value="${t}" aria-label="درجة الحرارة"><div class="chain" id="ch" style="margin-top:8px">${C.map(([v, o], i) => `<div class="crow"><span class="cc">${v === null ? '<span style="color:var(--amber-d)">وإلا</span>' : `<span style="color:var(--royal)">${i ? 'وإلا إذا' : 'إذا'}</span> الحرارة ≥ ${ar(v)}°`} ← «${o}»</span><span class="cr"></span></div>`).join('')}</div>
+      <div class="row"><button class="btn emerald" id="go">▶ افحص</button>${phase === 2 ? '<button class="btn amber" id="fix">⇅ بدّل أول شرطين</button>' : ''}</div><div class="out" id="out">—</div></div></div>`;
+    const set = () => { $('#tv').textContent = ar(t) + '°'; $('#tf').style.height = Math.max(6, t / 50 * 96) + '%'; };
+    $('#tr').oninput = () => { t = +$('#tr').value; set(); }; set();
+    $('#go').onclick = () => check(C);
+    if ($('#fix')) $('#fix').onclick = () => { if (busy) return; phase = 3; ctx.ok('بدّلت الترتيب: الشرط الأصعب (≥ ٣٥) صار أولًا. جرّب ٤٠° مرة أخرى.'); viewFixed(); };
+  }
+  function viewFixed() { phase = 1; view(); phase = 3; $('#go').onclick = () => check(GOOD); }
+  async function check(C) {
+    if (busy) return; busy = true; ctx.clear();
+    const rows = $$('#ch .crow'); rows.forEach(r => { r.className = 'crow'; $('.cr', r).textContent = ''; });
+    let out = '';
+    for (let i = 0; i < C.length; i++) {
+      const [v, o] = C[i]; rows[i].classList.add('chk'); sfx.step(); await wait(600); rows[i].classList.remove('chk');
+      const ok = v === null || t >= v; rows[i].classList.add(ok ? 't' : 'f'); $('.cr', rows[i]).textContent = v === null ? 'نُفِّذ' : ok ? 'صحيح ✓' : 'خطأ ✗';
+      if (ok) { out = o; for (let j = i + 1; j < rows.length; j++) { rows[j].classList.add('skip'); $('.cr', rows[j]).textContent = 'لم يُفحص'; } break; }
+    }
+    $('#out').textContent = out; busy = false;
+    if (phase === 1) {
+      seen.add(out);
+      if (seen.size === 1) ctx.info('غيّر الحرارة وجرّب مرة أخرى. حاول أن تحصل على النتائج الثلاث.');
+      if (seen.size === 3) { ctx.say('لاحظت؟ أفحص من <b>الأعلى إلى الأسفل</b>، وأتوقف عند أول شرط صحيح.', 'wow'); ctx.reveal(); later(() => { phase = 2; t = 40; view(); }, 1800); }
+      else if (seen.size === 2) ctx.info('بقيت نتيجة واحدة لم تظهر بعد!');
+    } else if (phase === 2) {
+      if (t >= 35) { ctx.bug(); ctx.say('٤٠° وأقول «معتدل»؟! 🥵 الشرط ≥ ٢٥ جاء أولًا وكان صحيحًا، فتوقفت عنده.', 'dizzy'); fbox(ctx.fbEl, 'هذا <b>خطأ منطقي</b>: البرنامج يعمل، لكن النتيجة خاطئة. اضغط «⇅ بدّل أول شرطين».', 'bad'); }
+      else ctx.info('جرّب حرارة عالية مثل ٤٠° لترى المشكلة.');
+    } else if (phase === 3) {
+      if (t >= 35) { ctx.ok('٤٠° ← «حار جدًا 🔥». الترتيب الصحيح أصلح البرنامج!'); ctx.complete(); }
+      else ctx.info('جرّب ٤٠° للتأكد من الإصلاح.');
+    }
+  }
+  view();
+};
+
+/* ---------- t5: variables ---------- */
+MECH.vars = ctx => {
+  let score = 10, got = 0;
+  ctx.host.innerHTML = `<div class="two"><div><span class="lbl">اضغط العملات الذهبية 🪙</span><div class="coinfield" id="cf"></div></div>
+    <div><span class="lbl">ذاكرة اللعبة</span><div class="vars"><div class="vbox" id="vb"><div class="vn">النقاط</div><div class="vv num" id="vv">${ar(score)}</div></div></div>
+    <div class="code" id="vl" style="margin-top:12px"><div class="cl"><span class="vr">النقاط</span> = ١٠</div></div></div></div><div id="ask"></div>`;
+  const spawn = () => {
+    const f = $('#cf'); if (!f) return; const c = document.createElement('button'); c.className = 'coin'; c.textContent = '+٥'; c.setAttribute('aria-label', 'عملة +٥');
+    c.style.left = rand(8, 80) + '%'; c.style.top = rand(10, 60) + '%'; f.appendChild(c);
+    c.onclick = () => {
+      if (c.classList.contains('got')) return; c.classList.add('got'); later(() => c.remove(), 500);
+      const old = score; score += 5; got++; sfx.ok();
+      const vb = $('#vb'); vb.classList.remove('pulse'); void vb.offsetWidth; vb.classList.add('pulse'); $('#vv').textContent = ar(score);
+      $('#vl').insertAdjacentHTML('beforeend', `<div class="cl hit"><span class="vr">النقاط</span> = <span class="vr">النقاط</span> + ٥ <span style="color:var(--term-dim)">← ${ar(old)} + ٥ = ${ar(score)}</span></div>`);
+      if (got < 3) later(spawn, 300); else askWhat();
+    };
+  };
+  spawn();
+  function askWhat() {
+    ctx.say('النقاط كانت ١٠… ثم ١٥… ثم ٢٠… ثم ٢٥. <b>ماذا حدث؟</b>', 'think');
+    $('#ask').innerHTML = `<div class="stage" style="margin-top:14px"><span class="lbl">ماذا حدث في ذاكرة اللعبة؟</span><div class="cards" id="aw">
+      <button class="card" data-a="0">ظهر صندوق جديد مع كل عملة</button><button class="card" data-a="1">نفس الصندوق «النقاط» بقي، وقيمته هي التي تغيّرت</button><button class="card" data-a="2">تغيّر اسم الصندوق إلى رقم جديد</button></div></div>`;
+    $('#aw').onclick = e => {
+      const b = e.target.closest('.card'); if (!b || b.disabled) return;
+      if (b.dataset.a === '1') { b.classList.add('ok'); sfx.ok(); ctx.reveal(); phase2(); }
+      else { b.classList.add('bad'); b.disabled = true; ctx.fail(b.dataset.a === '0' ? 'انظر جيدًا: صندوق واحد فقط طوال الوقت.' : 'الاسم بقي «النقاط». ما الذي تغيّر إذًا؟', { noCheck: true }); }
+    };
+  }
+  function phase2() {
+    const box = document.createElement('section'); box.className = 'panel';
+    box.innerHTML = `<span class="eyebrow">غيّر قيم الصناديق… وشاهد اللعبة تتغير مباشرة</span>
+      <div class="vars" style="margin-top:12px">
+        <div class="vbox"><div class="vn">الاسم</div><input id="vN" value="غيث" maxlength="14" aria-label="الاسم"></div>
+        <div class="vbox"><div class="vn">العمر</div><input id="vA" type="number" value="13" min="5" max="99" aria-label="العمر"></div>
+        <div class="vbox"><div class="vn">السرعة</div><input id="vS" type="number" value="5" min="1" max="10" aria-label="السرعة"></div>
+        <div class="vbox"><div class="vn">النقاط</div><input id="vP" type="number" value="80" min="0" max="999" aria-label="النقاط"></div></div>
+      <div class="stage" style="margin-top:14px"><div class="bigq" id="gh"></div><div style="position:relative;height:70px;direction:ltr;border-radius:12px;background:repeating-linear-gradient(90deg,#DCE3F2 0 40px,#E8EDF8 40px 80px)"><div id="car" style="position:absolute;left:0;top:6px;transition:left .1s linear">${robot('happy', 48)}</div><span style="position:absolute;right:8px;top:18px;font-size:1.6rem">🏁</span></div>
+      <div class="row"><button class="btn emerald" id="race">▶ ابدأ السباق</button><span class="chip" id="rt"></span></div></div><div class="pfb"></div>`;
+    $('#after').appendChild(box); later(() => box.scrollIntoView({ behavior: REDUCE ? 'auto' : 'smooth', block: 'center' }), 500);
+    const upd = () => { $('#gh').textContent = `أهلًا يا ${$('#vN').value || '…'}! عمرك ${ar($('#vA').value || 0)} سنة · نقاطك ${ar($('#vP').value || 0)}`; };
+    ['vN', 'vA', 'vP'].forEach(i => $('#' + i).oninput = upd); upd();
+    let raced = new Set(), running = false;
+    $('#race').onclick = async () => {
+      if (running) return; running = true; const sp = Math.max(1, Math.min(10, +$('#vS').value || 1)); const car = $('#car'), W = car.parentElement.clientWidth - 70;
+      let x = 0, t = 0; car.style.left = '0px';
+      while (x < W) { x += sp * 4; t++; car.style.left = Math.min(x, W) + 'px'; await wait(30); }
+      running = false; raced.add(sp); $('#rt').textContent = `السرعة ${ar(sp)} ← ${ar(t)} خطوة`;
+      if (raced.size >= 2) {
+        fbox($('.pfb', box), 'غيّرت قيمة صندوق واحد (السرعة)… فتغيّرت اللعبة كلها!', 'ok');
+        practiceQ(ctx, '<span class="ltr" style="font-family:var(--f-mono)">النقاط = ٢٠<br>النقاط = النقاط − ٥<br>النقاط = النقاط × ٢</span><br>ما قيمة <b>النقاط</b> في النهاية؟', [{ t: '٣٠', ok: true, r: '٢٠ − ٥ = ١٥، ثم ١٥ × ٢ = ٣٠. الصندوق يحفظ آخر قيمة.' }, { t: '٤٠', r: 'لا تنسَ السطر الثاني: نقصت ٥ أولًا.' }, { t: '٢٠', r: 'القيمة تغيّرت مرتين بعد السطر الأول!' }], () => ctx.complete());
+      } else fbox($('.pfb', box), 'الآن غيّر قيمة <b>السرعة</b> وأعد السباق.', 'info');
+    };
+  }
+};
+
+/* ---------- t6: input → processing → output ---------- */
+MECH.io = ctx => {
+  const runs = new Set();
+  ctx.host.innerHTML = `<div class="machine">
+    <div class="mstep"><h4>📥 المدخلات</h4><label class="small" for="iN">ما اسمك؟</label><input class="field" id="iN" value="سارة"><label class="small" for="iA">كم عمرك؟</label><input class="field" id="iA" type="number" value="13" min="1" max="99"></div>
+    <div class="marrow">←</div>
+    <div class="mstep proc"><h4>⚙️ المعالجة</h4><div class="small" id="pp" style="line-height:1.9">العمر بعد ٥ سنوات = العمر + ٥</div></div>
+    <div class="marrow">←</div>
+    <div class="mstep"><h4>📤 المخرجات</h4><div class="screen" id="os">…</div></div></div>
+    <div class="row c"><button class="btn emerald" id="go">▶ شغّل الآلة</button></div><div id="sortbox"></div>`;
+  $('#go').onclick = async () => {
+    const n = ($('#iN').value || '').trim() || 'صديقي', a = parseInt($('#iA').value, 10) || 0;
+    $('#os').textContent = '…'; $('#pp').innerHTML = `العمر بعد ٥ سنوات = ${ar(a)} + ٥`; sfx.step(); await wait(600);
+    $('#pp').innerHTML += `<br><b style="color:var(--amber)">= ${ar(a + 5)}</b>`; sfx.step(); await wait(500);
+    $('#os').textContent = `مرحبًا يا ${n}! بعد ٥ سنوات سيكون عمرك ${ar(a + 5)} سنة 🎉`; sfx.ok();
+    runs.add(n + '|' + a);
+    if (runs.size === 1) ctx.info('غيّر الاسم أو العمر وشغّل الآلة مرة أخرى. ماذا يتغير؟');
+    if (runs.size === 2) { ctx.say('عندما تغيّرت <b>المدخلات</b> تغيّرت <b>المخرجات</b>، والمعالجة بقيت نفسها!', 'wow'); ctx.reveal(); sortPhase(); }
+  };
+  function sortPhase() {
+    const ITEMS = shuffle([['🎮 ضغطة زر القفز', 'in'], ['🔊 صوت الفوز', 'out'], ['👆 لمس الشاشة', 'in'], ['📺 النقاط على الشاشة', 'out'], ['📳 اهتزاز الجهاز', 'out'], ['⌨️ كتابة اسمك', 'in']]);
+    let i = 0;
+    const show = () => {
+      if (i >= ITEMS.length) { $('#sortbox').innerHTML = ''; ctx.ok('ممتاز! كل لعبة تسمع منك (Input) ثم ترد عليك (Output).'); ctx.complete(); return; }
+      $('#sortbox').innerHTML = `<div class="stage" style="margin-top:14px;text-align:center"><span class="lbl">في لعبة على الجوال: هذا مدخل أم مخرج؟ (${ar(i + 1)}/${ar(ITEMS.length)})</span><div class="bigq" style="font-size:1.5rem">${ITEMS[i][0]}</div>
+        <div class="row c"><button class="btn royal" data-a="in">📥 مدخل Input</button><button class="btn emerald" data-a="out">📤 مخرج Output</button></div></div>`;
+      $('#sortbox').onclick = e => { const b = e.target.closest('[data-a]'); if (!b) return; if (b.dataset.a === ITEMS[i][1]) { sfx.ok(); ctx.clear(); i++; show(); } else ctx.fail(ITEMS[i][1] === 'in' ? 'هذا شيء <b>أنت</b> تعطيه للعبة.' : 'هذا شيء <b>اللعبة</b> تعطيه لك.', { noCheck: true }); };
+    };
+    show();
+  }
+};
+
+/* ---------- t7: bug hunt (number, condition, order) ---------- */
+function squareSVG(sides) {
+  const pts = [[30, 110], [110, 110], [110, 30], [30, 30], [30, 110]].slice(0, sides + 1);
+  return `<svg viewBox="0 0 140 140" width="140" height="140" role="img" aria-label="رسم"><rect x="0" y="0" width="140" height="140" rx="14" fill="#F7FAFF"/><polyline points="${pts.map(p => p.join(',')).join(' ')}" fill="none" stroke="#1F4FD8" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+}
+MECH.bugHunt = ctx => {
+  const P = [
+    { goal: 'ارسم <b>مربعًا</b> مغلقًا', lines: ['<span class="kw">كرر</span> ٣ مرات:', 'ارسم ضلعًا', 'استدر ٩٠°'], ind: [0, 1, 1], bug: 0,
+      run: f => f ? squareSVG(4) : squareSVG(3), fix: ['غيّر ٣ إلى ٤', 'غيّر ٩٠° إلى ٤٥°', 'احذف «استدر»'], ok: 0, why: 'المربع له ٤ أضلاع، والحلقة تكررت ٣ مرات فقط. خطأ في <b>رقم</b>.' },
+    { goal: 'شغّل المكيّف عندما يكون الجو <b>حارًا</b> (الحرارة ٣٨°)', lines: ['<span class="vr">الحرارة</span> = ٣٨', '<span class="kw">إذا</span> <span class="vr">الحرارة</span> &lt; ٣٠:', 'شغّل المكيّف ❄️'], ind: [0, 0, 1], bug: 1,
+      run: f => `<div class="out">${f ? 'المكيّف يعمل ❄️😌' : 'المكيّف مطفأ… والجو ٣٨° 🥵'}</div>`, fix: ['غيّر &lt; إلى &gt;', 'غيّر ٣٨ إلى ٢٠', 'احذف السطر الأول'], ok: 0, why: 'الشرط معكوس! «أصغر من ٣٠» بدل «أكبر من ٣٠». خطأ في <b>علامة المقارنة</b>.' },
+    { goal: 'اطبع مجموع ١٠ و ٢٠ (يجب أن يظهر <b>٣٠</b>)', lines: ['<span class="vr">المجموع</span> = ٠', 'اطبع <span class="vr">المجموع</span>', '<span class="vr">المجموع</span> = ١٠ + ٢٠'], ind: [0, 0, 0], bug: 1,
+      run: f => `<div class="out">${f ? '٣٠ ✅' : '٠ ❓'}</div>`, fix: ['انقل «اطبع» إلى آخر البرنامج', 'غيّر ٠ إلى ٣٠', 'احذف السطر الثالث'], ok: 0, why: 'البرنامج طبع قبل أن يحسب! خطأ في <b>الترتيب</b>.' }
+  ];
+  let k = 0;
+  function show() {
+    const p = P[k]; let ran = false, found = false, fixed = false;
+    ctx.host.innerHTML = `<div class="sorthead" style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px"><span class="tag am">الحشرة ${ar(k + 1)} من ${ar(P.length)}</span><span class="chip">🐞 اصطدت: ${ar(k)}</span></div>
+      <p class="bigq" style="margin-top:8px">🎯 المطلوب: ${p.goal}</p>
+      <div class="two"><div><span class="lbl" id="md">١. شغّل البرنامج</span><div class="code" id="cd"></div><div class="row"><button class="btn emerald" id="run">▶ شغّل</button></div><div id="fx"></div></div>
+      <div><span class="lbl">الناتج</span><div class="stage" id="res" style="display:grid;place-items:center;min-height:160px"><span class="muted">لم يُشغَّل بعد</span></div></div></div>`;
+    const draw = () => {
+      let L = p.lines.map((t, i) => [t, p.ind[i], i]);
+      if (fixed && k === 2) L = [L[0], L[2], L[1]];
+      if (fixed && k === 0) L[0][0] = '<span class="kw">كرر</span> ٤ مرات:';
+      if (fixed && k === 1) L[1][0] = '<span class="kw">إذا</span> <span class="vr">الحرارة</span> &gt; ٣٠:';
+      $('#cd').innerHTML = L.map(([t, ind, i], n) => `<div class="cl${ind ? ' ind' : ''}${ran && !found ? ' pick' : ''}" data-i="${i}"><span class="n">${ar(n + 1)}</span>${t}</div>`).join('');
+    };
+    draw();
+    $('#run').onclick = async () => {
+      $('#res').innerHTML = '<span class="muted">…</span>'; for (const l of $$('#cd .cl')) { l.classList.add('on'); sfx.step(); await wait(300); l.classList.remove('on'); }
+      $('#res').innerHTML = p.run(fixed);
+      if (fixed) { ctx.ok('البرنامج يعمل كما هو مطلوب ✓'); k++; if (k < P.length) later(() => { ctx.clear(); show(); }, 1500); else { ctx.reveal(); ctx.complete(); } return; }
+      if (!ran) { ran = true; $('#md').textContent = '٢. 🔍 اضغط على السطر المسبب للخطأ'; draw(); ctx.say('النتيجة ليست كما طلبنا! 🤔 قارن المطلوب بالناتج… ثم ابحث.', 'think'); }
+    };
+    $('#cd').onclick = e => {
+      const l = e.target.closest('.cl'); if (!l || !ran || found) return; const i = +l.dataset.i;
+      if (i === p.bug) {
+        found = true; ctx.bug(); draw(); $$('#cd .cl').find(x => +x.dataset.i === i).classList.add('hit');
+        ctx.say('لقد وجدت Bug! 🐞', 'wow'); fbox(ctx.fbEl, p.why, 'ok', '🐞'); $('#md').textContent = '٣. أصلح الخطأ ثم شغّل مرة أخرى';
+        $('#fx').innerHTML = `<div class="cards" style="margin-top:12px;flex-direction:column;align-items:stretch">${p.fix.map((f, j) => `<button class="card" data-j="${j}">${f}</button>`).join('')}</div>`;
+        $('#fx').onclick = ev => { const b = ev.target.closest('.card'); if (!b || b.disabled) return; if (+b.dataset.j === p.ok) { fixed = true; draw(); $('#fx').innerHTML = ''; ctx.info('أصلحته! الآن شغّل البرنامج للتأكد ▶'); } else { b.classList.add('bad'); b.disabled = true; ctx.fail('هذا التغيير لا يحل المشكلة، وقد يصنع مشكلة جديدة!', { noCheck: true }); } };
+      } else { l.classList.add('miss'); later(() => l.classList.remove('miss'), 700); ctx.fail(`السطر ${l.querySelector('.n').textContent} سليم ✓ ابحث في سطر آخر.`, { noCheck: true }); }
+    };
+  }
+  show();
+};
+
+/* ---------- final mission: the digital city (all concepts) ---------- */
+MECH.final = ctx => {
+  const CH = ['الخوارزمية', 'التكرار', 'الشرط IF', 'IF / ELSE', 'المتغير', 'صيد الخطأ', 'التشغيل النهائي'];
+  const prog = {};
+  let c = 0;
+  const head = () => `<div class="chap">${CH.map((_, i) => `<i class="${i < c ? 'done' : i === c ? 'cur' : ''}"></i>`).join('')}</div><span class="eyebrow">الفصل ${ar(c + 1)} من ${ar(CH.length)} · ${CH[c]}</span>`;
+  const next = () => { c++; ctx.clear(); sfx.ok(); later(chapter, 500); };
+  function chapter() {
+    [ch1, ch2, ch3, ch4, ch5, ch6, ch7][c]();
+    later(() => ctx.host.scrollIntoView({ behavior: REDUCE ? 'auto' : 'smooth', block: 'start' }), 100);
+  }
+
+  function ch1() {
+    ctx.say('أولًا: خطة المهمة. رتّب خطوات توصيل نواة الطاقة.', 'think');
+    const items = [{ id: 0, t: '🔋 التقط نواة الطاقة' }, { id: 1, t: '🚶 تحرّك نحو مركز النظام' }, { id: 2, t: '🔌 ضع النواة في المركز' }, { id: 3, t: '⚡ شغّل النظام' }];
+    ctx.host.innerHTML = head() + '<div id="bd" style="margin-top:10px"></div><div class="row"><button class="btn emerald" id="ck" disabled>تحقّق ✓</button></div>';
+    let bd = null; bd = orderBuilder($('#bd'), items, (s, p) => { $('#ck').disabled = p.length > 0; });
+    $('#ck').onclick = () => {
+      bd.unmark(); let ok = true; bd.seq.forEach((it, i) => { bd.mark(i, it.id === i ? 'ok' : 'bad'); if (it.id !== i) ok = false; });
+      if (ok) { bd.locked = true; prog.algo = items.map(x => x.t); ctx.ok('خطة واضحة ومرتّبة ✓'); next(); } else ctx.fail('بعض الخطوات في غير مكانها (الحمراء). هل يمكن وضع النواة قبل التقاطها؟', { noCheck: true });
+    };
+  }
+  function ch2() {
+    ctx.say('الطريق إلى المركز مستقيم: <b>٦ مربعات</b>. استخدم حلقة بدل ٦ أوامر.', 'happy');
+    const W = 7;
+    ctx.host.innerHTML = head() + `<div style="margin-top:12px" id="g"></div>
+      <div class="loopcard" style="max-width:420px;margin-top:14px"><div class="lh">🔁 كرر <span class="counter"><button id="mn" aria-label="أقل">−</button><b id="nv">١</b><button id="pl" aria-label="أكثر">+</button></span> مرات</div><div class="lb"><span class="blk" style="cursor:default">➡️ يمين</span></div></div>
+      <div class="row"><button class="btn emerald" id="go">▶ تحرّك</button></div>`;
+    const L = { w: W, h: 1, start: [0, 0], goal: [6, 0], walls: [] };
+    const g = makeGrid($('#g'), L, { goalIcon: '🏛️', cls: 'city' });
+    let n = 1, busy = false;
+    const setN = v => { n = Math.max(1, Math.min(9, v)); $('#nv').textContent = ar(n); };
+    $('#mn').onclick = () => setN(n - 1); $('#pl').onclick = () => setN(n + 1);
+    $('#go').onclick = async () => {
+      if (busy) return; busy = true;
+      const r = await g.run(Array(n).fill('R'), null, 260); busy = false;
+      if (r.ok) { prog.loop = n; ctx.ok(`وصل! «كرر ${ar(n)} مرات» بدل ${ar(n)} أوامر.`); next(); }
+      else ctx.fail(r.why === 'short' ? 'توقف الروبوت قبل المركز. زِد التكرار.' : 'تجاوز الروبوت المدينة! قلّل التكرار.', { noCheck: true });
+    };
+  }
+  function ch3() {
+    ctx.say('في الطريق إشارة مرور 🚦. علّمني متى أتوقف!', 'think');
+    ctx.host.innerHTML = head() + `<div class="ruleslot" style="margin-top:12px"><span>إذا</span><span class="drop" id="dz">اختر الشرط</span><span>← قف 🛑</span></div>
+      <div class="cards" style="margin-top:12px" id="cs"><button class="card" data-k="red">🔴 الإشارة حمراء</button><button class="card" data-k="green">🟢 الإشارة خضراء</button><button class="card" data-k="hungry">🍔 الروبوت جائع</button></div>`;
+    $('#cs').onclick = async e => {
+      const b = e.target.closest('.card'); if (!b || b.disabled) return;
+      if (b.dataset.k === 'red') {
+        $('#dz').textContent = '🔴 الإشارة حمراء'; $('#dz').classList.add('filled'); $$('#cs .card').forEach(x => x.disabled = true); b.classList.add('ok');
+        prog.if = 'الإشارة حمراء'; ctx.ok('الإشارة الآن حمراء ← الشرط صحيح ← توقّف الروبوت 🛑. وعندما تصبح خضراء سيكمل.'); later(next, 1400);
+      } else { b.classList.add('bad'); b.disabled = true; ctx.fail(b.dataset.k === 'green' ? 'نتوقف عند الأخضر؟ ستتعطل المدينة كلها 🚗🚗🚗' : 'هذا لا علاقة له بالمرور 😄', { noCheck: true }); }
+    };
+  }
+  function ch4() {
+    ctx.say('وصلت إلى باب المركز. الحارس يطلب <b>بطاقة دخول</b>. ماذا أفعل إن لم تكن معي؟', 'think');
+    ctx.host.innerHTML = head() + `<div class="code" style="margin-top:12px"><div class="cl"><span class="kw">إذا</span> معك بطاقة دخول:</div><div class="cl ind">ادخل المركز 🏛️</div><div class="cl"><span class="kw">وإلا</span>:</div><div class="cl ind" id="el"><span class="drop" style="min-width:120px;color:var(--term-dim)">؟</span></div></div>
+      <div class="cards" style="margin-top:12px" id="cs"><button class="card" data-k="ask">🪪 اطلب بطاقة من الحارس</button><button class="card" data-k="in">🚪 ادخل المركز</button><button class="card" data-k="break">🔨 اكسر الباب</button></div>`;
+    $('#cs').onclick = e => {
+      const b = e.target.closest('.card'); if (!b || b.disabled) return;
+      if (b.dataset.k === 'ask') { $('#el').textContent = 'اطلب بطاقة من الحارس 🪪'; b.classList.add('ok'); $$('#cs .card').forEach(x => x.disabled = true); prog.ifelse = true; ctx.ok('طريقان واضحان: معي بطاقة ← أدخل، وإلا ← أطلب بطاقة.'); later(next, 1300); }
+      else { b.classList.add('bad'); b.disabled = true; ctx.fail(b.dataset.k === 'in' ? 'إذا دخل في الحالتين، فما فائدة الشرط؟ 🤔' : 'الحارس لا يحب هذا الحل أبدًا 😅', { noCheck: true }); }
+    };
+  }
+  function ch5() {
+    ctx.say('كل حركة تستهلك <b>وحدة بطارية</b>. الرحلة كلها ٨ حركات. كم يجب أن تكون قيمة البطارية عند البداية؟', 'think');
+    ctx.host.innerHTML = head() + `<div class="two" style="margin-top:12px"><div><div class="vars"><div class="vbox" id="vb"><div class="vn">البطارية</div><div class="vv num" id="vv">٣</div></div></div>
+      <input type="range" id="br" min="1" max="12" value="3" aria-label="قيمة البطارية" style="margin-top:12px"><div class="row"><button class="btn emerald" id="go">▶ اختبر الرحلة</button></div></div>
+      <div><div class="code" id="lg" style="min-height:160px"><div class="cl" style="color:var(--term-dim)">سجل البطارية</div></div></div></div>`;
+    let b = 3, busy = false;
+    $('#br').oninput = () => { b = +$('#br').value; $('#vv').textContent = ar(b); };
+    $('#go').onclick = async () => {
+      if (busy) return; busy = true; let v = b; const lg = $('#lg'); lg.innerHTML = `<div class="cl"><span class="vr">البطارية</span> = ${ar(v)}</div>`;
+      for (let i = 1; i <= 8; i++) {
+        if (v <= 0) { lg.insertAdjacentHTML('beforeend', `<div class="cl miss">الحركة ${ar(i)}: البطارية فارغة 🪫 توقّف الروبوت!</div>`); break; }
+        v--; $('#vv').textContent = ar(v); const vb = $('#vb'); vb.classList.remove('pulse'); void vb.offsetWidth; vb.classList.add('pulse');
+        lg.insertAdjacentHTML('beforeend', `<div class="cl">الحركة ${ar(i)}: <span class="vr">البطارية</span> = <span class="vr">البطارية</span> − ١ = ${ar(v)}</div>`); sfx.step(); await wait(260);
+      }
+      busy = false;
+      if (b >= 8) { prog.var = b; ctx.ok(`البطارية بدأت بـ ${ar(b)} وانتهت بـ ${ar(b - 8)}. المتغير تغيّر في كل حركة!`); next(); }
+      else { $('#vv').textContent = ar(b); ctx.fail(`نفدت البطارية بعد ${ar(b)} حركات. الرحلة تحتاج ٨.`, { noCheck: true }); }
+    };
+  }
+  function ch6() {
+    ctx.say('جمعت البرنامج كله… لكن حشرة تسللت إليه! 🐞 اقرأه وجد السطر الخاطئ.', 'wow');
+    const lines = [['<span class="vr">البطارية</span> = ' + ar(prog.var || 8), 0], ['التقط نواة الطاقة 🔋', 0], [`<span class="kw">كرر</span> ${ar(prog.loop || 6)} مرات:`, 0], ['⬅️ تحرّك يسارًا', 1], ['<span class="kw">إذا</span> الإشارة حمراء: قف 🛑', 1], ['<span class="kw">إذا</span> معك بطاقة: ادخل المركز، <span class="kw">وإلا</span>: اطلب بطاقة', 0], ['ضع النواة في المركز ثم شغّل النظام ⚡', 0]];
+    const BUG = 3;
+    ctx.host.innerHTML = head() + `<p class="small muted" style="margin-top:8px">تذكير: المركز يقع <b>يمين</b> نقطة البداية.</p><div class="code" id="cd">${lines.map(([t, ind], i) => `<div class="cl pick${ind ? ' ind' : ''}" data-i="${i}"><span class="n">${ar(i + 1)}</span>${t}</div>`).join('')}</div>`;
+    let found = false;
+    $('#cd').onclick = e => {
+      const l = e.target.closest('.cl'); if (!l || found) return;
+      if (+l.dataset.i === BUG) { found = true; ctx.bug(); l.classList.add('hit'); l.innerHTML = `<span class="n">${ar(BUG + 1)}</span>➡️ تحرّك يمينًا`; ctx.ok('لقد وجدت Bug! 🐞 الروبوت كان سيمشي في الاتجاه المعاكس. تم الإصلاح.'); later(next, 1500); }
+      else { l.classList.add('miss'); later(() => l.classList.remove('miss'), 700); ctx.fail('هذا السطر سليم ✓', { noCheck: true }); }
+    };
+  }
+  function ch7() {
+    ctx.say('كل شيء جاهز. اضغط الزر… وأعد الحياة إلى النظام! ⚡', 'wow');
+    const steps = ['البطارية = ' + ar(prog.var || 8) + ' 📦', 'التقط نواة الطاقة 🔋', `كرر ${ar(prog.loop || 6)} مرات: ➡️ تحرّك يمينًا 🔁`, 'إذا الإشارة حمراء: قف 🛑 🤔', 'إذا معك بطاقة: ادخل، وإلا: اطلب بطاقة ⚖️', 'ضع النواة في المركز 🔌', 'شغّل النظام ⚡'];
+    ctx.host.innerHTML = head() + `<div class="two" style="margin-top:12px"><div class="code" id="cd">${steps.map((t, i) => `<div class="cl"><span class="n">${ar(i + 1)}</span>${t}</div>`).join('')}</div>
+      <div style="display:flex;flex-direction:column;align-items:center;gap:10px"><div class="core off" id="core"><div class="ring"></div><div class="ring r2"></div><div class="dot"></div></div><div class="bigq" id="cs">النظام متوقف</div></div></div>
+      <div class="row c"><button class="btn lg emerald" id="go">⚡ تشغيل البرنامج النهائي</button></div>`;
+    $('#go').onclick = async () => {
+      $('#go').disabled = true; const ls = $$('#cd .cl');
+      for (const l of ls) { l.classList.add('on'); sfx.step(); await wait(520); l.classList.remove('on'); l.classList.add('hit'); }
+      $('#core').classList.remove('off'); $('#cs').textContent = 'النظام يعمل ✓'; c = CH.length; $('.chap').outerHTML = `<div class="chap">${CH.map(() => '<i class="done"></i>').join('')}</div>`;
+      sfx.win(); burst(); await wait(900); ending();
+    };
+  }
+  function ending() {
+    const lines = ['لقد بدأت تفكر مثل المبرمج.', 'المبرمج لا يحفظ الأوامر فقط…', 'المبرمج يعرف كيف يحوّل المشكلة إلى خطوات،', 'والخطوات إلى قرارات،', 'والقرارات إلى برنامج.'];
+    const ov = document.createElement('div'); ov.className = 'ending'; ov.setAttribute('role', 'dialog'); ov.setAttribute('aria-label', 'النهاية');
+    ov.innerHTML = `<div class="core"><div class="ring"></div><div class="ring r2"></div><div class="dot"></div></div>${lines.map((l, i) => `<div class="line${i === 0 ? ' big' : ''}">${l}</div>`).join('')}<button class="btn amber lg" id="endok" style="opacity:0;transition:opacity .6s">استلم جائزتك 🏆</button>`;
+    document.body.appendChild(ov);
+    const ls = $$('.line', ov);
+    ls.forEach((l, i) => setTimeout(() => l.classList.add('show'), 500 + i * (REDUCE ? 100 : 1300)));
+    setTimeout(() => { $('#endok').style.opacity = 1; $('#endok').focus(); }, 600 + ls.length * (REDUCE ? 100 : 1300));
+    $('#endok').onclick = () => { ov.remove(); ctx.say('أنا ما حفظت البرمجة… أنا فهمت كيف يفكر البرنامج. 🧠', 'happy'); ctx.complete(); };
+  }
+  chapter();
+};
+
+/* ---------- intro: the broken system ---------- */
+ROUTES.intro = async () => {
+  app.innerHTML = `<div class="intro">
+    <div class="logo"><span class="pre">مهمة:</span><span class="mark">عقل المبرمج</span></div>
+    <div class="core off" id="core"><div class="ring"></div><div class="ring r2"></div><div class="dot"></div></div>
+    <div class="terminal" aria-live="polite"><div class="bar"><i></i><i></i><i></i></div><div id="tl"></div></div>
+    <div id="story" hidden style="max-width:560px">
+      <p style="font-size:1.15rem;font-weight:700">هناك نظام رقمي ذكي تعطّل، وأنت الآن المبرمج الذي سيعيد تشغيله.</p>
+      <p class="muted">لن تستطيع إصلاح النظام إلا إذا تعلّمت كيف يفكّر المبرمج.</p>
+      <label class="lbl" for="nm" style="margin-top:14px">ما اسمك أيها المبرمج؟</label>
+      <input class="field" id="nm" maxlength="24" value="${esc(S.name)}" placeholder="اكتب اسمك" style="max-width:320px;text-align:center;font-size:1.1rem" autocomplete="given-name">
+      <div class="row c"><button class="btn lg royal" id="start">ابدأ المغامرة ←</button></div>
+    </div></div>`;
+  const L = [['> تشغيل النظام «النواة»…', ''], ['⚠ خطأ: وحدة التفكير المنطقي متوقفة', 'err'], ['⚠ خطأ: ملفات الخوارزميات مفقودة', 'err'], ['⚠ خطأ: القرارات لا تعمل', 'err'], ['> البحث عن مبرمج قادر على الإصلاح…', ''], ['✓ تم العثور على مبرمج: أنت', 'ok']];
+  const T = $('#tl');
+  for (const [t, c] of L) {
+    const s = document.createElement('span'); s.className = 'ln cur ' + c; T.appendChild(s);
+    for (let i = 1; i <= t.length; i++) { s.textContent = t.slice(0, i); if (i % 3 === 0) await wait(REDUCE ? 0 : 14); }
+    s.classList.remove('cur'); if (c === 'err') sfx.oops(); await wait(REDUCE ? 50 : 260);
+  }
+  $('#story').hidden = false; $('#nm').focus();
+  $('#start').onclick = () => { S.name = ($('#nm').value || '').trim(); S.intro = true; touchStreak(); save(); sfx.win(); go('home'); };
+  $('#nm').onkeydown = e => { if (e.key === 'Enter') $('#start').click(); };
+};
+
+/* ---------- home ---------- */
+function gateStats(g) { const l = gateMissions(g); const d = l.filter(m => M(m.id).done).length; return { d, n: l.length, pct: Math.round(d / l.length * 100) }; }
+ROUTES.home = () => {
+  if (!S.intro) return go('intro');
+  const L = levelInfo(), g1 = gateStats('build'), g2 = gateStats('think');
+  const all = CONTENT.missions.length, done = CONTENT.missions.filter(m => M(m.id).done).length, sys = Math.round(done / all * 100);
+  const fin = missionById('final'), finOpen = isUnlocked(fin), finDone = M('final').done;
+  const dailyDone = S.daily.date === today() && S.daily.done;
+  app.innerHTML = hud('مهمة: عقل المبرمج') + `
+    <section class="home-head"><div class="rb idle">${robot(sys >= 100 ? 'happy' : 'wow', 92)}</div>
+      <div><span class="eyebrow">النظام مستعاد بنسبة ${ar(sys)}٪</span><h1>${S.name ? `أهلًا يا ${esc(S.name)}، ` : ''}اختر مهمتك</h1>
+      <p class="muted" style="margin:0">${sys >= 100 ? 'أعدت تشغيل النظام بالكامل. أنت تفكّر الآن مثل المبرمج 🧠' : 'كل مهمة تنجزها تعيد جزءًا من النظام إلى الحياة.'}</p></div></section>
+    <div class="me">
+      <div class="stat"><span class="l">المستوى ${ar(L.n)}</span><span class="v" style="font-size:1.1rem">${L.title}</span><div class="xpbar"><i style="width:${L.pct}%"></i></div><span class="l" style="margin-top:4px">${L.max ? 'أعلى مستوى!' : `${ar(L.toNext)} ⭐ للمستوى التالي`}</span></div>
+      <div class="stat"><span class="v num">🧠 ${ar(S.logic)}</span><span class="l">نقاط التفكير المنطقي</span></div>
+      <div class="stat"><span class="v num">🐞 ${ar(S.bugs)}</span><span class="l">أخطاء اكتشفتها</span></div>
+      <div class="stat"><span class="v num">🔥 ${ar(S.streak.count || 0)}</span><span class="l">أيام متتالية</span></div></div>
+    <div class="gates">
+      <button class="gate g1" data-go="build"><span class="portal"></span><span class="gicon">🧩</span><span class="gk">البوابة الأولى</span><h2>كيف يصنع المبرمج برنامجًا؟</h2><span class="gs">من فهم المشكلة… إلى تحسين الحل</span>
+        <span class="gp"><span class="bar"><i style="width:${g1.pct}%"></i></span><b>${ar(g1.d)}/${ar(g1.n)}</b></span></button>
+      <button class="gate g2" data-go="think"><span class="portal"></span><span class="gicon">⚙️</span><span class="gk">البوابة الثانية</span><h2>كيف يفكّر البرنامج؟</h2><span class="gs">Loop · If · Else · المتغيرات · الأخطاء</span>
+        <span class="gp"><span class="bar"><i style="width:${g2.pct}%"></i></span><b>${ar(g2.d)}/${ar(g2.n)}</b></span></button>
+    </div>
+    <div class="side-row">
+      <button class="tile${dailyDone ? ' done' : ''}" data-go="daily"><span class="ti">🎯</span><span><b>تحدي اليوم</b><span>${dailyDone ? 'أنجزته اليوم ✓ عُد غدًا' : 'لغز سريع جديد كل يوم · +٣٠ ⭐'}</span></span></button>
+      <button class="tile${finDone ? ' done' : ''}" ${finOpen ? 'data-go="m:final"' : 'disabled style="opacity:.6;cursor:not-allowed"'}><span class="ti">🧠</span><span><b>مهمة المبرمج الأخيرة</b><span>${finDone ? 'أعدت تشغيل النظام ✓' : finOpen ? 'كل شيء جاهز… أعد تشغيل النظام!' : '🔒 تُفتح بعد إكمال البوابتين'}</span></span></button>
+    </div>
+    <div class="row c" style="margin-top:26px"><button class="btn ghost sm" data-go="intro">📜 قصة النظام</button><button class="btn ghost sm" data-go="teacher">👩‍🏫 لوحة المعلم</button></div>`;
+};
+
+/* ---------- gate maps ---------- */
+function mapNode(m, i, label) {
+  const r = M(m.id), open = isUnlocked(m);
+  return `<li><button class="node${r.done ? ' done' : ''}${open ? '' : ' locked'}" ${open ? `data-go="m:${m.id}"` : 'disabled'}>
+    <span class="ic">${open ? m.icon : '🔒'}</span><span class="nb"><span class="stepno">${label}</span><b>${m.title}</b><span>${m.sub}</span></span>
+    <span class="st">${r.done ? '★'.repeat(r.stars) : open ? '▶' : ''}</span></button></li>`;
+}
+ROUTES.build = () => {
+  const list = gateMissions('build'), s = gateStats('build');
+  const names = { '١': 'فهم المشكلة', '٢': 'المدخلات والمخرجات', '٣': 'تصميم الخوارزمية', '٤': 'كتابة البرنامج', '٥': 'اختبار البرنامج', '٦': 'اكتشاف الأخطاء وتصحيحها', '٧': 'تحسين الحل' };
+  app.innerHTML = hud('🧩 كيف يصنع المبرمج برنامجًا؟', 'home') + guide(`كل برنامج في العالم يمر بهذه <b>المراحل السبع</b> بالترتيب. لن تُفتح المهمة التالية إلا بعد أن تجرّب التي قبلها. (${ar(s.d)} من ${ar(s.n)})`, 'happy') +
+    `<ol class="path">${list.map((m, i) => mapNode(m, i, `المرحلة ${m.stage} · ${names[m.stage]}`)).join('')}</ol>`;
+};
+ROUTES.think = () => {
+  const list = gateMissions('think'), s = gateStats('think');
+  const W = { '🔁': 'عالم LOOP', '🤔': 'عالم IF', '⚖️': 'عالم IF / ELSE', '🔀': 'عالم IF / ELSE IF', '📦': 'عالم المتغيرات', '🎮': 'عالم المدخلات والمخرجات', '🐞': 'عالم اكتشاف الأخطاء' };
+  app.innerHTML = hud('⚙️ كيف يفكّر البرنامج؟', 'home') + guide(`هنا لن أشرح لك شيئًا قبل أن تلعب. <b>العب أولًا</b>… وستكتشف المفهوم بنفسك. (${ar(s.d)} من ${ar(s.n)})`, 'wow') +
+    `<ol class="path">${list.map((m, i) => mapNode(m, i, `${m.stage} ${W[m.stage]}`)).join('')}</ol>`;
+};
+
+/* ---------- daily challenge ---------- */
+const DAILY = [
+  { q: '<span class="ltr">كرر ٣ مرات: صفّق 👏 مرتين</span><br>كم تصفيقة؟', o: ['٣', '٥', '٦'], a: 2, w: '٣ دورات × تصفيقتين = ٦.' },
+  { q: 'س = ٤ ثم س = س + ٣ ثم س = س × ٢<br>ما قيمة س؟', o: ['١١', '١٤', '٨'], a: 1, w: '(٤ + ٣) × ٢ = ١٤.' },
+  { q: 'إذا الحرارة ≥ ٣٠: «حار» وإلا: «لطيف»<br>الحرارة ٣٠. ماذا يُطبع؟', o: ['حار', 'لطيف', 'لا شيء'], a: 0, w: '٣٠ ≥ ٣٠ صحيحة.' },
+  { q: 'إذا ≥ ٩٠: «ذهبي» وإلا إذا ≥ ٧٠: «فضي» وإلا: «برونزي»<br>النقاط ٨٥؟', o: ['ذهبي', 'فضي', 'برونزي'], a: 1, w: 'أول شرط صحيح: ٨٥ ≥ ٧٠ ← فضي.' },
+  { q: 'روبوت في الخانة ٢. الأوامر: يمين، يمين، يسار.<br>أين ينتهي؟', o: ['الخانة ٣', 'الخانة ٤', 'الخانة ٥'], a: 0, w: '٢ + ١ + ١ − ١ = ٣.' },
+  { q: 'أي واحد من هذه <b>ليس</b> خوارزمية؟', o: ['وصفة كعكة', 'خطوات تسجيل الدخول', 'لون السماء'], a: 2, w: 'لون السماء معلومة، ليس خطوات لحل مشكلة.' },
+  { q: 'كرر طالما العدد &lt; ٥: العدد = العدد + ١<br>بدأ العدد من ٢. كم مرة تكررت الحلقة؟', o: ['٢', '٣', '٥'], a: 1, w: '٢←٣←٤←٥ : ثلاث مرات ثم توقف.' },
+  { q: 'برنامج يطبع المجموع قبل أن يحسبه. ما نوع الخطأ؟', o: ['خطأ في الترتيب', 'خطأ في الشرط', 'لا يوجد خطأ'], a: 0, w: 'الترتيب مهم: نحسب أولًا ثم نطبع.' },
+  { q: 'في لعبة: «النقاط على الشاشة» هي…', o: ['مدخل', 'مخرج', 'متغير لا يظهر'], a: 1, w: 'ما يعرضه البرنامج لك = مخرج.' },
+  { q: 'إذا معك تذكرة <b>و</b> عمرك ≥ ١٢: ادخل<br>معك تذكرة، وعمرك ١٠. هل تدخل؟', o: ['نعم', 'لا'], a: 1, w: '«و» تحتاج الشرطين معًا.' }
+];
+ROUTES.daily = () => {
+  const t = today(); const idx = [...t].reduce((s, ch) => s + ch.charCodeAt(0), 0) % DAILY.length; const D = DAILY[idx];
+  const done = S.daily.date === t && S.daily.done;
+  app.innerHTML = hud('🎯 تحدي اليوم', 'home') + guide(done ? 'أنجزت تحدي اليوم! 🔥 عُد غدًا للغز جديد، وحافظ على سلسلتك.' : 'لغز اليوم! فكّر مثل الحاسب: سطرًا سطرًا. خذ وقتك، لا يوجد مؤقّت ضاغط.', done ? 'happy' : 'think') +
+    `<section class="panel"><span class="eyebrow">${t}</span><div class="bigq" style="margin-top:6px">${D.q}</div><div class="cards" id="dc">${D.o.map((o, i) => `<button class="card" data-i="${i}"${done ? ' disabled' : ''}>${o}</button>`).join('')}</div><div id="fb"></div></section>`;
+  const t0 = Date.now();
+  if (!done) $('#dc').onclick = e => {
+    const b = e.target.closest('.card'); if (!b || b.disabled) return;
+    if (+b.dataset.i === D.a) {
+      b.classList.add('ok'); $$('#dc .card').forEach(x => x.disabled = true);
+      S.daily = { date: t, done: true }; S.xp += 30; S.logic += 1; touchStreak(); save(); sfx.win(); burst();
+      fbox($('#fb'), `${D.w} +٣٠ ⭐ · حللته في ${ar(Math.round((Date.now() - t0) / 1000))} ثانية. 🔥 سلسلتك: ${ar(S.streak.count)} يوم.`, 'ok');
+    } else { b.classList.add('bad'); b.disabled = true; sfx.oops(); fbox($('#fb'), 'ليس هذا. تتبّع السطور واحدًا واحدًا، وجرّب مرة أخرى.', 'bad'); }
+  };
+};
+
+/* ---------- boot ---------- */
+function start() {
+  const h = (location.hash || '').slice(1).replace('-', ':');
+  go(h && h !== 'intro' && S.intro ? h : (S.intro ? 'home' : 'intro'));
+  initCloud();
+}
+function onCloudReady() {
+  const cur = (location.hash || '').slice(1);
+  if (!S.intro) return;
+  if (cur === 'home' || cur === '') go('home');
+  if (cur === 'teacher') go('teacher');
+  pushCloud();
+}
+
+/* ---------- teacher dashboard ----------
+   Reads every student's progress/<id> doc. Only the owner and editors can read them (db rules). */
+function analyze(students) {
+  const ms = CONTENT.missions, byC = {};
+  ms.forEach(m => { (byC[m.concept] = byC[m.concept] || []).push(m.id); });
+  const rows = students.map(s => {
+    const mm = s.missions || {}; const done = ms.filter(m => mm[m.id]?.done).length;
+    const attempts = Object.values(mm).reduce((a, m) => a + (m.attempts || 0), 0);
+    const mastered = [], struggled = [];
+    for (const [c, ids] of Object.entries(byC)) {
+      if (ids.every(id => mm[id]?.done && (mm[id].stars || 0) >= 2)) mastered.push(c);
+      if (ids.some(id => (mm[id]?.fails || 0) >= 3 || (mm[id]?.hints || 0) >= 2)) struggled.push(c);
+    }
+    return { ...s, done, pct: Math.round(done / ms.length * 100), attempts, mastered, struggled, lvl: levelInfo(s.xp || 0) };
+  });
+  const concept = Object.entries(byC).map(([c, ids]) => {
+    let sum = 0, n = 0; rows.forEach(r => ids.forEach(id => { const m = (r.missions || {})[id]; sum += m?.done ? (m.stars || 1) / 3 : 0; n++; }));
+    return { c, v: n ? Math.round(sum / n * 100) : 0 };
+  });
+  const hard = ms.map(m => { let f = 0, n = 0; rows.forEach(r => { const x = (r.missions || {})[m.id]; if (x && x.attempts) { f += x.fails || 0; n++; } }); return { m, v: n ? +(f / n).toFixed(1) : 0, n }; })
+    .filter(x => x.n).sort((a, b) => b.v - a.v).slice(0, 5);
+  return { rows, concept, hard };
+}
+function demoStudents() {
+  const names = ['طالب ١ (مثال)', 'طالب ٢ (مثال)', 'طالب ٣ (مثال)', 'طالب ٤ (مثال)', 'طالب ٥ (مثال)', 'طالب ٦ (مثال)'];
+  return names.map((name, k) => {
+    const missions = {}; const reach = [4, 9, 14, 7, 18, 11][k];
+    CONTENT.missions.slice(0, reach).forEach((m, i) => { const f = (k * 7 + i * 3) % 5; missions[m.id] = { done: true, stars: f > 2 ? 1 : f > 0 ? 2 : 3, attempts: 1 + (f > 2 ? 2 : 0), fails: f, hints: f > 3 ? 2 : f > 1 ? 1 : 0 }; });
+    const xp = Object.values(missions).length * 50; return { name, xp, logic: reach * 2, bugs: Math.floor(reach / 3), missions, updatedAt: Date.now() - k * 36e5 * 5 };
+  });
+}
+let tipEl = null;
+function tip(e, text) { if (!tipEl) { tipEl = document.createElement('div'); tipEl.className = 'tip'; document.body.appendChild(tipEl); } tipEl.textContent = text; tipEl.style.left = e.clientX + 'px'; tipEl.style.top = e.clientY + 'px'; tipEl.hidden = false; }
+document.addEventListener('pointerover', e => { const b = e.target.closest('[data-tip]'); if (b) tip(e, b.dataset.tip); else if (tipEl) tipEl.hidden = true; });
+document.addEventListener('pointermove', e => { if (tipEl && !tipEl.hidden && e.target.closest('[data-tip]')) { tipEl.style.left = e.clientX + 'px'; tipEl.style.top = e.clientY + 'px'; } });
+
+ROUTES.teacher = async (arg) => {
+  const demo = arg === 'demo';
+  app.innerHTML = hud('👩‍🏫 لوحة المعلم', 'home') + '<div id="tv"><section class="panel"><p class="muted">جارٍ تحميل تقدّم الطلاب…</p></section></div>';
+  let students = [], note = '';
+  if (demo) { students = demoStudents(); note = 'بيانات توضيحية لأسماء غير حقيقية، لترى شكل اللوحة. ستظهر بيانات طلابك الحقيقيين هنا عندما يلعبون.'; }
+  else if (!CLOUD.db || !CLOUD.uid) { return renderGate('حفظ التقدّم المشترك غير متاح في هذا العرض. افتح اللعبة من حسابك على claude.ai لترى تقدّم طلابك.'); }
+  else if (!CLOUD.teacher) { return renderGate('هذه اللوحة لصاحب اللعبة والمحررين فقط. تقدّمك أنت محفوظ ويظهر لمعلمك.'); }
+  else {
+    try { const q = await CLOUD.db.collection('progress').get(); students = q.docs.map(d => ({ id: d.id, ...(d.data() || {}) })); }
+    catch (e) { return renderGate('تعذّر تحميل بيانات الطلاب الآن. حاول مرة أخرى بعد قليل.'); }
+    if (!students.length) {
+      $('#tv').innerHTML = `<section class="panel"><h3>لا يوجد طلاب بعد</h3><p class="muted">شارك رابط اللعبة مع طلابك بصلاحية <b>مساهم (Contributor)</b> من قائمة المشاركة. عندما يبدأ أي طالب اللعب، سيظهر تقدّمه هنا تلقائيًا: نسبة الإنجاز، والمفاهيم التي أتقنها، وأين واجه صعوبة.</p>
+        <div class="row"><button class="btn royal" data-go="teacher:demo">اعرض بيانات توضيحية</button><button class="btn ghost" data-go="teacher">↻ تحديث</button></div></section>`;
+      return;
+    }
+  }
+  render(students, note);
+
+  function renderGate(msg) {
+    $('#tv').innerHTML = `<section class="panel"><h3>لوحة المعلم</h3><p class="muted">${msg}</p><div class="row"><button class="btn royal" data-go="teacher:demo">اعرض بيانات توضيحية</button></div></section>`;
+  }
+  function render(list, note) {
+    const A = analyze(list); const R = A.rows.sort((a, b) => b.pct - a.pct);
+    const avg = R.length ? Math.round(R.reduce((s, r) => s + r.pct, 0) / R.length) : 0;
+    const avgM = A.concept.length ? Math.round(A.concept.reduce((s, c) => s + c.v, 0) / A.concept.length) : 0;
+    const totalBugs = R.reduce((s, r) => s + (r.bugs || 0), 0), totalAtt = R.reduce((s, r) => s + r.attempts, 0);
+    $('#tv').innerHTML = `${note ? `<div class="demo-note">⚠️ ${note}</div>` : ''}
+      <div class="tgrid">
+        <div class="stat"><span class="v num">${ar(R.length)}</span><span class="l">طالب</span></div>
+        <div class="stat"><span class="v num">${ar(avg)}٪</span><span class="l">متوسط التقدّم</span></div>
+        <div class="stat"><span class="v num">${ar(avgM)}٪</span><span class="l">متوسط إتقان المفاهيم</span></div>
+        <div class="stat"><span class="v num">${ar(totalAtt)}</span><span class="l">محاولات · 🐞 ${ar(totalBugs)} خطأ مكتشف</span></div></div>
+      <div class="two">
+        <section class="panel"><h3>إتقان كل مفهوم</h3><p class="small muted">متوسط الطلاب، ويُحسب من المهام المكتملة ونجومها</p><div class="bars" style="margin-top:12px">
+          ${A.concept.sort((a, b) => a.v - b.v).map(c => `<div class="hbar" data-tip="${CONCEPTS[c.c]}: ${c.v}٪"><span>${CONCEPTS[c.c]}</span><span class="t"><i style="width:${c.v}%;background:${c.v < 40 ? 'var(--amber)' : 'var(--royal)'}"></i></span><span class="vlab num">${ar(c.v)}٪</span></div>`).join('')}</div>
+          <p class="small muted" style="margin-top:10px">🟧 أقل من ٤٠٪: مفهوم يحتاج مراجعة مع الصف</p></section>
+        <section class="panel"><h3>أكثر التحديات صعوبة</h3><p class="small muted">متوسط المحاولات الخاطئة لكل طالب جرّب المهمة</p><div class="bars" style="margin-top:12px">
+          ${A.hard.length ? (() => { const mx = Math.max(1, ...A.hard.map(h => h.v)); return A.hard.map(h => `<div class="hbar" data-tip="${h.m.title}: ${h.v} محاولة خاطئة في المتوسط"><span>${h.m.icon} ${h.m.title}</span><span class="t"><i style="width:${h.v / mx * 100}%;background:var(--amber)"></i></span><span class="vlab num">${ar(h.v)}</span></div>`).join(''); })() : '<p class="muted">لا توجد بيانات كافية بعد.</p>'}</div></section></div>
+      <section class="panel"><div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap"><h3 style="flex:1">الطلاب</h3>${demo ? '<button class="btn sm ghost" data-go="teacher">رجوع إلى البيانات الحقيقية</button>' : '<button class="btn sm ghost" data-go="teacher">↻ تحديث</button>'}</div>
+        <p class="small muted">اضغط على طالب لترى تفاصيله.</p>
+        <div class="tablewrap"><table class="stable"><thead><tr><th>الطالب</th><th>التقدّم</th><th>المستوى</th><th>أتقن</th><th>واجه صعوبة في</th><th>المحاولات</th></tr></thead><tbody>
+        ${R.map((r, i) => `<tr data-i="${i}"><td><b>${esc(r.name || 'طالب بدون اسم')}</b></td><td class="num">${ar(r.pct)}٪<span class="mini"><i style="width:${r.pct}%"></i></span></td><td>م${ar(r.lvl.n)}</td>
+          <td>${r.mastered.map(c => `<span class="pill2 m">${CONCEPTS[c]}</span>`).join('') || '<span class="muted small">—</span>'}</td><td>${r.struggled.map(c => `<span class="pill2 s">${CONCEPTS[c]}</span>`).join('') || '<span class="muted small">—</span>'}</td><td class="num">${ar(r.attempts)}</td></tr>`).join('')}
+        </tbody></table></div><div id="detail"></div></section>`;
+    $('.stable tbody').onclick = e => {
+      const tr = e.target.closest('tr'); if (!tr) return; $$('.stable tr').forEach(x => x.classList.remove('sel')); tr.classList.add('sel');
+      const r = R[+tr.dataset.i], mm = r.missions || {};
+      $('#detail').innerHTML = `<div class="stage" style="margin-top:14px"><h3>${esc(r.name || 'طالب')} · ${r.lvl.title}</h3><p class="small muted">⭐ ${ar(r.xp || 0)} خبرة · 🧠 ${ar(r.logic || 0)} تفكير منطقي · 🐞 ${ar(r.bugs || 0)} خطأ مكتشف</p>
+        <div class="bars" style="margin-top:10px">${CONTENT.missions.map(m => { const x = mm[m.id]; const v = x?.done ? Math.round((x.stars || 1) / 3 * 100) : 0; return `<div class="hbar" data-tip="${m.title}: ${x ? `${x.attempts || 0} محاولة، ${x.fails || 0} خطأ، ${x.hints || 0} تلميح` : 'لم يبدأ'}"><span>${m.icon} ${m.title}</span><span class="t"><i style="width:${v}%;background:${x && (x.fails || 0) >= 3 ? 'var(--amber)' : 'var(--emerald)'}"></i></span><span class="vlab">${x?.done ? '★'.repeat(x.stars || 1) : x ? '…' : '—'}</span></div>`; }).join('')}</div></div>`;
+    };
+  }
+};
+start();
+</script>
