@@ -1,0 +1,1469 @@
+<title>مغامرات بتّو البرمجية</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+Bhaijaan+2:wght@500;700;800&family=IBM+Plex+Mono:wght@500&family=Readex+Pro:wght@400;500;700&display=swap">
+<style>
+/* Layout: graph-paper school notebook; one centered column of game screens swapped by a tiny router. Single committed light look. */
+:root{
+  --paper:#F6F8FC; --grid:#E2E8F3; --line:#C4CEE2; --ink:#1B2440; --ink-soft:#56607B; --card:#FFFFFF;
+  --blue:#2D5BEF; --blue-tint:#E6EDFF; --orange:#EE6F2D; --orange-tint:#FFEBDD;
+  --yellow:#FFD23F; --yellow-tint:#FFF6D6; --green:#159957; --green-tint:#E1F5EA; --red:#DC3B4F; --red-tint:#FDE6E9;
+  --code-bg:#17203B; --code-fg:#E8EDF9; --code-dim:#8C9BC0;
+  --f-display:"Baloo Bhaijaan 2","Readex Pro",system-ui,sans-serif;
+  --f-body:"Readex Pro","Segoe UI",Tahoma,system-ui,sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+html{direction:rtl}
+body{background-color:var(--paper);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.75;
+  background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);
+  background-size:26px 26px;background-attachment:fixed}
+#app{max-width:880px;margin-inline:auto;padding-inline:16px;padding-block:10px 72px}
+h1,h2,h3{font-family:var(--f-display);line-height:1.25;text-wrap:balance;margin:0}
+p{margin:0 0 .6em}
+mark{background:linear-gradient(transparent 52%,var(--yellow) 52%);color:inherit;padding-inline:2px}
+button{font-family:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--yellow);outline-offset:2px}
+.btn{font-family:var(--f-display);font-weight:700;font-size:1.05rem;line-height:1.2;border:2px solid var(--ink);border-radius:14px;padding:.6em 1.15em;background:var(--card);color:var(--ink);box-shadow:0 4px 0 var(--ink);cursor:pointer;transition:transform .08s,box-shadow .08s}
+.btn:active:not(:disabled){transform:translateY(3px);box-shadow:0 1px 0 var(--ink)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.btn.primary{background:var(--blue);color:#fff}
+.btn.hot{background:var(--orange);color:#fff}
+.btn.stop{background:var(--red);color:#fff}
+.btn.sel{background:var(--yellow)}
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:14px}
+.iconbtn{flex:none;width:44px;height:44px;border-radius:12px;border:2px solid var(--ink);background:var(--card);box-shadow:0 3px 0 var(--ink);font-size:1.15rem;cursor:pointer;display:grid;place-items:center;font-family:var(--f-display);font-weight:800}
+.bar{display:flex;align-items:center;gap:10px;padding-block:6px 16px;position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:linear-gradient(var(--paper) 78%,transparent)}
+.bar h2{flex:1;min-width:0;font-size:clamp(1.05rem,3.6vw,1.35rem)}
+.bar h2::after{content:"";display:block;height:5px;width:64px;border-radius:9px;background:var(--tone);margin-top:4px}
+.t-blue{--tone:var(--blue)}
+.t-orange{--tone:var(--orange)}
+.topline{display:flex;justify-content:flex-end;padding-top:6px}
+/* home */
+.hero{display:grid;grid-template-columns:auto 1fr;gap:22px;align-items:center;padding-block:10px 26px}
+.hero h1{font-size:clamp(2.4rem,8vw,4rem);font-weight:800}
+.hero h1 .hl{color:var(--blue)}
+.eyebrow{font-weight:700;color:var(--orange);font-size:.9rem;letter-spacing:.02em;margin-bottom:2px}
+.lead{font-size:1.08rem;max-width:56ch}
+.hero-bot svg{animation:bob 2.6s ease-in-out infinite}
+@keyframes bob{50%{transform:translateY(-8px)}}
+@media(max-width:560px){.hero{grid-template-columns:1fr;text-align:center}.hero-bot{justify-self:center}.lead{margin-inline:auto}}
+.worlds{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+@media(max-width:640px){.worlds{grid-template-columns:1fr}}
+.world{display:flex;flex-direction:column;align-items:flex-start;gap:6px;text-align:start;border:3px solid var(--ink);border-radius:24px;padding:20px;cursor:pointer;background:var(--card);box-shadow:0 7px 0 var(--ink);transition:transform .12s,box-shadow .12s;position:relative;overflow:hidden}
+.world>*{position:relative;z-index:1}
+.world:hover{transform:translateY(-3px);box-shadow:0 10px 0 var(--ink)}
+.world:active{transform:translateY(4px);box-shadow:0 3px 0 var(--ink)}
+.w-blue{--tone:var(--blue);--tone-ink:#1E44C4;--tint:var(--blue-tint)}
+.w-orange{--tone:var(--orange);--tone-ink:#B4461A;--tint:var(--orange-tint)}
+.w-tag{font-weight:700;font-size:.85rem;color:#fff;background:var(--tone);border-radius:999px;padding:2px 12px}
+.w-title{font-family:var(--f-display);font-size:2rem;font-weight:800;line-height:1.2}
+.w-sub{font-weight:700;color:var(--tone-ink)}
+.w-list{color:var(--ink-soft);font-size:.92rem}
+.world .w-art{position:absolute;z-index:0;inset-inline-end:10px;bottom:-30px;font-family:var(--f-display);font-size:7.5rem;font-weight:800;color:var(--tint);line-height:1;pointer-events:none;direction:ltr}
+.w-prog{width:100%;height:10px;border:2px solid var(--ink);border-radius:999px;overflow:hidden;margin-top:8px;background:var(--paper)}
+.w-prog i{display:block;height:100%;background:var(--tone)}
+.w-cta{font-family:var(--f-display);font-weight:800;color:var(--tone-ink);margin-top:4px}
+.homecert{margin-top:22px;display:flex;justify-content:center}
+/* maps */
+.track{list-style:none;margin:0 0 18px;padding:0;display:flex;flex-direction:column;gap:12px;position:relative}
+.track::before{content:"";position:absolute;inset-inline-start:27px;top:24px;bottom:24px;border-inline-start:3px dashed var(--line)}
+.station{width:100%;display:grid;grid-template-columns:56px 1fr auto;gap:14px;align-items:center;text-align:start;background:var(--card);border:2px solid var(--ink);border-radius:18px;padding:12px 14px;cursor:pointer;box-shadow:0 4px 0 var(--ink);position:relative}
+.station:hover{background:var(--tint)}
+.num{width:56px;height:56px;border-radius:50%;display:grid;place-items:center;font-family:var(--f-display);font-weight:800;font-size:1.6rem;background:var(--paper);border:3px solid var(--tone);color:var(--ink)}
+.station.done .num{background:var(--tone);color:#fff}
+.st-body{display:flex;flex-direction:column;min-width:0}
+.st-body b{font-family:var(--f-display);font-size:1.2rem;line-height:1.35}
+.st-body span{color:var(--ink-soft);font-size:.93rem}
+.st-body small{color:var(--ink-soft);font-size:.82rem;margin-top:2px}
+.st-side{display:flex;flex-direction:column;align-items:flex-end;gap:2px}
+.gtag{font-size:.78rem;font-weight:700;background:var(--tint);color:var(--tone-ink);border-radius:999px;padding:1px 10px;white-space:nowrap}
+.stars{color:#E3A000;letter-spacing:2px;font-size:1rem}
+.stars .dim{color:var(--line)}
+@media(max-width:520px){.station{grid-template-columns:46px 1fr}.num{width:46px;height:46px;font-size:1.3rem}.st-side{grid-column:2;flex-direction:row;align-items:center;gap:8px}.track::before{inset-inline-start:22px}}
+.sect{font-size:1.3rem;margin:10px 0 10px}
+.chant{display:flex;flex-wrap:wrap;gap:8px;align-items:center;font-family:var(--f-display);font-weight:800;font-size:1.25rem}
+.chant span{background:var(--yellow);border:2px solid var(--ink);border-radius:10px;padding:2px 12px}
+.chant i{font-style:normal;color:var(--ink-soft)}
+.boss{width:100%;text-align:start;display:flex;flex-direction:column;gap:2px;background:var(--ink);color:#fff;border:3px solid var(--ink);border-radius:20px;padding:16px 18px;cursor:pointer;box-shadow:0 6px 0 var(--orange);margin-bottom:18px}
+.boss b{font-family:var(--f-display);font-size:1.5rem}
+.boss-k{color:var(--yellow);font-weight:700;font-size:.85rem}
+.tablewrap{overflow-x:auto}
+.dict{width:100%;border-collapse:collapse;min-width:520px;font-size:.93rem}
+.dict th,.dict td{padding:8px 10px;border-bottom:1px solid var(--line);text-align:start;vertical-align:top}
+.dict th{font-family:var(--f-display);font-size:1rem}
+.dict code{font-family:var(--f-mono);direction:ltr;display:inline-block;background:var(--paper);border:1px solid var(--line);border-radius:6px;padding:0 6px;font-size:.85rem}
+/* shared pieces */
+.talk{display:flex;gap:12px;align-items:flex-end;margin-block:4px 18px}
+.talk-bot{flex:none}
+.bubble{flex:1;min-width:0;background:var(--card);border:2px solid var(--ink);border-radius:18px 18px 4px 18px;padding:12px 16px}
+.panel{background:var(--card);border:2px solid var(--ink);border-radius:20px;padding:18px;margin-block:0 18px;box-shadow:0 6px 0 rgba(27,36,64,.12)}
+.panel h3{font-size:1.25rem;margin-bottom:6px}
+.pill{display:inline-block;background:var(--ink);color:#fff;border-radius:999px;padding:0 12px;font-size:.82rem;margin-inline-end:6px;font-weight:700}
+.task{font-size:1.1rem}
+.hint{color:var(--ink-soft);font-size:.92rem;margin:4px 0 12px}
+.lbl{font-weight:700;font-size:.85rem;color:var(--ink-soft);margin-bottom:6px}
+.empty{color:var(--ink-soft);font-size:.9rem}
+.q{font-weight:700;font-size:1.08rem;margin-top:10px}
+.fb{margin-top:12px;padding:10px 14px;border-radius:12px;font-weight:500;border:2px solid}
+.fb.ok{background:var(--green-tint);color:#0D5F35;border-color:var(--green)}
+.fb.bad{background:var(--red-tint);color:#8E1A2B;border-color:var(--red)}
+.chip{font:inherit;font-weight:500;background:var(--card);border:2px solid var(--ink);border-radius:12px;padding:6px 12px;cursor:pointer;box-shadow:0 3px 0 var(--ink);text-align:start}
+.chip.sel,.chip.on{background:var(--yellow)}
+.chip.ok{background:var(--green-tint);border-color:var(--green)}
+.chip.bad{background:var(--red-tint);border-color:var(--red)}
+.chips{display:flex;flex-wrap:wrap;gap:8px;min-height:44px;margin-bottom:14px}
+.bins{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+@media(max-width:560px){.bins{grid-template-columns:1fr}}
+.bin{border:2px dashed var(--line);border-radius:16px;padding:10px;min-height:110px;cursor:pointer;background:var(--paper);display:flex;flex-direction:column}
+.bin small{color:var(--ink-soft);font-size:.82rem}
+.bin.ready{border-color:var(--blue);background:var(--blue-tint)}
+.bin-items{display:flex;flex-wrap:wrap;gap:4px;margin-top:6px}
+.bin-items .chip{cursor:default;box-shadow:none;font-size:.82rem;padding:2px 8px;background:var(--green-tint);border-color:var(--green)}
+@keyframes shake{20%{transform:translateX(-6px)}40%{transform:translateX(6px)}60%{transform:translateX(-4px)}80%{transform:translateX(4px)}}
+.shake{animation:shake .35s}
+.opts{display:flex;flex-direction:column;gap:8px}
+.opt{font:inherit;text-align:start;background:var(--card);border:2px solid var(--ink);border-radius:14px;padding:10px 14px;cursor:pointer;box-shadow:0 3px 0 var(--ink);min-width:0}
+.opt:hover:not(:disabled){background:var(--blue-tint)}
+.opt.ok{background:var(--green-tint);border-color:var(--green)}
+.opt.bad{background:var(--red-tint);border-color:var(--red)}
+.opt:disabled{cursor:default}
+.opt:disabled:not(.ok):not(.bad){opacity:.5}
+.answers{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;width:100%}
+.parts{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+.part{font-weight:700;font-size:.88rem;padding:4px 12px;border-radius:999px;border:2px solid var(--line);color:var(--ink-soft);background:var(--card)}
+.part.on{border-color:var(--ink);background:var(--yellow);color:var(--ink)}
+.part.ok{border-color:var(--green);color:var(--green)}
+/* builder */
+.b-cols{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:600px){.b-cols{grid-template-columns:1fr}}
+.b-pool{flex-direction:column;align-items:stretch}
+.seq{list-style:none;margin:0;padding:10px;border:2px dashed var(--line);border-radius:14px;min-height:120px;display:flex;flex-direction:column;gap:6px;counter-reset:s}
+.seq li{display:flex;align-items:center;gap:8px}
+.seq li:not(.empty)::before{counter-increment:s;content:counter(s,arabic-indic);flex:none;width:28px;height:28px;border-radius:50%;background:var(--ink);color:#fff;display:grid;place-items:center;font-weight:700;font-size:.85rem}
+.seq .chip{flex:1}
+/* kitchen, literal bot, definition */
+.kitchen{display:flex;justify-content:center;gap:28px;margin-top:14px;padding:12px;border-radius:16px;background:var(--orange-tint);flex-wrap:wrap}
+.obj{display:flex;flex-direction:column;align-items:center;min-width:110px;text-align:center}
+.obj .em{font-size:2.6rem;line-height:1.2;transition:filter .3s,opacity .3s}
+.obj .em.off{filter:grayscale(1);opacity:.4}
+.obj small{font-weight:500;font-size:.85rem}
+.lit-stage{display:flex;align-items:center;gap:14px;margin-top:14px;padding:12px;border-radius:16px;background:var(--blue-tint)}
+.lit-say{font-weight:500;flex:1;min-width:0}
+.lit-say.oops{color:var(--red)}
+.lit-say.good{color:var(--green)}
+.defn{margin-top:18px;border-top:2px dashed var(--line);padding-top:16px}
+.defn-title{font-family:var(--f-display);font-weight:800;font-size:1.9rem;color:var(--blue);line-height:1.2}
+.defn-text{font-size:1.15rem}
+.props{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-block:12px}
+@media(max-width:600px){.props{grid-template-columns:1fr}}
+.props div{border:2px solid var(--ink);border-radius:14px;padding:10px;background:var(--paper);display:flex;flex-direction:column}
+.props b{font-family:var(--f-display);font-size:1.15rem}
+.props span{font-size:.9rem;color:var(--ink-soft)}
+.fact{background:var(--yellow-tint);border:2px solid var(--ink);border-radius:14px;padding:12px 14px}
+/* shapes + flowchart */
+.match{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.mcol{display:flex;flex-direction:column;gap:8px}
+.shape{background:var(--card);border:2px solid var(--ink);border-radius:14px;cursor:pointer;box-shadow:0 3px 0 var(--ink);height:70px;display:grid;place-items:center}
+.shape svg{height:50px;width:auto}
+.shape svg *{fill:var(--paper);stroke:var(--ink);stroke-width:3}
+.shape.sel{background:var(--yellow)}
+.shape.ok svg *{fill:var(--sfill)}
+.shape.ok,.mean.ok{border-color:var(--green);cursor:default}
+.mean{height:70px;display:flex;align-items:center}
+.flowwrap{display:flex;justify-content:center;margin-top:14px}
+.flow{width:min(300px,100%);height:auto}
+.flow text{font-family:var(--f-body);font-size:14px;fill:var(--ink)}
+.flow rect,.flow polygon{stroke:var(--ink);stroke-width:2}
+.fn-oval rect{fill:#DCE6FF}
+.fn-para polygon{fill:#FFF0BF}
+.fn-rect rect{fill:#FFE0CC}
+.fa{stroke:var(--ink);stroke-width:2;fill:none}
+/* grid world */
+.lvl{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px;align-items:start}
+@media(max-width:720px){.lvl{grid-template-columns:1fr}}
+.trans{grid-column:1/-1;display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:600px){.trans{grid-template-columns:1fr}}
+.grid{direction:ltr;display:grid;grid-template-columns:repeat(var(--w),1fr);grid-template-rows:repeat(var(--h),1fr);aspect-ratio:var(--w)/var(--h);position:relative;border:3px solid var(--ink);border-radius:14px;overflow:hidden;background:var(--card);max-width:440px;width:100%;margin-inline:auto}
+.cell{border:1px solid var(--grid);display:grid;place-items:center;font-size:clamp(1.1rem,5vw,1.8rem)}
+.cell.wall{background:#E8ECF5}
+.cell.goal{background:var(--yellow-tint)}
+.gbot{position:absolute;inset:0 auto auto 0;width:calc(100% / var(--w));height:calc(100% / var(--h));transform:translate(calc(var(--x,0) * 100%),calc(var(--y,0) * 100%));transition:transform .35s ease;display:grid;place-items:center;pointer-events:none}
+.gbot.nomove{transition:none}
+.gbot svg{width:66%;height:auto}
+.gbot.bump svg{animation:shake .35s}
+.carry{position:absolute;bottom:4%;right:6%;font-size:clamp(.7rem,2.6vw,1rem)}
+.pal{display:flex;gap:8px;flex-wrap:wrap}
+.blk{font-family:var(--f-display);font-weight:700;font-size:1rem;border:2px solid var(--ink);border-radius:10px;padding:4px 12px;background:var(--blue);color:#fff;cursor:pointer;box-shadow:0 3px 0 var(--ink);transition:transform .15s}
+.blk.on{background:var(--yellow);color:var(--ink);transform:scale(1.08)}
+.blk.bad{background:var(--red)}
+.blk.edited{outline:3px dashed var(--orange);outline-offset:1px}
+.w-orange .blk,.loopblk .blk{background:var(--orange)}
+.w-orange .blk.on,.loopblk .blk.on{background:var(--yellow)}
+.prog{display:flex;flex-wrap:wrap;gap:6px;min-height:52px;padding:8px;border:2px dashed var(--line);border-radius:14px;align-content:flex-start}
+.pseudo,.code,.log{border-radius:12px;padding:10px 12px;background:var(--code-bg);color:var(--code-fg);font-size:.92rem;line-height:1.85;overflow-x:auto}
+.pseudo{min-height:48px}
+.code{direction:ltr;text-align:left;font-family:var(--f-mono);white-space:pre;margin-block:8px}
+.code.mini{font-size:.8rem;margin:0}
+.cm{color:var(--code-dim)}
+.ln{padding-inline-start:calc(var(--ind,0) * 1.7em + 6px);border-radius:6px;transition:background .2s,opacity .2s}
+.ln.on{background:rgba(255,210,63,.3)}
+.ln.skip{opacity:.35}
+.kw{color:var(--yellow);font-weight:700}
+.log{font-size:.86rem;min-height:120px;max-height:230px;overflow:auto}
+.log div{padding-block:2px;border-bottom:1px solid rgba(255,255,255,.08)}
+.log .y{color:#9BE3B8}
+.log .n{color:#FF9EAB}
+/* loops */
+.stairs{direction:ltr;position:relative;height:260px;max-width:560px;margin-inline:auto;border-bottom:4px solid var(--ink);margin-bottom:14px}
+.st{position:absolute;bottom:0;left:calc(var(--i) * 100% / var(--n));width:calc(100% / var(--n));height:calc(var(--i) * var(--sh));background:var(--orange-tint);border:2px solid var(--ink);border-bottom:0}
+.flag{position:absolute;left:calc(var(--i) * 100% / var(--n));width:calc(100% / var(--n));bottom:calc(var(--i) * var(--sh) + 52px);text-align:center;font-size:1.5rem}
+.sbot{position:absolute;left:calc(var(--c,0) * 100% / var(--n));bottom:calc(var(--hh,0) * var(--sh));width:calc(100% / var(--n));display:flex;justify-content:center;transition:left .3s ease,bottom .3s ease;z-index:2}
+.sbot svg{width:min(44px,100%);height:auto}
+.loopviz{display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center;margin-top:12px}
+.counter{display:flex;flex-direction:column;align-items:center;border:3px solid var(--ink);border-radius:16px;padding:6px 16px;background:var(--yellow-tint);line-height:1.2}
+.counter b{font-family:var(--f-display);font-size:2.2rem}
+.counter small{font-size:.78rem;color:var(--ink-soft)}
+.stepper{display:inline-flex;align-items:center;gap:8px;margin-inline:6px;vertical-align:middle}
+.stepper b{min-width:1.4em;text-align:center;font-family:var(--f-display);font-size:1.3rem}
+.sbtn{width:30px;height:30px;border-radius:50%;border:2px solid var(--ink);background:var(--yellow);color:var(--ink);font-weight:800;font-size:1.1rem;cursor:pointer;line-height:1}
+.loopblk{margin-top:12px;border:3px solid var(--ink);border-radius:16px;background:var(--orange);color:#fff;padding:8px 10px 12px}
+.lhead{display:flex;align-items:center;gap:6px;font-family:var(--f-display);font-weight:800;font-size:1.15rem;flex-wrap:wrap}
+.lbody{margin-inline-start:20px;margin-top:8px;background:var(--card);border:2px dashed var(--ink);border-radius:12px;min-height:52px;padding:6px;display:flex;flex-wrap:wrap;gap:6px;color:var(--ink);align-items:center}
+.slot{border:2px dashed var(--line);border-radius:10px;padding:4px 10px;font-size:.85rem;color:var(--ink-soft)}
+.iter{font-weight:700;min-height:1.6em;margin-top:8px;color:var(--orange)}
+.lab{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px;align-items:start}
+@media(max-width:680px){.lab{grid-template-columns:1fr}}
+.radio{display:flex;flex-direction:column;gap:8px}
+.ropt{font:inherit;text-align:start;background:var(--card);border:2px solid var(--ink);border-radius:14px;padding:8px 14px;cursor:pointer;box-shadow:0 3px 0 var(--ink);position:relative}
+.ropt .kw{color:var(--orange)}
+.ropt.sel{background:var(--yellow-tint);border-color:var(--orange);box-shadow:0 3px 0 var(--orange)}
+.ropt[data-r]::after{position:absolute;inset-inline-end:10px;top:8px;font-weight:800}
+.ropt[data-r="ok"]::after{content:"✓";color:var(--green)}
+.ropt[data-r="bad"]::after{content:"✗";color:var(--red)}
+.cupzone{position:relative;height:250px;display:flex;align-items:flex-end;justify-content:center;padding-bottom:14px}
+.tap{position:absolute;top:0;left:50%;transform:translateX(-30%) scaleX(-1);font-size:2.2rem}
+.stream{position:absolute;top:46px;left:50%;width:8px;margin-left:-4px;height:0;background:#6EA2FF;border-radius:4px;transition:height .15s;z-index:2}
+.cup{width:120px;height:150px;border:4px solid var(--ink);border-top:0;border-radius:0 0 24px 24px;position:relative;overflow:hidden;background:var(--card);z-index:1}
+.cup::after{content:"ممتلئ";position:absolute;top:12px;left:0;right:0;border-top:2px dashed var(--red);font-size:.7rem;color:var(--red);text-align:center;line-height:1.4}
+.water{position:absolute;bottom:0;left:0;right:0;height:0;background:linear-gradient(#8DB8FF,#3B68F0);transition:height .3s}
+.spill{position:absolute;bottom:8px;left:50%;transform:translateX(-50%);height:14px;width:0;max-width:100%;background:#8DB8FF;border-radius:999px;transition:width .3s}
+/* conditions */
+.lab2{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px;align-items:start}
+@media(max-width:680px){.lab2{grid-template-columns:1fr}}
+.scene{position:relative;height:200px;border-radius:18px;overflow:hidden;border:2px solid var(--ink);background:linear-gradient(#BFE0FF,#EAF5FF);transition:background .4s;direction:ltr}
+.scene.rain{background:linear-gradient(#7D8BA6,#B9C3D6)}
+.scene .fx{position:absolute;inset:0;opacity:0;transition:opacity .4s;background-image:repeating-linear-gradient(105deg,transparent 0 14px,rgba(255,255,255,.75) 14px 16px);background-size:60px 60px;animation:rain .5s linear infinite}
+.scene.rain .fx{opacity:1}
+@keyframes rain{to{background-position:-20px 60px}}
+.sun{position:absolute;top:12px;right:16px;font-size:2.4rem;transition:opacity .4s}
+.scene.rain .sun{opacity:0}
+.ground{position:absolute;bottom:0;left:0;right:0;height:34px;background:#9FD48C;border-top:2px solid var(--ink)}
+.school{position:absolute;bottom:22px;left:14px;font-size:3rem}
+.walker{position:absolute;bottom:28px;right:18px;transition:right 1.6s ease-in-out;width:64px}
+.walker.go{right:calc(100% - 150px)}
+.walker .umb{position:absolute;top:-32px;left:8px;font-size:2.4rem}
+.cond{margin-top:8px;font-weight:500}
+.ops{display:flex;flex-wrap:wrap;gap:6px;margin-block:8px}
+.ops span{border:2px solid var(--ink);border-radius:10px;padding:2px 10px;background:var(--card);font-size:.9rem}
+.ops b{font-family:var(--f-mono);margin-inline-end:4px}
+.sorthead{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:10px}
+.machine{display:flex;flex-direction:column;align-items:center;gap:10px;padding:16px;border-radius:18px;background:var(--orange-tint);margin-top:12px}
+.item{min-width:120px;height:96px;padding-inline:14px;display:grid;place-items:center;font-family:var(--f-display);font-weight:800;font-size:2.4rem;background:var(--card);border:3px solid var(--ink);border-radius:18px;box-shadow:0 5px 0 var(--ink)}
+.item.pop{animation:pop .35s}
+@keyframes pop{0%{transform:scale(.6);opacity:0}100%{transform:none;opacity:1}}
+.itn{min-height:1.4em;font-weight:700}
+.tbar{width:min(320px,100%);height:10px;border-radius:999px;background:var(--card);border:2px solid var(--ink);overflow:hidden}
+.tbar i{display:block;height:100%;width:100%;background:var(--orange)}
+.branches{display:grid;grid-template-columns:1fr 1fr;gap:10px;width:100%;max-width:540px}
+.branch{font-family:var(--f-display);font-weight:800;font-size:1.15rem;border:3px solid var(--ink);border-radius:16px;padding:10px;cursor:pointer;box-shadow:0 4px 0 var(--ink);display:flex;flex-direction:column;align-items:center;line-height:1.3;background:var(--card)}
+.branch small{font-family:var(--f-body);font-weight:500;font-size:.82rem;text-align:center}
+.branch.yes{background:var(--green-tint)}
+.branch.no{background:var(--red-tint)}
+.branch.fizz{background:var(--yellow-tint)}
+.branch.buzz{background:var(--blue-tint)}
+.branch.fb{background:var(--green-tint)}
+.branch:disabled{opacity:.55;cursor:default}
+.branch:active:not(:disabled){transform:translateY(3px);box-shadow:0 1px 0 var(--ink)}
+.grade{font-family:var(--f-display);font-weight:800;font-size:3rem;text-align:center;line-height:1.1}
+.grade small{display:block;font-size:.9rem;font-family:var(--f-body);color:var(--ink-soft);font-weight:500}
+.chain{display:flex;flex-direction:column;gap:6px;margin-block:12px}
+.crow{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr) 92px;gap:8px;align-items:center;padding:8px 12px;border:2px solid var(--ink);border-radius:12px;background:var(--card);transition:background .2s,opacity .2s}
+.crow .cc{font-weight:700}
+.kw2{color:var(--orange)}
+.crow .co{font-size:.92rem}
+.crow .cs{font-size:.8rem;font-weight:700;text-align:center;border-radius:999px;padding:2px 6px;min-height:1.6em}
+.crow.chk{background:var(--yellow-tint)}
+.crow.f .cs{background:var(--red-tint);color:var(--red)}
+.crow.t{background:var(--green-tint);border-color:var(--green)}
+.crow.t .cs{background:var(--green);color:#fff}
+.crow.skip{opacity:.4}
+@media(max-width:520px){.crow{grid-template-columns:1fr auto}.crow .co{grid-column:1}.crow .cs{grid-row:1/3;grid-column:2}}
+.bosswrap{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:14px;align-items:start}
+@media(max-width:700px){.bosswrap{grid-template-columns:1fr}}
+.bigno{font-family:var(--f-display);font-weight:800;font-size:4.2rem;line-height:1;text-align:center}
+.dots{display:flex;flex-wrap:wrap;gap:5px;justify-content:center;direction:ltr}
+.dots i{width:14px;height:14px;border-radius:50%;border:2px solid var(--ink);background:var(--card)}
+.dots i.cur{background:var(--yellow)}
+.dots i.ok{background:var(--green)}
+.dots i.bad{background:var(--red)}
+/* win + memo */
+.win{border-color:var(--green);box-shadow:0 6px 0 var(--green)}
+.win-head{display:flex;align-items:center;gap:12px}
+.win .stars{font-size:1.5rem}
+.memo{margin-top:18px;background:var(--yellow-tint);border:2px solid var(--ink);border-radius:14px;padding:16px 14px 12px;position:relative}
+.memo-tag{position:absolute;top:-13px;inset-inline-start:14px;background:var(--ink);color:#fff;font-size:.78rem;font-weight:700;border-radius:999px;padding:1px 12px}
+.ipo{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-block:8px}
+.ipo span{border:2px solid var(--ink);border-radius:10px;padding:2px 10px;background:var(--card)}
+.ipo i{font-style:normal;font-weight:800}
+/* certificate */
+.inp{font:inherit;font-size:1.1rem;width:100%;padding:10px 14px;border:2px solid var(--ink);border-radius:12px;background:var(--card);color:var(--ink)}
+.cert{border:5px double var(--ink);border-radius:22px;padding:26px 20px;text-align:center;background:var(--card);margin-bottom:8px}
+.cert-k{font-weight:700;color:var(--orange);letter-spacing:.03em;margin:6px 0 0}
+.cert-name{font-size:clamp(2rem,7vw,3rem);color:var(--blue);margin-block:4px 8px;overflow-wrap:anywhere}
+.badges{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:8px;margin-block:14px}
+.badge{border:2px dashed var(--line);border-radius:14px;padding:8px;color:var(--ink-soft);display:flex;flex-direction:column;align-items:center;font-weight:700}
+.badge span{font-size:1.8rem}
+.badge.on{border:2px solid var(--ink);background:var(--yellow-tint);color:var(--ink)}
+.cert-sign{color:var(--ink-soft);font-size:.9rem;margin:0}
+.confetti{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:50}
+.confetti span{position:absolute;top:-16px;width:8px;height:14px;border-radius:2px;animation:fall 1.6s ease-in forwards}
+@keyframes fall{to{transform:translateY(105vh) rotate(560deg)}}
+@media (prefers-reduced-motion:reduce){*:not(.tbar i),*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important}}
+</style>
+<div id="app" dir="rtl" lang="ar"></div>
+<script>
+document.documentElement.setAttribute('dir','rtl');
+document.documentElement.setAttribute('lang','ar');
+const $ = s => document.querySelector(s);
+const $$ = s => [...document.querySelectorAll(s)];
+const app = $('#app');
+const AR = '٠١٢٣٤٥٦٧٨٩';
+const ar = n => String(n).replace(/\d/g, d => AR[d]);
+const rand = (a, b) => a + Math.floor(Math.random() * (b - a + 1));
+const shuffle = a => { a = [...a]; for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+const esc = s => String(s || '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const REDUCE = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+let S = { done: {}, stars: {}, sound: true, name: '' };
+try { const o = JSON.parse(localStorage.getItem('bitto-v1') || 'null'); if (o) S = Object.assign(S, o); } catch (e) {}
+function save() { try { localStorage.setItem('bitto-v1', JSON.stringify(S)); } catch (e) {} }
+
+/* timers are cleared on every screen change, so pending animations simply stop */
+let timers = [];
+const later = (fn, ms) => { const id = setTimeout(fn, ms); timers.push(id); return id; };
+const wait = ms => new Promise(r => later(r, ms));
+
+/* sound */
+let AC = null;
+function tone(f, d = .12, type = 'sine', v = .08) {
+  if (!S.sound) return;
+  try {
+    AC = AC || new (window.AudioContext || window.webkitAudioContext)();
+    const o = AC.createOscillator(), g = AC.createGain();
+    o.type = type; o.frequency.value = f;
+    g.gain.setValueAtTime(v, AC.currentTime);
+    g.gain.exponentialRampToValueAtTime(.0001, AC.currentTime + d);
+    o.connect(g).connect(AC.destination); o.start(); o.stop(AC.currentTime + d);
+  } catch (e) {}
+}
+const sfx = {
+  ok() { tone(660); setTimeout(() => tone(880), 90); },
+  bad() { tone(190, .22, 'square', .045); },
+  step() { tone(460, .05, 'triangle', .05); },
+  win() { [523, 659, 784, 1046].forEach((f, i) => setTimeout(() => tone(f, .16), i * 110)); }
+};
+
+/* the robot */
+function bot(mood = 'happy', size = 80) {
+  const ink = '#1B2440';
+  const mouth = mood === 'sad' ? `<path d="M41 62 Q50 55 59 62" fill="none" stroke="${ink}" stroke-width="3" stroke-linecap="round"/>`
+    : mood === 'wow' ? `<ellipse cx="50" cy="60" rx="5" ry="6" fill="${ink}"/>`
+    : `<path d="M40 57 Q50 66 60 57" fill="none" stroke="${ink}" stroke-width="3" stroke-linecap="round"/>`;
+  const eyes = mood === 'sad' ? `<path d="M35 46 h10 M55 46 h10" stroke="${ink}" stroke-width="3" stroke-linecap="round"/>`
+    : `<circle cx="40" cy="46" r="5" fill="${ink}"/><circle cx="60" cy="46" r="5" fill="${ink}"/><circle cx="41.5" cy="44.5" r="1.6" fill="#fff"/><circle cx="61.5" cy="44.5" r="1.6" fill="#fff"/>`;
+  return `<svg class="bot" viewBox="0 0 100 118" width="${size}" height="${Math.round(size * 1.18)}" aria-hidden="true">
+<line x1="50" y1="8" x2="50" y2="22" stroke="${ink}" stroke-width="3"/><circle cx="50" cy="8" r="6" fill="#EE6F2D" stroke="${ink}" stroke-width="2"/>
+<rect x="8" y="38" width="8" height="18" rx="4" fill="#FFD23F" stroke="${ink}" stroke-width="2"/><rect x="84" y="38" width="8" height="18" rx="4" fill="#FFD23F" stroke="${ink}" stroke-width="2"/>
+<rect x="15" y="22" width="70" height="56" rx="18" fill="#2D5BEF" stroke="${ink}" stroke-width="3"/>
+<rect x="24" y="31" width="52" height="38" rx="12" fill="#fff" stroke="${ink}" stroke-width="2"/>
+${eyes}${mouth}
+<rect x="30" y="82" width="40" height="30" rx="9" fill="#FFD23F" stroke="${ink}" stroke-width="3"/>
+<path d="M42 92 h16 M42 100 h10" stroke="${ink}" stroke-width="2.5" stroke-linecap="round"/></svg>`;
+}
+function swapBot(host, mood, size) { const s = host.querySelector('svg.bot'); if (!s) return; s.insertAdjacentHTML('afterend', bot(mood, size)); s.remove(); }
+
+/* router */
+const ROUTES = {};
+function go(r) {
+  timers.forEach(clearTimeout); timers = [];
+  if (!ROUTES[r]) r = 'home';
+  ROUTES[r]();
+  window.scrollTo(0, 0);
+  try { history.replaceState(null, '', '#' + r); } catch (e) {}
+}
+const soundBtn = () => `<button class="iconbtn" data-sound aria-label="تشغيل أو كتم الصوت">${S.sound ? '🔊' : '🔇'}</button>`;
+function frame(title, back, body, tone = 'blue') {
+  app.innerHTML = `<header class="bar t-${tone}"><button class="iconbtn" data-go="${back}" aria-label="رجوع">→</button><h2>${title}</h2>${soundBtn()}</header><main class="${tone === 'orange' ? 'w-orange' : 'w-blue'}">${body}</main>`;
+}
+document.addEventListener('click', e => {
+  const s = e.target.closest('[data-sound]');
+  if (s) { S.sound = !S.sound; save(); s.textContent = S.sound ? '🔊' : '🔇'; return; }
+  const g = e.target.closest('[data-go]');
+  if (g) { sfx.step(); go(g.dataset.go); }
+});
+
+/* shared ui */
+const talk = (html, mood = 'happy', id = '') => `<div class="talk"${id ? ` id="${id}"` : ''}><div class="talk-bot">${bot(mood, 64)}</div><div class="bubble">${html}</div></div>`;
+function setTalk(el, html, mood = 'happy') { el.querySelector('.talk-bot').innerHTML = bot(mood, 64); el.querySelector('.bubble').innerHTML = html; }
+function fb(el, html, ok) { el.className = 'fb ' + (ok ? 'ok' : 'bad'); el.innerHTML = html; el.hidden = false; }
+const starHTML = n => n ? `<span class="stars" aria-label="${ar(n)} نجوم">${'★'.repeat(n)}<span class="dim">${'★'.repeat(3 - n)}</span></span>` : '';
+const code = s => `<div class="code">${s}</div>`;
+function pseudo(lines, id = '') {
+  return `<div class="pseudo"${id ? ` id="${id}"` : ''}>${lines.map(l => { const ind = (l.match(/^ */)[0].length / 4) | 0; return `<div class="ln" style="--ind:${ind}">${l.trim()}</div>`; }).join('')}</div>`;
+}
+function shakeEl(el) { el.classList.remove('shake'); void el.offsetWidth; el.classList.add('shake'); }
+function confetti() {
+  if (REDUCE) return;
+  const c = document.createElement('div'); c.className = 'confetti';
+  const cols = ['#2D5BEF', '#EE6F2D', '#FFD23F', '#159957', '#DC3B4F'];
+  for (let i = 0; i < 40; i++) {
+    const s = document.createElement('span');
+    s.style.left = Math.random() * 100 + '%'; s.style.background = cols[i % 5];
+    s.style.animationDelay = Math.random() * .4 + 's'; s.style.animationDuration = 1.2 + Math.random() * .8 + 's';
+    c.appendChild(s);
+  }
+  document.body.appendChild(c); setTimeout(() => c.remove(), 2800);
+}
+function finish({ id, stars = 3, memo, next, nextLabel, map, extra = '' }) {
+  S.done[id] = true; S.stars[id] = Math.max(S.stars[id] || 0, stars); save();
+  sfx.win(); confetti();
+  const A = $('#after');
+  A.innerHTML = `<section class="panel win"><div class="win-head">${bot('happy', 56)}<div><h3>أحسنت! أتممت المهمة</h3>${starHTML(stars)}</div></div>
+    <div class="memo"><span class="memo-tag">ثبّتها في ذاكرتك</span>${memo}</div>
+    <div class="row">${next ? `<button class="btn ${map === 'w2' ? 'hot' : 'primary'}" data-go="${next}">${nextLabel || 'المهمة التالية'} ←</button>` : ''}${extra}<button class="btn" data-go="${map}">العودة للخريطة</button></div></section>`;
+  later(() => A.scrollIntoView({ behavior: REDUCE ? 'auto' : 'smooth', block: 'start' }), 200);
+}
+
+/* tap-to-order builder */
+function builder(host, items, onChange) {
+  let pool = shuffle(items), seq = [];
+  host.innerHTML = `<div class="b-cols"><div><div class="lbl">البطاقات</div><div class="chips b-pool"></div></div><div><div class="lbl">ترتيبك</div><ol class="seq"></ol></div></div>`;
+  const P = host.querySelector('.b-pool'), Q = host.querySelector('.seq');
+  const api = {
+    locked: false,
+    get seq() { return seq; },
+    mark(i, cls) { const c = Q.children[i] && Q.children[i].querySelector('.chip'); if (c) c.classList.add(cls); },
+    clearMarks() { Q.querySelectorAll('.chip').forEach(c => c.classList.remove('on', 'ok', 'bad')); }
+  };
+  function draw() {
+    P.innerHTML = pool.map(it => `<button class="chip" data-id="${it.id}">${it.t}</button>`).join('') || '<span class="empty">انتهت البطاقات ✓</span>';
+    Q.innerHTML = seq.map(it => `<li><button class="chip" data-id="${it.id}">${it.t}</button></li>`).join('') || '<li class="empty">اضغط البطاقات بالترتيب الذي تراه صحيحًا</li>';
+    onChange && onChange(seq);
+  }
+  P.onclick = e => { const b = e.target.closest('[data-id]'); if (!b || api.locked) return; const i = pool.findIndex(x => String(x.id) === b.dataset.id); seq.push(pool.splice(i, 1)[0]); sfx.step(); draw(); };
+  Q.onclick = e => { const b = e.target.closest('[data-id]'); if (!b || api.locked) return; const i = seq.findIndex(x => String(x.id) === b.dataset.id); pool.push(seq.splice(i, 1)[0]); draw(); };
+  draw();
+  return api;
+}
+
+/* multiple-choice quiz */
+function quiz(host, qs, onDone) {
+  let i = 0, wrong = 0;
+  function show() {
+    const q = qs[i], opts = q.fixed ? q.opts : shuffle(q.opts);
+    host.innerHTML = `<span class="pill">سؤال ${ar(i + 1)} من ${ar(qs.length)}</span>${q.pre || ''}<p class="q">${q.q}</p>
+      <div class="opts${q.fixed ? ' answers' : ''}">${opts.map((o, j) => `<button class="opt" data-j="${j}">${o.t}</button>`).join('')}</div>
+      <div class="fb" hidden></div><div class="row" hidden><button class="btn primary">${i < qs.length - 1 ? 'السؤال التالي ←' : 'إنهاء ←'}</button></div>`;
+    const F = host.querySelector('.fb'), N = host.querySelector('.row');
+    let answered = false;
+    host.querySelector('.opts').onclick = e => {
+      const b = e.target.closest('.opt'); if (!b || answered || b.disabled) return;
+      const o = opts[+b.dataset.j];
+      if (o.ok) {
+        answered = true; b.classList.add('ok'); sfx.ok(); fb(F, '✓ ' + (o.r || 'صحيح!'), true); N.hidden = false;
+        host.querySelectorAll('.opt').forEach(x => { if (x !== b) x.disabled = true; });
+      } else { wrong++; b.classList.add('bad'); b.disabled = true; sfx.bad(); fb(F, '✗ ' + (o.r || 'حاول مرة أخرى'), false); }
+    };
+    N.querySelector('button').onclick = () => { i++; if (i < qs.length) show(); else onDone(wrong); };
+  }
+  show();
+}
+
+/* grid world: robot moves on a board */
+const DIR = {
+  U: [0, -1, '↑', 'أعلى', 'robot.move_up()', 'الأعلى'],
+  D: [0, 1, '↓', 'أسفل', 'robot.move_down()', 'الأسفل'],
+  R: [1, 0, '→', 'يمين', 'robot.move_right()', 'اليمين'],
+  L: [-1, 0, '←', 'يسار', 'robot.move_left()', 'اليسار']
+};
+const blkLabel = k => `${DIR[k][2]} ${DIR[k][3]}`;
+function makeGrid(host, L) {
+  const walls = new Set(L.walls.map(([x, y]) => x + ',' + y));
+  let cells = '';
+  for (let y = 0; y < L.h; y++) for (let x = 0; x < L.w; x++) {
+    const w = walls.has(x + ',' + y), g = x === L.goal[0] && y === L.goal[1];
+    cells += `<div class="cell${w ? ' wall' : ''}${g ? ' goal' : ''}">${w ? '🪑' : g ? '🙋' : ''}</div>`;
+  }
+  host.innerHTML = `<div class="grid" style="--w:${L.w};--h:${L.h}" role="img" aria-label="لوحة المتاهة">${cells}<div class="gbot">${bot('happy', 40)}<span class="carry">🧃</span></div></div>`;
+  const B = host.querySelector('.gbot'); let pos;
+  const place = (x, y) => { pos = [x, y]; B.style.setProperty('--x', x); B.style.setProperty('--y', y); };
+  const mood = m => swapBot(B, m, 40);
+  function reset() { B.classList.add('nomove'); place(L.start[0], L.start[1]); void B.offsetWidth; B.classList.remove('nomove'); mood('happy'); }
+  function bump() { mood('sad'); B.classList.remove('bump'); void B.offsetWidth; B.classList.add('bump'); sfx.bad(); }
+  async function run(cmds, onStep) {
+    reset(); await wait(300);
+    for (let i = 0; i < cmds.length; i++) {
+      onStep && onStep(i);
+      const [dx, dy] = DIR[cmds[i]], nx = pos[0] + dx, ny = pos[1] + dy;
+      if (nx < 0 || ny < 0 || nx >= L.w || ny >= L.h) { bump(); return { ok: false, i, why: 'edge' }; }
+      if (walls.has(nx + ',' + ny)) { bump(); return { ok: false, i, why: 'wall' }; }
+      place(nx, ny); sfx.step(); await wait(420);
+    }
+    const ok = pos[0] === L.goal[0] && pos[1] === L.goal[1];
+    mood(ok ? 'happy' : 'sad');
+    return { ok, i: cmds.length - 1, why: ok ? '' : 'short' };
+  }
+  reset();
+  return { run, reset };
+}
+const gridFail = r => r.why === 'short' ? 'انتهت الأوامر ولم يصل بتّو إلى الطالب بعد.'
+  : `💥 عند الأمر رقم ${ar(r.i + 1)} ${r.why === 'wall' ? 'اصطدم بتّو بكرسي' : 'خرج بتّو من حدود الفصل'}!`;
+
+/* ---------- home ---------- */
+const W1IDS = ['w1s1', 'w1s2', 'w1s3', 'w1s4', 'w1s5', 'w1fin'];
+const W2IDS = ['l1', 'l2', 'l3', 'c1', 'c2', 'c3', 'boss'];
+ROUTES.home = () => {
+  const d1 = W1IDS.filter(k => S.done[k]).length, d2 = W2IDS.filter(k => S.done[k]).length;
+  app.innerHTML = `<div class="topline">${soundBtn()}</div>
+  <section class="hero">
+    <div class="hero-bot">${bot('happy', 120)}</div>
+    <div><p class="eyebrow">لعبة تعلّم البرمجة · المرحلة المتوسطة</p>
+      <h1>مغامرات <span class="hl">بِتّو</span></h1>
+      <p class="lead">بِتّو روبوت ذكي جدًا… لكنه ينفّذ كل أمر <mark>حرفيًا</mark>. لا يخمّن، ولا يفهم «تقريبًا». علّمه كيف يفكّر المبرمجون، وستتعلم أنت معه.</p></div>
+  </section>
+  <div class="worlds">
+    <button class="world w-blue" data-go="w1">
+      <span class="w-art">1 2 3</span>
+      <span class="w-tag">العالم الأول</span>
+      <span class="w-title">مصنع البرامج</span>
+      <span class="w-sub">خطوات تصميم البرنامج + ما هي الخوارزمية؟</span>
+      <span class="w-list">٥ محطات: محقق المشكلات، مطبخ الخوارزمية، متاهة المقصف، صيد الحشرات، دفتر المبرمج</span>
+      <span class="w-prog"><i style="width:${d1 / W1IDS.length * 100}%"></i></span>
+      <span class="w-cta">ادخل المصنع ←</span>
+    </button>
+    <button class="world w-orange" data-go="w2">
+      <span class="w-art">↻ ?</span>
+      <span class="w-tag">العالم الثاني</span>
+      <span class="w-title">مختبر الحلقات والشروط</span>
+      <span class="w-sub">ما معنى Loop؟ وما هي if بأنواعها؟</span>
+      <span class="w-list">سلّم بتّو، الكوب العجيب، مظلة بتّو، آلة الفرز، مصنّف الدرجات، وتحدي «بِز»</span>
+      <span class="w-prog"><i style="width:${d2 / W2IDS.length * 100}%"></i></span>
+      <span class="w-cta">ادخل المختبر ←</span>
+    </button>
+  </div>
+  <div class="homecert"><button class="btn" data-go="cert">🏅 شهادتي (${ar(d1 + d2)} من ${ar(W1IDS.length + W2IDS.length)})</button></div>`;
+};
+
+/* ---------- world 1 map ---------- */
+const W1 = [
+  { id: 'w1s1', t: 'تحديد المشكلة', s: 'ما المطلوب؟ وما المدخلات والمخرجات؟', h: 'المهندس يسأل صاحب البيت: كم غرفة تريد؟', g: 'لعبة المحقق' },
+  { id: 'w1s2', t: 'تصميم الحل (الخوارزمية)', s: 'نخطط خطوات الحل بالترتيب قبل أي كود', h: 'يرسم المخطط على الورق قبل أول طوبة', g: 'مطبخ بتّو' },
+  { id: 'w1s3', t: 'كتابة البرنامج', s: 'نترجم الخوارزمية إلى لغة يفهمها الحاسب', h: 'يبدأ البناء الفعلي حسب المخطط', g: 'متاهة المقصف' },
+  { id: 'w1s4', t: 'الاختبار وتصحيح الأخطاء', s: 'نشغّل البرنامج ونصطاد الأخطاء ونصلحها', h: 'يفحص الكهرباء والماء قبل أن يسكنه أحد', g: 'صيد الحشرات' },
+  { id: 'w1s5', t: 'التوثيق والصيانة', s: 'نشرح البرنامج ونطوّره عند الحاجة', h: 'يكتب دليل البيت ويصلح ما يتلف لاحقًا', g: 'دفتر المبرمج' }
+];
+ROUTES.w1 = () => {
+  frame('العالم الأول · مصنع البرامج', 'home', `
+  ${talk('كل برنامج في العالم، من الألعاب إلى تطبيقات البنوك، يُصنع في <b>خمس محطات</b> بالترتيب نفسه. ادخل كل محطة والعب لتفهمها.')}
+  <ol class="track">${W1.map((s, i) => `<li><button class="station ${S.done[s.id] ? 'done' : ''}" data-go="${s.id}">
+    <span class="num">${ar(i + 1)}</span>
+    <span class="st-body"><b>${s.t}</b><span>${s.s}</span><small>في بناء بيت: ${s.h}</small></span>
+    <span class="st-side"><span class="gtag">${s.g}</span>${starHTML(S.stars[s.id])}</span></button></li>`).join('')}</ol>
+  <section class="panel"><h3>احفظ المحطات بجملة واحدة</h3><p class="hint">قلها بصوت عالٍ ثلاث مرات، ولن تنساها.</p>
+    <div class="chant"><span>حدِّدْ</span><i>←</i><span>صمِّمْ</span><i>←</i><span>اكتبْ</span><i>←</i><span>اختبرْ</span><i>←</i><span>وثِّقْ</span></div>
+    <div class="row"><button class="btn primary" data-go="w1fin">التحدي الأخير: رتّب المحطات من ذاكرتك ←</button>${starHTML(S.stars.w1fin)}</div></section>`);
+};
+
+/* ---------- station 1: define the problem ---------- */
+ROUTES.w1s1 = () => {
+  frame('المحطة ١ · تحديد المشكلة', 'w1', `
+  ${talk('قبل أن يكتب الطبيب الدواء، يسأل المريض: <b>بماذا تشعر؟</b> والمبرمج كذلك! أول خطوة أن نفهم المشكلة: ما <b>المدخلات</b> التي نعطيها للبرنامج؟ وما <b>المخرجات</b> التي نريدها منه؟ وما المعلومات التي لا تهمنا أصلًا؟')}
+  <section class="panel">
+    <p class="task"><span class="pill">المشكلة</span>نريد برنامجًا يحسب <mark>معدّل</mark> طالب في ثلاث مواد.</p>
+    <p class="hint">أنت المحقق 🔍 اضغط على بطاقة، ثم اضغط على الصندوق المناسب لها.</p>
+    <div class="chips" id="chips"></div>
+    <div class="bins">
+      <div class="bin" data-bin="in" role="button" tabindex="0"><b>📥 مدخلات</b><small>ما نعطيه للبرنامج</small><div class="bin-items"></div></div>
+      <div class="bin" data-bin="out" role="button" tabindex="0"><b>📤 مخرجات</b><small>النتيجة التي نريدها</small><div class="bin-items"></div></div>
+      <div class="bin" data-bin="no" role="button" tabindex="0"><b>🗑️ لا تهمنا</b><small>معلومة لا تؤثر في الحل</small><div class="bin-items"></div></div>
+    </div>
+    <div class="fb" id="fb" hidden></div>
+  </section><div id="after"></div>`);
+  const ITEMS = shuffle([
+    { t: 'درجة الرياضيات', b: 'in', r: 'صحيح! نحتاجها لنجمع الدرجات.' },
+    { t: 'درجة العلوم', b: 'in', r: 'صحيح! هي إحدى الدرجات الثلاث.' },
+    { t: 'درجة لغتي', b: 'in', r: 'صحيح! هذه الدرجة الثالثة.' },
+    { t: 'عدد المواد (٣)', b: 'in', r: 'ممتاز! سنقسم المجموع على هذا العدد.' },
+    { t: 'المعدّل', b: 'out', r: 'بالضبط! هذا ما يريد المستخدم أن يراه في النهاية.' },
+    { t: 'لون حقيبة الطالب', b: 'no', r: 'صحيح، لون الحقيبة لا يغيّر المعدل أبدًا 😄' },
+    { t: 'اسم المدرسة', b: 'no', r: 'صحيح، لا نحتاجه في الحساب.' },
+    { t: 'حالة الطقس اليوم', b: 'no', r: 'صحيح، الطقس لا علاقة له بالمعدل.' }
+  ]).map((x, i) => ({ ...x, i }));
+  const HINT = { in: 'هل نحتاج هذه المعلومة لنبدأ الحساب؟', out: 'هل هذا شيء نعطيه للبرنامج، أم شيء ننتظره منه؟', no: 'فكّر: هل تغيّر هذه المعلومة المعدل؟' };
+  let sel = null, placed = 0, wrong = 0;
+  const C = $('#chips'), F = $('#fb');
+  C.innerHTML = ITEMS.map(x => `<button class="chip" data-i="${x.i}">${x.t}</button>`).join('');
+  C.onclick = e => {
+    const b = e.target.closest('.chip'); if (!b) return;
+    C.querySelectorAll('.chip').forEach(c => c.classList.remove('sel'));
+    sel = +b.dataset.i; b.classList.add('sel'); $$('.bin').forEach(x => x.classList.add('ready'));
+  };
+  $$('.bin').forEach(bin => {
+    const act = () => {
+      if (sel === null) { fb(F, 'اختر بطاقة أولًا، ثم اضغط على الصندوق.', false); return; }
+      const it = ITEMS.find(x => x.i === sel), chip = C.querySelector(`[data-i="${sel}"]`);
+      if (it.b === bin.dataset.bin) {
+        sfx.ok(); chip.remove();
+        bin.querySelector('.bin-items').insertAdjacentHTML('beforeend', `<span class="chip">${it.t}</span>`);
+        fb(F, '✓ ' + it.r, true); placed++; sel = null; $$('.bin').forEach(x => x.classList.remove('ready'));
+        if (placed === ITEMS.length) finish({
+          id: 'w1s1', map: 'w1', next: 'w1s2', stars: wrong === 0 ? 3 : wrong <= 2 ? 2 : 1,
+          memo: `<p>كل برنامج في الدنيا = <b>مدخلات</b> ← <b>معالجة</b> ← <b>مخرجات</b></p>
+            <div class="ipo"><span>📥 الدرجات الثلاث</span><i>←</i><span>⚙️ المجموع ÷ ٣</span><i>←</i><span>📤 المعدّل</span></div>
+            <p>والمعلومات التي لا تؤثر في الحل نستبعدها. <mark>المشكلة المفهومة جيدًا هي نصف الحل.</mark></p>`
+        });
+      } else { sfx.bad(); wrong++; shakeEl(bin); fb(F, '✗ ليس هنا. ' + HINT[it.b], false); }
+    };
+    bin.onclick = act;
+    bin.onkeydown = e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); act(); } };
+  });
+};
+
+/* ---------- station 2: algorithm ---------- */
+const LIT = [
+  { task: 'اطلب من بتّو أن يفتح باب الفصل.', opts: [
+    { t: 'افتح.', ok: false, r: 'بتّو فتح… فمه! 😮 «أفتح ماذا؟ لم تحدد!»' },
+    { t: 'تقدّم إلى الباب، أمسك المقبض، أدِره للأسفل، ثم اسحب الباب نحوك.', ok: true, r: 'انفتح الباب! كل خطوة واضحة ومحددة.' }] },
+  { task: 'اطلب منه أن يضع الجبن على الخبز.', opts: [
+    { t: 'افتح علبة الجبن، خذ ملعقة جبن، وافردها على وجه شريحة الخبز.', ok: true, r: 'ساندويتش لذيذ 🥪 أوامر دقيقة = نتيجة صحيحة.' },
+    { t: 'ضع الجبن على الخبز.', ok: false, r: 'بتّو وضع علبة الجبن كاملة، وهي مغلقة، فوق الرغيف! 📦🍞' }] },
+  { task: 'اطلب منه أن يرسم مربعًا.', opts: [
+    { t: 'ارسم شكلًا جميلًا له زوايا.', ok: false, r: 'رسم بتّو نجمة بـ ١٧ زاوية… «هي جميلة ولها زوايا!» 🤷' },
+    { t: 'ارسم خطًا طوله ٥ سم، استدر ٩٠ درجة، وكرّر ذلك ٤ مرات.', ok: true, r: 'مربع مثالي ⬛ أوامر دقيقة بأرقام واضحة.' }] }
+];
+const TEA = [
+  { id: 1, t: 'املأ الغلاية بالماء' }, { id: 2, t: 'شغّل الغلاية حتى يغلي الماء' }, { id: 3, t: 'ضع كيس الشاي في الكوب' },
+  { id: 4, t: 'اسكب الماء المغلي في الكوب' }, { id: 5, t: 'انتظر ٣ دقائق' }, { id: 6, t: 'أخرج الكيس وقدّم الكوب' }
+];
+const SHAPES = [
+  { k: 'oval', svg: '<rect x="6" y="14" width="88" height="36" rx="18"/>', m: 'بداية / نهاية', c: '#DCE6FF' },
+  { k: 'para', svg: '<polygon points="22,14 94,14 78,50 6,50"/>', m: 'إدخال / إخراج', c: '#FFF0BF' },
+  { k: 'rect', svg: '<rect x="8" y="14" width="84" height="36"/>', m: 'معالجة (عملية أو حساب)', c: '#FFE0CC' },
+  { k: 'dia', svg: '<polygon points="50,2 96,32 50,62 4,32"/>', m: 'قرار (سؤال جوابه نعم أو لا)', c: '#D5F2E1' }
+];
+function avgFlow() {
+  const N = [['oval', 'ابدأ'], ['para', 'أدخل الدرجات الثلاث'], ['rect', 'المجموع = د١ + د٢ + د٣'], ['rect', 'المعدل = المجموع ÷ ٣'], ['para', 'اطبع المعدل'], ['oval', 'النهاية']];
+  let s = '';
+  N.forEach(([k, t], i) => {
+    const y = 8 + i * 64, x = 30, w = 200, h = 42;
+    const shape = k === 'oval' ? `<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="21"/>`
+      : k === 'para' ? `<polygon points="${x + 18},${y} ${x + w},${y} ${x + w - 18},${y + h} ${x},${y + h}"/>`
+      : `<rect x="${x}" y="${y}" width="${w}" height="${h}"/>`;
+    s += `<g class="fn-${k}">${shape}<text x="130" y="${y + h / 2 + 1}" dominant-baseline="middle" text-anchor="middle">${t}</text></g>`;
+    if (i < N.length - 1) s += `<path class="fa" d="M130 ${y + h} V ${y + 62} M124 ${y + 56} L130 ${y + 63} L136 ${y + 56}"/>`;
+  });
+  return `<svg class="flow" viewBox="0 0 260 ${8 + 6 * 64}" role="img" aria-label="مخطط انسيابي لبرنامج حساب المعدل">${s}</svg>`;
+}
+ROUTES.w1s2 = () => {
+  frame('المحطة ٢ · تصميم الحل (الخوارزمية)', 'w1', `
+  ${talk('قبل أن نكتب أي كود، نخطط للحل خطوة بخطوة. هذا التخطيط اسمه <b>الخوارزمية</b>. لكن احذر: بتّو ينفّذ كل شيء <b>حرفيًا</b>! لنختبره أولًا…', 'happy', 't')}
+  <div class="parts"><span class="part" data-p="1">أ · بتّو الحرفي</span><span class="part" data-p="2">ب · مطبخ الخوارزمية</span><span class="part" data-p="3">ج · لغة الأشكال</span></div>
+  <section class="panel" id="P"></section><div id="after"></div>`);
+  const T = $('#t'), P = $('#P');
+  const setPart = n => $$('.part').forEach(p => { const k = +p.dataset.p; p.classList.toggle('on', k === n); p.classList.toggle('ok', k < n); });
+  let teaTries = 0, shapeWrong = 0;
+  partA();
+
+  function partA() {
+    setPart(1); let r = 0;
+    const show = () => {
+      const q = LIT[r];
+      P.innerHTML = `<h3>أعطِ بتّو أمرًا يفهمه</h3><p class="task"><span class="pill">المهمة ${ar(r + 1)} من ${ar(LIT.length)}</span>${q.task}</p>
+        <div class="opts">${q.opts.map((o, j) => `<button class="opt" data-j="${j}">«${o.t}»</button>`).join('')}</div>
+        <div class="lit-stage" id="ls">${bot('happy', 64)}<div class="lit-say">بانتظار أمرك…</div></div>
+        <div class="row" id="nx" hidden><button class="btn primary">${r < LIT.length - 1 ? 'المهمة التالية ←' : 'إلى مطبخ الخوارزمية ←'}</button></div>`;
+      P.querySelector('.opts').onclick = e => {
+        const b = e.target.closest('.opt'); if (!b || b.disabled) return;
+        const o = q.opts[+b.dataset.j];
+        $('#ls').innerHTML = bot(o.ok ? 'happy' : 'wow', 64) + `<div class="lit-say ${o.ok ? 'good' : 'oops'}">${o.r}</div>`;
+        if (o.ok) { sfx.ok(); b.classList.add('ok'); P.querySelectorAll('.opt').forEach(x => x.disabled = true); $('#nx').hidden = false; }
+        else { sfx.bad(); b.classList.add('bad'); b.disabled = true; }
+      };
+      $('#nx button').onclick = () => {
+        r++;
+        if (r < LIT.length) show();
+        else { setTalk(T, 'لاحظت؟ الأمر الغامض يُنتج نتيجة غريبة. الحاسب مثل بتّو تمامًا: <mark>لا يخمّن</mark>. الآن رتّب خطوات صنع كوب شاي، وسينفّذها بتّو بالترتيب الذي تضعه أنت بالضبط.'); partB(); }
+      };
+    };
+    show();
+  }
+
+  function partB() {
+    setPart(2);
+    P.innerHTML = `<h3>مطبخ الخوارزمية: كوب شاي ☕</h3><p class="hint">اضغط البطاقات بالترتيب. اضغط بطاقة في «ترتيبك» لإرجاعها.</p>
+      <div id="bd"></div>
+      <div class="kitchen"><div class="obj"><span class="em off" id="kE">🫖</span><small id="kS">الغلاية فارغة</small></div><div class="obj"><span class="em off" id="cE">☕</span><small id="cS">الكوب فارغ</small></div></div>
+      <div class="row"><button class="btn primary" id="runT" disabled>▶ شغّل الخوارزمية</button></div><div class="fb" id="fbT" hidden></div><div id="defn"></div>`;
+    const bd = builder($('#bd'), TEA, seq => { $('#runT').disabled = seq.length !== TEA.length; });
+    const K = (e, s, on) => { $('#kE').classList.toggle('off', !on); $('#kE').textContent = e; $('#kS').textContent = s; };
+    const C = (s, on) => { $('#cE').classList.toggle('off', !on); $('#cS').textContent = s; };
+    function step(id, st) {
+      switch (id) {
+        case 1: st.water = 1; K('🫖', 'فيها ماء بارد', true); return '';
+        case 2: if (!st.water) return 'شغّلت الغلاية وهي فارغة! 🔥 كادت تحترق. يجب أن نملأها أولًا.';
+          st.boil = 1; K('♨️', 'الماء يغلي', true); return '';
+        case 3: st.bag = 1; C(st.pour ? 'ماء ساخن + كيس شاي' : 'فيه كيس شاي', true); return '';
+        case 4: if (!st.water) return 'سكبت… لا شيء! الغلاية فارغة أصلًا.';
+          if (!st.boil) return 'سكبت ماءً باردًا 🥶 لن يصنع شايًا!';
+          st.pour = 1; C(st.bag ? 'ماء ساخن + كيس شاي' : 'فيه ماء ساخن', true); return '';
+        case 5: if (!st.pour) return 'انتظرت ٣ دقائق أمام كوب فارغ… ⏳ لم يحدث شيء!';
+          if (!st.bag) return 'انتظرت، لكن لا يوجد كيس شاي في الكوب! النتيجة: ماء ساخن فقط.';
+          st.wait = 1; C('الشاي يتخمّر…', true); return '';
+        case 6: if (!st.wait) return 'قدّمت الكوب قبل أن يجهز الشاي… طعمه غريب! 😖';
+          C('شاي جاهز! 😋', true); return '';
+      }
+    }
+    $('#runT').onclick = async () => {
+      bd.locked = true; $('#runT').disabled = true; bd.clearMarks(); $('#fbT').hidden = true; teaTries++;
+      K('🫖', 'الغلاية فارغة', false); C('الكوب فارغ', false);
+      const st = {}, seq = bd.seq;
+      for (let i = 0; i < seq.length; i++) {
+        bd.mark(i, 'on'); await wait(700);
+        const err = step(seq[i].id, st);
+        bd.clearMarks();
+        for (let j = 0; j < i; j++) bd.mark(j, 'ok');
+        if (err) { bd.mark(i, 'bad'); sfx.bad(); fb($('#fbT'), `✗ عند الخطوة ${ar(i + 1)}: ${err}<br><small>الترتيب مهم! أرجِع البطاقات الخاطئة وجرّب مرة أخرى.</small>`, false); bd.locked = false; $('#runT').disabled = false; return; }
+        bd.mark(i, 'ok'); sfx.step();
+      }
+      sfx.ok(); fb($('#fbT'), '✓ كوب شاي مثالي! بتّو نفّذ خوارزميتك خطوة بخطوة.', true);
+      setTalk(T, 'رائع! الآن عرفت معنى <b>الخوارزمية</b> بنفسك. اقرأ التعريف بالأسفل، ثم انتقل لآخر جزء.', 'happy');
+      $('#defn').innerHTML = `<div class="defn"><div class="defn-title">الخوارزمية</div>
+        <p class="defn-text">مجموعة من <mark>الخطوات المرتّبة والواضحة والمحدّدة</mark> التي نتبعها لحل مشكلة، ولها بداية ونهاية.</p>
+        <div class="props"><div><b>مرتّبة</b><span>غيّر الترتيب فتحصل على شاي بارد 🥶</span></div><div><b>واضحة ومحدّدة</b><span>«افتح» وحدها جعلت بتّو يفتح فمه</span></div><div><b>منتهية</b><span>لها بداية ونهاية، ولا تستمر للأبد</span></div></div>
+        <p class="fact"><b>هل تعلم؟</b> كلمة <span dir="ltr">Algorithm</span> أصلها اسم العالِم المسلم <b>محمد بن موسى الخوارزمي</b> الذي عاش في بغداد في القرن التاسع الميلادي. كتب الأوروبيون اسمه باللاتينية <span dir="ltr">«Algoritmi»</span>، فصار اسمه اسمًا لكل خطوات الحل في العالم!</p>
+        <div class="row"><button class="btn primary" id="toC">ج · لغة الأشكال ←</button></div></div>`;
+      $('#toC').onclick = partC;
+    };
+  }
+
+  function partC() {
+    setPart(3);
+    setTalk(T, 'المبرمجون يرسمون الخوارزمية أحيانًا بأشكال، اسمها <b>المخطط الانسيابي</b>. لكل شكل معنى. طابِق كل شكل بمعناه!', 'happy');
+    window.scrollTo({ top: 0, behavior: REDUCE ? 'auto' : 'smooth' });
+    const means = shuffle(SHAPES);
+    P.innerHTML = `<h3>لغة الأشكال</h3><p class="hint">اضغط على شكل، ثم اضغط على معناه.</p>
+      <div class="match"><div class="mcol">${SHAPES.map(s => `<button class="shape" data-k="${s.k}" style="--sfill:${s.c}" aria-label="شكل"><svg viewBox="0 0 100 64">${s.svg}</svg></button>`).join('')}</div>
+      <div class="mcol">${means.map(s => `<button class="opt mean" data-k="${s.k}">${s.m}</button>`).join('')}</div></div>
+      <div class="fb" id="fbS" hidden></div><div id="flowbox"></div>`;
+    let sel = null, matched = 0;
+    P.querySelectorAll('.shape').forEach(b => b.onclick = () => { if (b.disabled) return; P.querySelectorAll('.shape').forEach(x => x.classList.remove('sel')); sel = b; b.classList.add('sel'); });
+    P.querySelectorAll('.mean').forEach(b => b.onclick = () => {
+      if (b.disabled) return;
+      if (!sel) { fb($('#fbS'), 'اختر شكلًا أولًا.', false); return; }
+      if (sel.dataset.k === b.dataset.k) {
+        sfx.ok(); sel.classList.remove('sel'); sel.classList.add('ok'); b.classList.add('ok'); sel.disabled = true; b.disabled = true; sel = null; matched++;
+        fb($('#fbS'), '✓ صحيح!', true);
+        if (matched === SHAPES.length) {
+          $('#flowbox').innerHTML = `<div class="defn"><h3>شاهد خوارزمية «حساب المعدل» من المحطة ١ كمخطط انسيابي</h3><div class="flowwrap">${avgFlow()}</div></div>`;
+          finish({ id: 'w1s2', map: 'w1', next: 'w1s3', stars: teaTries <= 1 && shapeWrong === 0 ? 3 : teaTries <= 3 ? 2 : 1,
+            memo: `<p><b>الخوارزمية</b> = خطوات <mark>مرتّبة + واضحة + منتهية</mark> لحل مشكلة.</p><p>نكتبها بالكلام (خطوات مرقّمة) أو نرسمها <b>مخططًا انسيابيًا</b>: ⬭ بداية/نهاية، ▱ إدخال/إخراج، ▭ معالجة، ◇ قرار.</p><p>وتذكّر صاحبها: <b>الخوارزمي</b> 🌙</p>` });
+        }
+      } else { sfx.bad(); shapeWrong++; shakeEl(b); fb($('#fbS'), '✗ ليس هذا معناه، جرّب مرة أخرى.', false); }
+    });
+  }
+};
+
+/* ---------- station 3: write the program ---------- */
+function codingLevel(host, L, onWin, max = 20) {
+  host.innerHTML = `<div class="lvl"><div class="gh"></div><div>
+    <div class="lbl">اضغط الأوامر لتضيفها إلى برنامجك</div>
+    <div class="pal">${['U', 'D', 'R', 'L'].map(k => `<button class="blk" data-add="${k}">${blkLabel(k)}</button>`).join('')}</div>
+    <div class="lbl" style="margin-top:12px">برنامجك <span class="cnt"></span> · اضغط أمرًا لحذفه</div>
+    <div class="prog"></div>
+    <div class="row"><button class="btn primary" data-a="run">▶ شغّل</button><button class="btn" data-a="clear">مسح الكل</button></div>
+    <div class="fb" hidden></div></div>
+    <div class="trans"><div><div class="lbl">الخوارزمية بلغتنا</div><div class="pseudo ps"></div></div><div><div class="lbl">البرنامج نفسه بلغة بايثون</div><div class="code cd"></div></div></div></div>`;
+  const g = makeGrid(host.querySelector('.gh'), L);
+  const P = host.querySelector('.prog'), F = host.querySelector('.fb'), PS = host.querySelector('.ps'), CD = host.querySelector('.cd'), CNT = host.querySelector('.cnt');
+  let prog = [], busy = false;
+  const draw = () => {
+    P.innerHTML = prog.map((k, i) => `<button class="blk" data-i="${i}">${blkLabel(k)}</button>`).join('') || '<span class="empty">برنامجك فارغ…</span>';
+    CNT.textContent = `(${ar(prog.length)} أمر)`;
+    PS.innerHTML = prog.map((k, i) => `<div class="ln">${ar(i + 1)}. تحرّك خطوة إلى ${DIR[k][5]}</div>`).join('') || '<div class="ln skip">…</div>';
+    CD.innerHTML = prog.length ? '<span class="cm"># برنامج بتّو</span>\n' + prog.map(k => DIR[k][4]).join('\n') : '<span class="cm"># ...</span>';
+  };
+  host.querySelector('.pal').onclick = e => {
+    const b = e.target.closest('[data-add]'); if (!b || busy) return;
+    if (prog.length >= max) { fb(F, `الحد الأقصى ${ar(max)} أمرًا.`, false); return; }
+    prog.push(b.dataset.add); sfx.step(); F.hidden = true; draw();
+  };
+  P.onclick = e => { const b = e.target.closest('[data-i]'); if (!b || busy) return; prog.splice(+b.dataset.i, 1); draw(); };
+  host.querySelector('[data-a=clear]').onclick = () => { if (busy) return; prog = []; draw(); g.reset(); F.hidden = true; };
+  host.querySelector('[data-a=run]').onclick = async () => {
+    if (busy) return;
+    if (!prog.length) { fb(F, 'أضف بعض الأوامر أولًا.', false); return; }
+    busy = true; F.hidden = true; draw();
+    const blks = [...P.querySelectorAll('.blk')], lns = [...PS.querySelectorAll('.ln')];
+    const res = await g.run(prog, i => { blks.forEach((b, j) => b.classList.toggle('on', j === i)); lns.forEach((b, j) => b.classList.toggle('on', j === i)); });
+    if (res.ok) { sfx.ok(); fb(F, '🎉 وصل العصير! برنامجك يعمل.', true); onWin(prog.length); return; } // stays locked after a win
+    busy = false;
+    blks.forEach(b => b.classList.remove('on')); if (blks[res.i]) blks[res.i].classList.add('bad');
+    fb(F, gridFail(res) + (res.why === 'short' ? ' أكمل البرنامج!' : ' احذف الأمر الخاطئ وجرّب.'), false);
+  };
+  draw();
+}
+ROUTES.w1s3 = () => {
+  frame('المحطة ٣ · كتابة البرنامج', 'w1', `
+  ${talk('صمّمنا الحل، والآن نكتبه بلغة يفهمها الحاسب. هذا اسمه <b>البرمجة</b> أو <b>الترميز</b>. مهمتك: اكتب برنامجًا يوصل بتّو بالعصير 🧃 إلى الطالب 🙋 دون أن يصطدم بالكراسي. وراقب كيف تتحوّل أوامرك العربية إلى <b>كود حقيقي</b>!')}
+  <section class="panel"><h3 id="lt"></h3><div id="L"></div></section><div id="after"></div>`);
+  const LV = [
+    { w: 5, h: 4, start: [0, 3], goal: [4, 0], walls: [[1, 1], [2, 1], [3, 3], [1, 2]] },
+    { w: 6, h: 5, start: [0, 4], goal: [5, 0], walls: [[1, 3], [1, 2], [1, 1], [3, 4], [3, 3], [3, 1], [3, 0], [5, 3], [5, 4]] }
+  ];
+  let lv = 0;
+  const start = () => {
+    $('#lt').textContent = `المستوى ${ar(lv + 1)} من ${ar(LV.length)}`;
+    codingLevel($('#L'), LV[lv], () => {
+      if (lv < LV.length - 1) {
+        $('#L').insertAdjacentHTML('beforeend', '<div class="row"><button class="btn primary" id="nxl">المستوى التالي ←</button></div>');
+        $('#nxl').onclick = () => { lv++; start(); };
+      } else finish({ id: 'w1s3', map: 'w1', next: 'w1s4',
+        memo: `<p><b>كتابة البرنامج</b> = ترجمة الخوارزمية إلى <mark>لغة برمجة</mark> يفهمها الحاسب.</p>
+          <div class="ipo"><span>تحرّك خطوة إلى اليمين</span><i>←</i><span dir="ltr" style="font-family:var(--f-mono)">robot.move_right()</span></div>
+          <p>اللغات كثيرة (بايثون، سكراتش، جافا…) لكن الفكرة واحدة: الحاسب ينفّذ الأوامر <b>بالترتيب، واحدًا تلو الآخر</b>.</p>` });
+    });
+  };
+  start();
+};
+
+/* ---------- station 4: test & debug ---------- */
+function debugLevel(host, L, buggy, onWin, onTry) {
+  let prog = [...buggy], busy = false, tries = 0, ran = false;
+  const orig = [...buggy];
+  host.innerHTML = `<div class="lvl"><div class="gh"></div><div>
+    <div class="lbl">برنامج زميلك (اضغط أمرًا لتغيير اتجاهه 🔄)</div>
+    <div class="prog"></div>
+    <div class="row"><button class="btn primary" data-a="run">▶ اختبر البرنامج</button></div>
+    <div class="fb" hidden></div>
+    <div class="lbl" style="margin-top:12px">سجل الاختبارات 🧪</div><div class="log"><div>لم تُجرَ أي تجربة بعد.</div></div></div></div>`;
+  const g = makeGrid(host.querySelector('.gh'), L);
+  const P = host.querySelector('.prog'), F = host.querySelector('.fb'), LOG = host.querySelector('.log');
+  const cyc = { U: 'R', R: 'D', D: 'L', L: 'U' };
+  const draw = () => { P.innerHTML = prog.map((k, i) => `<button class="blk${k !== orig[i] ? ' edited' : ''}" data-i="${i}">${blkLabel(k)}</button>`).join(''); };
+  P.onclick = e => {
+    const b = e.target.closest('[data-i]'); if (!b || busy) return;
+    if (!ran) { fb(F, 'المبرمج الذكي يختبر أولًا 😉 اضغط «اختبر البرنامج» لترى أين المشكلة.', false); return; }
+    const i = +b.dataset.i; prog[i] = cyc[prog[i]]; sfx.step(); draw();
+  };
+  host.querySelector('[data-a=run]').onclick = async () => {
+    if (busy) return; busy = true; ran = true; tries++; onTry(); F.hidden = true; draw();
+    const blks = [...P.querySelectorAll('.blk')];
+    const res = await g.run(prog, i => blks.forEach((b, j) => b.classList.toggle('on', j === i)));
+    if (tries === 1) LOG.innerHTML = '';
+    LOG.insertAdjacentHTML('beforeend', `<div class="${res.ok ? 'y' : 'n'}">التجربة ${ar(tries)}: ${res.ok ? '✓ وصل بتّو! لا توجد أخطاء.' : '✗ ' + gridFail(res)}</div>`);
+    if (res.ok) { sfx.ok(); fb(F, '🐛 تم اصطياد كل الحشرات! البرنامج يعمل.', true); onWin(); return; }
+    busy = false; blks.forEach(b => b.classList.remove('on')); if (blks[res.i]) blks[res.i].classList.add('bad');
+    fb(F, res.why === 'short' ? 'وصلنا لنهاية البرنامج ولم يصل بتّو. ابحث عن الأمر الخاطئ.' : `الحشرة غالبًا في الأمر رقم ${ar(res.i + 1)} أو قبله. اضغطه لتغيير اتجاهه، ثم اختبر مرة أخرى.`, false);
+  };
+  draw();
+}
+ROUTES.w1s4 = () => {
+  frame('المحطة ٤ · الاختبار وتصحيح الأخطاء', 'w1', `
+  ${talk('لماذا يسمّى الخطأ البرمجي <b>Bug</b> أي «حشرة»؟ في عام <b>١٩٤٧م</b> توقّف حاسوب ضخم في جامعة هارفارد، فوجد الفريق <b>فراشة حقيقية</b> عالقة داخله! ألصقوها في دفتر الملاحظات وكتبوا: «أول حشرة حقيقية يتم العثور عليها». ومن يومها صار إصلاح الأخطاء اسمه <b>Debugging</b>.<br>زميلك كتب برنامجًا لبتّو… وفيه حشرات! <b>اختبره أولًا</b>، ثم اضغط الأمر الخاطئ لتغيير اتجاهه.')}
+  <section class="panel"><h3 id="lt"></h3><div id="L"></div></section><div id="after"></div>`);
+  const LV = [
+    { L: { w: 5, h: 4, start: [0, 3], goal: [4, 1], walls: [[1, 2], [3, 2]] }, bug: ['R', 'R', 'U', 'R', 'R', 'R'] },
+    { L: { w: 6, h: 5, start: [0, 4], goal: [5, 0], walls: [[0, 2], [2, 3], [2, 2], [4, 1], [4, 2], [3, 4]] }, bug: ['U', 'R', 'U', 'L', 'U', 'R', 'R', 'D', 'R'] }
+  ];
+  let lv = 0, tries = 0;
+  const start = () => {
+    $('#lt').textContent = `البرنامج ${ar(lv + 1)} من ${ar(LV.length)}${lv === 1 ? ' · فيه حشرتان!' : ''}`;
+    debugLevel($('#L'), LV[lv].L, LV[lv].bug, () => {
+      if (lv < LV.length - 1) {
+        $('#L').insertAdjacentHTML('beforeend', '<div class="row"><button class="btn primary" id="nxl">البرنامج التالي ←</button></div>');
+        $('#nxl').onclick = () => { lv++; start(); };
+      } else finish({ id: 'w1s4', map: 'w1', next: 'w1s5', stars: tries <= 6 ? 3 : tries <= 9 ? 2 : 1,
+        memo: `<p><b>الاختبار</b> = نشغّل البرنامج لنتأكد أنه يعطي النتيجة الصحيحة.</p><p><b>تصحيح الأخطاء (Debugging)</b> = نبحث عن مكان الخطأ ونصلحه، ثم <mark>نختبر من جديد</mark>. وهكذا حتى يعمل.</p><p>المبرمج المحترف لا يخاف من الأخطاء… بل يصطادها! 🐛🔍</p>` });
+    }, () => tries++);
+  };
+  start();
+};
+
+/* ---------- station 5: documentation & maintenance ---------- */
+ROUTES.w1s5 = () => {
+  frame('المحطة ٥ · التوثيق والصيانة', 'w1', `
+  ${talk('البرنامج يعمل! لكن المهمة لم تنتهِ. نكتب <b>توثيقًا</b>: ملاحظات تشرح البرنامج للبشر (الحاسب يتجاهلها). ثم تأتي <b>الصيانة</b>: تطوير البرنامج وإصلاحه بعد أن يستخدمه الناس.')}
+  <section class="panel"><h3>دفتر المبرمج</h3><div id="qz"></div></section><div id="after"></div>`);
+  const QS = [
+    { q: 'بعد سنة كاملة، فتحتَ برنامجك لتعدّله. أيّ نسخة ستفهمها أسرع؟', opts: [
+      { t: '<div class="code mini">a = x + y + z\nb = a / 3\nprint(b)</div>', r: 'ستحتار: ما هو a؟ وما x؟ بلا أسماء واضحة ولا تعليقات، حتى أنت لن تفهم برنامجك!' },
+      { t: '<div class="code mini"><span class="cm"># حساب معدّل الطالب</span>\n<span class="cm"># نجمع الدرجات الثلاث</span>\ntotal = math + science + arabic\n<span class="cm"># نقسم على عدد المواد</span>\naverage = total / 3\nprint(average)</div>', ok: true, r: 'بالضبط! الأسماء الواضحة والتعليقات (التي تبدأ بـ #) هي <b>التوثيق</b>. الحاسب يتجاهلها، لكنها كنز للبشر.' }] },
+    { q: 'أي تعليق يناسب هذا السطر؟', pre: code('average = total / 3'), opts: [
+      { t: '<span dir="ltr"># هذا سطر</span>', r: 'لا يشرح شيئًا! التعليق الجيد يخبرك ماذا يفعل السطر.' },
+      { t: '<span dir="ltr"># احسب المعدّل بقسمة المجموع على عدد المواد</span>', ok: true, r: 'تعليق واضح يشرح الهدف 👌' },
+      { t: '<span dir="ltr"># اطبع اسم الطالب</span>', r: 'هذا تعليق خاطئ ومضلّل! السطر لا يطبع شيئًا.' }] },
+    { q: 'أضافت المدرسة مادة رابعة. ماذا يفعل المبرمج؟', opts: [
+      { t: 'يحذف البرنامج ويبدأ من الصفر.', r: 'لا داعي! البرنامج الموثّق سهل التعديل.' },
+      { t: 'لا شيء، البرنامج سيكتشف المادة الجديدة وحده.', r: 'تذكّر بتّو الحرفي! الحاسب لا يعرف شيئًا لم نخبره به.' },
+      { t: 'يضيف مُدخلًا جديدًا ويقسم على ٤ بدل ٣.', ok: true, r: 'صحيح! هذه هي <b>الصيانة</b>: تطوير البرنامج بعد تسليمه. والتوثيق يجعلها سهلة وسريعة.' }] }
+  ];
+  quiz($('#qz'), QS, wrong => finish({ id: 'w1s5', map: 'w1', next: 'w1fin', nextLabel: 'التحدي الأخير', stars: wrong === 0 ? 3 : wrong <= 2 ? 2 : 1,
+    memo: `<p><b>التوثيق</b> = رسالة منك إلى المستقبل: تعليقات وأسماء واضحة تشرح البرنامج.</p><p><b>الصيانة</b> = إصلاح البرنامج وتطويره عندما تتغير الحاجة.</p><p><mark>البرنامج يُكتب مرة واحدة… ويُقرأ مئات المرات.</mark></p>` }));
+};
+
+/* ---------- world 1 final ---------- */
+ROUTES.w1fin = () => {
+  frame('التحدي الأخير · رتّب المحطات', 'w1', `
+  ${talk('بدون النظر إلى الخريطة! رتّب محطات تصميم البرنامج الخمس كما يفعل المبرمجون المحترفون.', 'wow')}
+  <section class="panel"><div id="bd"></div><div class="row"><button class="btn primary" id="ck" disabled>تحقّق ✓</button></div><div class="fb" id="fb" hidden></div></section><div id="after"></div>`);
+  let tries = 0;
+  const bd = builder($('#bd'), W1.map((s, i) => ({ id: i, t: s.t })), seq => { $('#ck').disabled = seq.length !== W1.length || bd.locked; });
+  $('#ck').onclick = () => {
+    tries++; bd.clearMarks(); let ok = true;
+    bd.seq.forEach((it, i) => { const good = it.id === i; bd.mark(i, good ? 'ok' : 'bad'); if (!good) ok = false; });
+    if (ok) {
+      bd.locked = true; $('#ck').disabled = true; fb($('#fb'), '✓ ترتيب مثالي! أنت الآن تفكّر مثل مهندس برمجيات.', true);
+      finish({ id: 'w1fin', map: 'w1', next: 'w2', nextLabel: 'إلى العالم الثاني', stars: tries === 1 ? 3 : tries === 2 ? 2 : 1,
+        memo: `<div class="tablewrap"><table class="dict"><tr><th>المحطة</th><th>في بناء بيت</th></tr>${W1.map((s, i) => `<tr><td><b>${ar(i + 1)}. ${s.t}</b></td><td>${s.h}</td></tr>`).join('')}</table></div>
+          <div class="chant" style="margin-top:10px"><span>حدِّدْ</span><i>←</i><span>صمِّمْ</span><i>←</i><span>اكتبْ</span><i>←</i><span>اختبرْ</span><i>←</i><span>وثِّقْ</span></div>` });
+    } else { sfx.bad(); fb($('#fb'), 'البطاقات الحمراء في غير مكانها. اضغطها لإرجاعها وأعد المحاولة. تلميح: حدِّدْ ← صمِّمْ ← …', false); }
+  };
+};
+
+/* ---------- world 2 map ---------- */
+const W2L = [
+  { id: 'l1', t: 'سلّم بتّو', s: 'التكرار بعدد معروف: «كرر ٦ مرات»', g: 'Loop · for' },
+  { id: 'l2', t: 'متاهة النمط', s: 'كل ما داخل الحلقة يتكرر معًا في كل دورة', g: 'جسم الحلقة' },
+  { id: 'l3', t: 'الكوب العجيب', s: '«كرر طالما…» والحلقة التي لا تنتهي', g: 'Loop · while' }
+];
+const W2C = [
+  { id: 'c1', t: 'مظلة بتّو', s: '«إذا» تحقق الشرط ← نفّذ، وإلا تخطَّ', g: 'if' },
+  { id: 'c2', t: 'آلة الفرز', s: '«إذا… وإلا» طريقان لا ثالث لهما', g: 'if … else' },
+  { id: 'c3', t: 'مُصنِّف الدرجات', s: '«وإلا إذا» عدة شروط بالترتيب', g: 'else if' }
+];
+ROUTES.w2 = () => {
+  const row = (s, i) => `<li><button class="station ${S.done[s.id] ? 'done' : ''}" data-go="${s.id}"><span class="num">${ar(i + 1)}</span><span class="st-body"><b>${s.t}</b><span>${s.s}</span></span><span class="st-side"><span class="gtag" dir="auto">${s.g}</span>${starHTML(S.stars[s.id])}</span></button></li>`;
+  frame('العالم الثاني · مختبر الحلقات والشروط', 'home', `
+  ${talk('في هذا المختبر ستمتلك <b>قوّتين خارقتين</b> يملكهما كل مبرمج: <b>التكرار</b> (الحلقات <span dir="ltr">Loop</span>) لتجعل الحاسب يعيد العمل دون تعب، و<b>القرار</b> (الشروط <span dir="ltr">If</span>) لتجعله يختار ماذا يفعل.')}
+  <h3 class="sect">القوة الأولى: الحلقات <span dir="ltr">Loop</span> 🔁</h3><ol class="track">${W2L.map(row).join('')}</ol>
+  <h3 class="sect">القوة الثانية: الشروط <span dir="ltr">If</span> 🔀</h3><ol class="track">${W2C.map(row).join('')}</ol>
+  <button class="boss" data-go="boss"><span class="boss-k">التحدي النهائي · حلقة + شرط معًا</span><b>تحدي «بِز» ⚡</b><span>هل تستطيع أن تفكر مثل الحاسب… بسرعة؟</span>${starHTML(S.stars.boss)}</button>
+  <section class="panel"><h3>قاموس بتّو</h3><div class="tablewrap"><table class="dict">
+    <tr><th>المفهوم</th><th>معناه</th><th>مثال</th></tr>
+    <tr><td><b>الحلقة <span dir="ltr">Loop</span></b></td><td>تكرار مجموعة أوامر</td><td>كرر ٥ مرات: صفّق</td></tr>
+    <tr><td><b><span dir="ltr">for</span></b></td><td>نعرف عدد المرات مسبقًا</td><td><code>for i in range(7):</code></td></tr>
+    <tr><td><b><span dir="ltr">while</span></b></td><td>نكرر طالما الشرط صحيح</td><td><code>while not cup.full():</code></td></tr>
+    <tr><td><b><span dir="ltr">if</span></b></td><td>نفّذ فقط إذا تحقق الشرط</td><td><code>if rain:</code></td></tr>
+    <tr><td><b><span dir="ltr">if … else</span></b></td><td>طريقان: واحد للصح وواحد للخطأ</td><td><code>else:</code></td></tr>
+    <tr><td><b><span dir="ltr">else if</span></b></td><td>عدة شروط، يُنفَّذ أول شرط صحيح فقط</td><td><code>elif grade &gt;= 80:</code></td></tr>
+  </table></div></section>`, 'orange');
+};
+
+/* ---------- loop 1: stairs ---------- */
+function makeStairs(host, N) {
+  const sh = Math.min(28, Math.floor(170 / N));
+  host.innerHTML = `<div class="stairs" style="--n:${N + 2};--sh:${sh}px" role="img" aria-label="سلّم من ${ar(N)} درجات">${Array.from({ length: N }, (_, i) => `<div class="st" style="--i:${i + 1}"></div>`).join('')}<div class="flag" style="--i:${N}">🏁</div><div class="sbot">${bot('happy', 44)}</div></div>`;
+  const B = host.querySelector('.sbot'); let k = 0;
+  const place = (c, h, instant) => {
+    if (instant) B.style.transition = 'none';
+    B.style.setProperty('--c', c); B.style.setProperty('--hh', h);
+    if (instant) { void B.offsetWidth; B.style.transition = ''; }
+    k = c;
+  };
+  const api = {
+    set(c, instant) { place(c, c, instant); swapBot(B, 'happy', 44); },
+    async climb(n, onStep) {
+      api.set(0, true); await wait(300);
+      for (let i = 0; i < n; i++) {
+        onStep && onStep(i);
+        if (k === N) { place(N + 1, N + 1); await wait(350); place(N + 1, 0); swapBot(B, 'sad', 44); sfx.bad(); return 'over'; }
+        place(k + 1, k + 1); sfx.step(); await wait(400);
+      }
+      if (k === N) { swapBot(B, 'happy', 44); return 'ok'; }
+      swapBot(B, 'sad', 44); return 'short';
+    }
+  };
+  return api;
+}
+const stairFail = r => r === 'short' ? 'توقّف بتّو قبل القمة. يحتاج تكرارًا أكثر!' : 'صعد بتّو في الهواء… وسقط! 😵 عدد التكرار أكبر من عدد الدرجات.';
+ROUTES.l1 = () => {
+  frame('الحلقات ١ · سلّم بتّو', 'w2', `
+  ${talk('بتّو يريد الوصول إلى العلم 🏁 في أعلى السلّم. الأمر <b>«اصعد درجة»</b> يرفعه درجة واحدة فقط. ابنِ برنامجًا يوصله إلى القمة!', 'happy', 't')}
+  <section class="panel"><div id="st"></div><div id="ctl"></div><div class="fb" id="fb" hidden></div></section><div id="after"></div>`, 'orange');
+  const T = $('#t'), CT = $('#ctl'), F = $('#fb');
+  let N = 6, stairs = makeStairs($('#st'), N);
+  phase1();
+
+  function phase1() {
+    let n = 0, busy = false;
+    CT.innerHTML = `<div class="row"><button class="btn hot" id="add">＋ اصعد درجة</button><button class="btn primary" id="run">▶ شغّل</button><button class="btn" id="clr">مسح</button></div>
+      <div class="lbl" style="margin-top:12px">برنامجك: <span id="cnt"></span></div><div class="pseudo" id="ps"></div>`;
+    const draw = () => { $('#cnt').textContent = `${ar(n)} سطر`; $('#ps').innerHTML = n ? Array.from({ length: n }, () => '<div class="ln">اصعد درجة</div>').join('') : '<div class="ln skip">فارغ…</div>'; };
+    $('#add').onclick = () => { if (busy || n >= 20) return; n++; sfx.step(); draw(); };
+    $('#clr').onclick = () => { if (busy) return; n = 0; draw(); stairs.set(0, true); F.hidden = true; };
+    $('#run').onclick = async () => {
+      if (busy || !n) return; busy = true; F.hidden = true;
+      const lines = $$('#ps .ln');
+      const r = await stairs.climb(n, i => lines.forEach((l, j) => l.classList.toggle('on', j === i)));
+      if (r === 'ok') {
+        sfx.ok(); fb(F, `وصل بتّو! 🎉 لكن انظر إلى برنامجك: كتبتَ «اصعد درجة» ${ar(N)} مرات!`, true);
+        setTalk(T, 'تخيّل سلّمًا من <b>١٠٠ درجة</b> 😩 هل ستكتب الأمر ١٠٠ مرة؟ المبرمجون عندهم سلاح سري اسمه <b>الحلقة (<span dir="ltr">Loop</span>)</b>.', 'wow');
+        CT.insertAdjacentHTML('beforeend', '<div class="row"><button class="btn hot" id="p2">أرني السلاح السري ←</button></div>');
+        $('#p2').onclick = phase2;
+      } else { busy = false; fb(F, r === 'short' ? 'توقّف بتّو قبل القمة. يحتاج أوامر أكثر!' : 'صعد بتّو في الهواء… وسقط! 😵 الأوامر أكثر من الدرجات.', false); }
+    };
+    draw();
+  }
+
+  function flash(lines) { lines[0].classList.add('on'); later(() => { lines[0].classList.remove('on'); lines[1].classList.add('on'); }, 140); later(() => lines[1].classList.remove('on'), 360); }
+
+  function phase2() {
+    stairs.set(0, true); F.hidden = true;
+    setTalk(T, 'هذه هي <b>الحلقة</b>: نكتب الأمر <b>مرة واحدة</b>، ونخبر الحاسب كم مرة يكرره. شغّلها وراقب العدّاد!', 'happy');
+    CT.innerHTML = `<div class="loopviz">${pseudo([`<span class="kw">كرر</span> ${ar(N)} مرات:`, '    اصعد درجة'], 'ps')}<div class="counter"><small>الدورة</small><b id="ctr">٠</b><small>من ${ar(N)}</small></div></div>
+      <div class="row"><button class="btn hot" id="run">▶ شغّل الحلقة</button></div>`;
+    $('#run').onclick = async () => {
+      $('#run').disabled = true; const lines = $$('#ps .ln');
+      await stairs.climb(N, i => { $('#ctr').textContent = ar(i + 1); flash(lines); });
+      sfx.ok();
+      fb(F, `${ar(N)} أسطر صارت <b>سطرين</b> فقط! ولو كان السلّم ١٠٠ درجة؟ نغيّر رقمًا واحدًا: «كرر ١٠٠ مرة». وهكذا تُكتب بلغة بايثون:` + code('for i in range(6):\n    robot.climb()'), true);
+      CT.insertAdjacentHTML('beforeend', '<div class="row"><button class="btn hot" id="p3">إلى التحدي ←</button></div>');
+      $('#p3').onclick = phase3;
+    };
+  }
+
+  function phase3() {
+    N = rand(7, 12); stairs = makeStairs($('#st'), N); F.hidden = true;
+    let c = 1, busy = false, tries = 0;
+    setTalk(T, 'سلّم جديد! <b>عُدّ الدرجات</b>، ثم اضبط عدد مرات التكرار. عدد قليل؟ لن يصل. عدد كبير؟ سيطير في الهواء!', 'happy');
+    CT.innerHTML = `<div class="loopviz"><div class="pseudo" id="ps"><div class="ln"><span class="kw">كرر</span><span class="stepper"><button class="sbtn" id="mi" aria-label="أقل">−</button><b id="cv">١</b><button class="sbtn" id="pl" aria-label="أكثر">+</button></span>مرات:</div><div class="ln" style="--ind:1">اصعد درجة</div></div>
+      <div class="counter"><small>الدورة</small><b id="ctr">٠</b></div></div><div class="row"><button class="btn hot" id="run">▶ شغّل</button></div>`;
+    const setC = v => { if (busy) return; c = Math.max(1, Math.min(15, v)); $('#cv').textContent = ar(c); };
+    $('#mi').onclick = () => setC(c - 1); $('#pl').onclick = () => setC(c + 1);
+    $('#run').onclick = async () => {
+      if (busy) return; busy = true; tries++; F.hidden = true; const lines = $$('#ps .ln');
+      const r = await stairs.climb(c, i => { $('#ctr').textContent = ar(i + 1); flash(lines); });
+      if (r === 'ok') {
+        sfx.ok(); fb(F, `✓ بالضبط! السلّم ${ar(N)} درجات، والحلقة تكررت ${ar(N)} مرات.`, true);
+        finish({ id: 'l1', map: 'w2', next: 'l2', stars: tries === 1 ? 3 : tries === 2 ? 2 : 1,
+          memo: `<p><b>الحلقة (<span dir="ltr">Loop</span>)</b> = تكرار مجموعة أوامر عدة مرات دون أن نعيد كتابتها.</p>
+            <p>عندما <mark>نعرف عدد المرات مسبقًا</mark> نستخدم حلقة <b dir="ltr">for</b>:</p>${code('for i in range(' + N + '):\n    robot.climb()')}
+            <p>من حياتك: الطواف حول الكعبة <b>٧ أشواط</b>، القفز على الحبل <b>٢٠ مرة</b>، كتابة الكلمة <b>٥ مرات</b>.</p>` });
+      } else { busy = false; fb(F, stairFail(r) + ' عدّل الرقم وجرّب.', false); }
+    };
+  }
+};
+
+/* ---------- loop 2: pattern maze (loop body) ---------- */
+function loopLevel(host, L, onWin) {
+  let body = [], cnt = 1, busy = false;
+  host.innerHTML = `<div class="lvl"><div class="gh"></div><div>
+    <div class="lbl">اضغط الأوامر لتضعها داخل الحلقة (٣ خانات)</div>
+    <div class="pal">${['U', 'D', 'R', 'L'].map(k => `<button class="blk" data-add="${k}">${blkLabel(k)}</button>`).join('')}</div>
+    <div class="loopblk"><div class="lhead">كرر<span class="stepper"><button class="sbtn" data-s="-1" aria-label="أقل">−</button><b class="cv">١</b><button class="sbtn" data-s="1" aria-label="أكثر">+</button></span>مرات:</div><div class="lbody"></div></div>
+    <div class="iter" aria-live="polite"></div>
+    <div class="row"><button class="btn hot" data-a="run">▶ شغّل</button><button class="btn" data-a="clear">مسح</button></div>
+    <div class="fb" hidden></div></div>
+    <div class="trans"><div><div class="lbl">بلغتنا</div><div class="pseudo ps"></div></div><div><div class="lbl">بلغة بايثون</div><div class="code cd"></div></div></div></div>`;
+  const g = makeGrid(host.querySelector('.gh'), L);
+  const BD = host.querySelector('.lbody'), F = host.querySelector('.fb'), IT = host.querySelector('.iter'), PS = host.querySelector('.ps'), CD = host.querySelector('.cd');
+  const draw = () => {
+    host.querySelector('.cv').textContent = ar(cnt);
+    BD.innerHTML = body.map((k, i) => `<button class="blk" data-i="${i}">${blkLabel(k)}</button>`).join('') + Array.from({ length: 3 - body.length }, () => '<span class="slot">خانة فارغة</span>').join('');
+    PS.innerHTML = `<div class="ln"><span class="kw">كرر</span> ${ar(cnt)} مرات:</div>` + (body.map(k => `<div class="ln" style="--ind:1">تحرّك إلى ${DIR[k][5]}</div>`).join('') || '<div class="ln skip" style="--ind:1">…</div>');
+    CD.textContent = `for i in range(${cnt}):\n` + (body.map(k => '    ' + DIR[k][4]).join('\n') || '    ...');
+  };
+  host.querySelector('.pal').onclick = e => { const b = e.target.closest('[data-add]'); if (!b || busy) return; if (body.length >= 3) { fb(F, 'الحلقة ممتلئة: ٣ أوامر فقط. فكّر في النمط!', false); return; } body.push(b.dataset.add); sfx.step(); F.hidden = true; draw(); };
+  BD.onclick = e => { const b = e.target.closest('[data-i]'); if (!b || busy) return; body.splice(+b.dataset.i, 1); draw(); };
+  host.querySelector('.lhead').onclick = e => { const b = e.target.closest('[data-s]'); if (!b || busy) return; cnt = Math.max(1, Math.min(9, cnt + +b.dataset.s)); draw(); };
+  host.querySelector('[data-a=clear]').onclick = () => { if (busy) return; body = []; cnt = 1; draw(); g.reset(); F.hidden = true; IT.textContent = ''; };
+  host.querySelector('[data-a=run]').onclick = async () => {
+    if (busy) return;
+    if (!body.length) { fb(F, 'ضع أمرًا واحدًا على الأقل داخل الحلقة.', false); return; }
+    busy = true; F.hidden = true; draw();
+    const cmds = []; for (let i = 0; i < cnt; i++) cmds.push(...body);
+    const blks = [...BD.querySelectorAll('.blk')];
+    const res = await g.run(cmds, idx => { const it = Math.floor(idx / body.length), bi = idx % body.length; IT.textContent = `الدورة ${ar(it + 1)} من ${ar(cnt)}`; blks.forEach((b, j) => b.classList.toggle('on', j === bi)); });
+    blks.forEach(b => b.classList.remove('on'));
+    if (res.ok) { sfx.ok(); fb(F, `🎉 نفّذ بتّو ${ar(cmds.length)} خطوات، وأنت كتبت ${ar(body.length + 1)} أسطر فقط!`, true); onWin(); return; }
+    busy = false; fb(F, gridFail(res) + ' ابحث عن النمط الذي يتكرر في الطريق.', false);
+  };
+  draw();
+}
+ROUTES.l2 = () => {
+  frame('الحلقات ٢ · متاهة النمط', 'w2', `
+  ${talk('الحلقة لا تكرر أمرًا واحدًا فقط! كل ما تضعه <b>داخلها</b> يتكرر معًا في كل دورة. انظر إلى الطريق نحو الطالب: هل ترى <b>درجًا</b> يتكرر؟ لديك ٣ خانات فقط داخل الحلقة.')}
+  <section class="panel"><h3 id="lt"></h3><div id="L"></div></section><div id="after"></div>`, 'orange');
+  const LV = [
+    { w: 6, h: 6, start: [0, 5], goal: [4, 1], walls: [[2, 5], [0, 2], [4, 4], [1, 1]] },
+    { w: 7, h: 5, start: [0, 4], goal: [6, 1], walls: [[3, 4], [0, 1], [1, 2], [5, 4], [6, 3]] }
+  ];
+  let lv = 0;
+  const start = () => {
+    $('#lt').textContent = `المستوى ${ar(lv + 1)} من ${ar(LV.length)}`;
+    loopLevel($('#L'), LV[lv], () => {
+      if (lv < LV.length - 1) {
+        $('#L').insertAdjacentHTML('beforeend', '<div class="row"><button class="btn hot" id="nxl">المستوى التالي ←</button></div>');
+        $('#nxl').onclick = () => { lv++; start(); };
+      } else finish({ id: 'l2', map: 'w2', next: 'l3',
+        memo: `<p>الأوامر <b>داخل</b> الحلقة اسمها <b>جسم الحلقة</b>. في كل دورة تُنفَّذ كلها بالترتيب، ثم تبدأ دورة جديدة.</p>${code('for i in range(3):\n    robot.move_right()\n    robot.move_right()\n    robot.move_up()')}<p>المبرمج الذكي <mark>يبحث عن النمط المتكرر</mark> ثم يضعه في حلقة.</p>` });
+    });
+  };
+  start();
+};
+
+/* ---------- loop 3: while + infinite loop ---------- */
+ROUTES.l3 = () => {
+  frame('الحلقات ٣ · الكوب العجيب', 'w2', `
+  ${talk('هذا كوب عجيب: <b>لا أحد يعرف كم ملعقة ماء يحتاج ليمتلئ!</b> مرة ٥ ملاعق ومرة ٨… اختر الحلقة التي تملؤه <b>دائمًا</b> دون أن ينسكب الماء. وجرّب الخيارات الأخرى لترى ماذا يحدث!', 'happy', 't')}
+  <section class="panel"><div class="lab">
+    <div><div class="lbl">اختر برنامجًا</div><div class="radio" id="opts"></div>
+      <div class="row"><button class="btn hot" id="run" disabled>▶ شغّل</button><button class="btn stop" id="stop" hidden>⏹ أوقف البرنامج!</button></div></div>
+    <div><div class="cupzone"><span class="tap">🚰</span><div class="stream" id="stream"></div><div class="cup"><div class="water" id="water"></div></div><div class="spill" id="spill"></div></div>
+      <div class="lbl">ماذا يحدث داخل الحاسب؟ <span id="it"></span></div><div class="log" id="log"><div>اختر برنامجًا ثم اضغط «شغّل».</div></div></div>
+  </div><div class="fb" id="fb" hidden></div></section><div id="after"></div>`, 'orange');
+  const T = $('#t'), LOG = $('#log'), F = $('#fb');
+  const OPTS = shuffle([
+    { k: 'while', l: ['<span class="kw">كرر طالما</span> الكوب <u>غير ممتلئ</u>:', 'أضف ملعقة ماء'] },
+    { k: 'for3', l: ['<span class="kw">كرر ٣ مرات</span>:', 'أضف ملعقة ماء'] },
+    { k: 'full', l: ['<span class="kw">كرر طالما</span> الكوب <u>ممتلئ</u>:', 'أضف ملعقة ماء'] },
+    { k: 'ever', l: ['<span class="kw">كرر للأبد</span>:', 'أضف ملعقة ماء'] }
+  ]);
+  $('#opts').innerHTML = OPTS.map(o => `<button class="ropt" data-k="${o.k}"><div>${o.l[0]}</div><div style="padding-inline-start:1.6em">${o.l[1]}</div></button>`).join('');
+  let pick = null, busy = false, stop = false, won = false;
+  $('#opts').onclick = e => { const b = e.target.closest('.ropt'); if (!b || busy) return; $$('.ropt').forEach(x => x.classList.remove('sel')); b.classList.add('sel'); pick = b.dataset.k; $('#run').disabled = false; };
+  $('#stop').onclick = () => { stop = true; };
+  const L = (t, c = '') => { LOG.insertAdjacentHTML('beforeend', `<div class="${c}">${t}</div>`); LOG.scrollTop = LOG.scrollHeight; };
+  $('#run').onclick = async () => {
+    if (busy || !pick) return; busy = true; stop = false; F.hidden = true; $('#run').disabled = true;
+    const need = rand(5, 8); let lvl = 0, it = 0;
+    const setW = () => { $('#water').style.height = Math.min(lvl / need, 1) * 92 + '%'; $('#spill').style.width = Math.min(Math.max(0, lvl - need) * 26, 260) + 'px'; };
+    setW(); LOG.innerHTML = ''; $('#it').textContent = '';
+    const pour = async () => { $('#stream').style.height = '150px'; await wait(220); lvl++; it++; setW(); $('#stream').style.height = '0'; sfx.step(); $('#it').textContent = `(الدورة ${ar(it)})`; await wait(260); };
+    let ok = false, msg = '';
+    if (pick === 'while') {
+      while (true) {
+        const full = lvl >= need;
+        L(`فحص الشرط: هل الكوب غير ممتلئ؟ ${full ? 'لا ✗' : 'نعم ✓'}`, full ? 'n' : 'y'); await wait(280);
+        if (full) { L('الشرط أصبح خطأ ← توقفت الحلقة وحدها', 'y'); break; }
+        await pour();
+      }
+      ok = true; msg = `✓ امتلأ الكوب بعد ${ar(need)} ملاعق بالضبط! حلقة «طالما» تفحص الشرط قبل كل دورة، وتتوقف وحدها عندما يصبح خطأ. شغّلها مرة أخرى: سيتغير عدد الملاعق، وستنجح دائمًا.`;
+    } else if (pick === 'for3') {
+      for (let i = 0; i < 3; i++) { L(`الدورة ${ar(i + 1)} من ٣ ← أضف ملعقة`); await pour(); }
+      L('انتهت الدورات الثلاث.', 'n');
+      msg = `✗ انتهت الدورات الثلاث، لكن الكوب كان يحتاج ${ar(need)} ملاعق! «كرر ٣ مرات» تصلح عندما <b>نعرف</b> العدد مسبقًا، وهنا لا نعرفه.`;
+    } else if (pick === 'full') {
+      L('فحص الشرط: هل الكوب ممتلئ؟ لا ✗', 'n'); await wait(500);
+      L('الشرط خطأ من البداية ← لن ندخل الحلقة أبدًا!', 'n');
+      msg = '✗ لم تتكرر الحلقة ولا مرة واحدة! الكوب فارغ، فالشرط «ممتلئ» خطأ من أول فحص، وتخطّى الحاسب الحلقة كلها.';
+    } else {
+      $('#stop').hidden = false;
+      while (!stop && it < 30) {
+        L(`الدورة ${ar(it + 1)}: أضف ملعقة… (لا يوجد شرط توقف!)`, lvl >= need ? 'n' : '');
+        await pour();
+        if (lvl === need + 1) { setTalk(T, 'النجدة! الماء ينسكب! 💦 اضغط «أوقف البرنامج»!', 'wow'); sfx.bad(); }
+      }
+      $('#stop').hidden = true;
+      L(stop ? 'أوقفتَ البرنامج بالقوة ⏹' : 'أوقفناه نحن بعد ٣٠ دورة ⏹', 'n');
+      setTalk(T, 'هذا الكوب العجيب يحتاج حلقة ذكية تعرف متى تتوقف. جرّب كل الخيارات!', 'happy');
+      msg = '✗ هذه <b>حلقة لا نهائية</b> (<span dir="ltr">Infinite Loop</span>) 😱 لا يوجد شرط يوقفها، فتستمر حتى يتجمّد البرنامج أو نوقفه بالقوة. إنها من أشهر أخطاء المبرمجين!';
+    }
+    document.querySelector(`.ropt[data-k="${pick}"]`).dataset.r = ok ? 'ok' : 'bad';
+    ok ? sfx.ok() : sfx.bad();
+    fb(F, msg, ok); busy = false; $('#run').disabled = false;
+    if (ok && !won) {
+      won = true;
+      finish({ id: 'l3', map: 'w2', next: 'c1', nextLabel: 'إلى الشروط',
+        memo: `<div class="tablewrap"><table class="dict"><tr><th></th><th><span dir="ltr">for</span> · كرر عددًا</th><th><span dir="ltr">while</span> · كرر طالما</th></tr>
+          <tr><td><b>متى؟</b></td><td>نعرف عدد المرات</td><td>لا نعرف العدد، لكن نعرف متى نتوقف</td></tr>
+          <tr><td><b>مثال</b></td><td>الطواف ٧ أشواط</td><td>اشرب الماء طالما أنت عطشان</td></tr>
+          <tr><td><b>بايثون</b></td><td><code>for i in range(7):</code></td><td><code>while not cup.full():</code></td></tr></table></div>
+          <p style="margin-top:10px">⚠️ احذر <b>الحلقة اللانهائية</b>: كل حلقة «طالما» تحتاج شرطًا <mark>سيصبح خطأ يومًا ما</mark>.</p>` });
+    }
+  };
+};
+
+/* ---------- if 1: umbrella ---------- */
+ROUTES.c1 = () => {
+  frame('الشروط ١ · مظلة بتّو', 'w2', `
+  ${talk('الجملة الشرطية تجعل البرنامج <b>يقرّر</b>. تبدأ بـ <b>«إذا»</b> ثم سؤال جوابه <b>صح أو خطأ</b>. إذا كان صح ← ينفّذ الأمر، وإذا كان خطأ ← يتخطّاه. جرّب الطقسين!', 'happy', 't')}
+  <section class="panel"><div class="lab2">
+    <div><div class="lbl">١. اختر الطقس</div><div class="row" style="margin-top:0"><button class="btn sel" data-w="sun">☀️ مشمس</button><button class="btn" data-w="rain">🌧️ ممطر</button></div>
+      <div class="lbl" style="margin-top:14px">٢. البرنامج</div>
+      ${pseudo(['<span class="kw">إذا</span> كان الجو ممطرًا:', '    خذ المظلة ☂️', 'اذهب إلى المدرسة 🏫'], 'ps')}
+      <div class="row"><button class="btn hot" id="run">▶ نفّذ البرنامج</button></div></div>
+    <div><div class="scene" id="sc"><div class="fx"></div><span class="sun">☀️</span><div class="ground"></div><span class="school">🏫</span><div class="walker" id="wk"><span class="umb" hidden>☂️</span>${bot('happy', 60)}</div></div>
+      <div class="cond" id="cond">الشرط: <b>لم يُفحص بعد</b></div></div>
+  </div><div class="fb" id="fb" hidden></div></section>
+  <section class="panel" id="Q" hidden><h3>دورك: توقّع ماذا سيفعل البرنامج</h3><div id="qz"></div></section><div id="after"></div>`, 'orange');
+  let weather = 'sun', busy = false; const tried = new Set();
+  const W = $('#wk'), lines = $$('#ps .ln');
+  $$('[data-w]').forEach(b => b.onclick = () => {
+    if (busy) return; weather = b.dataset.w;
+    $$('[data-w]').forEach(x => x.classList.toggle('sel', x === b));
+    $('#sc').classList.toggle('rain', weather === 'rain');
+    W.classList.remove('go'); W.querySelector('.umb').hidden = true; lines.forEach(l => l.classList.remove('on', 'skip'));
+    $('#cond').innerHTML = 'الشرط: <b>لم يُفحص بعد</b>';
+  });
+  $('#run').onclick = async () => {
+    if (busy) return; busy = true; $('#fb').hidden = true;
+    W.style.transition = 'none'; W.classList.remove('go'); void W.offsetWidth; W.style.transition = '';
+    W.querySelector('.umb').hidden = true; lines.forEach(l => l.classList.remove('on', 'skip'));
+    const rain = weather === 'rain';
+    lines[0].classList.add('on'); await wait(700);
+    $('#cond').innerHTML = `الشرط: هل الجو ممطر؟ ← <b style="color:var(--${rain ? 'green' : 'red'})">${rain ? 'صح ✓' : 'خطأ ✗'}</b>`;
+    await wait(700); lines[0].classList.remove('on');
+    if (rain) { lines[1].classList.add('on'); W.querySelector('.umb').hidden = false; sfx.ok(); await wait(800); lines[1].classList.remove('on'); }
+    else { lines[1].classList.add('skip'); await wait(500); }
+    lines[2].classList.add('on'); W.classList.add('go'); await wait(1700);
+    fb($('#fb'), rain ? 'الشرط <b>صح</b>، فنفّذ بتّو «خذ المظلة» ثم ذهب للمدرسة ☂️'
+      : 'الشرط <b>خطأ</b>، فتخطّى بتّو سطر المظلة وذهب مباشرة للمدرسة. لاحظ: «اذهب إلى المدرسة» نُفِّذ في الحالتين لأنه <b>خارج</b> الشرط.', true);
+    tried.add(weather); busy = false;
+    if (tried.size === 1) setTalk($('#t'), 'ممتاز! الآن غيّر الطقس وشغّل البرنامج مرة أخرى. ماذا سيتغيّر؟', 'happy');
+    if (tried.size === 2 && $('#Q').hidden) {
+      setTalk($('#t'), 'رأيت الحالتين! الآن أنت الحاسب: اقرأ كل شرط وتوقّع النتيجة.', 'happy');
+      $('#Q').hidden = false; startQuiz(); later(() => $('#Q').scrollIntoView({ behavior: REDUCE ? 'auto' : 'smooth', block: 'start' }), 300);
+    }
+  };
+  function startQuiz() {
+    const yn = (yes, rYes, rNo) => [{ t: 'نعم', ok: yes, r: rYes }, { t: 'لا', ok: !yes, r: rNo }];
+    const QS = [
+      { fixed: true, pre: pseudo(['<span class="kw">إذا</span> درجة الحرارة &gt; ٤٠:', '    ابقَ في الداخل']), q: 'درجة الحرارة اليوم <b>٣٨</b>. هل سيبقى بتّو في الداخل؟',
+        opts: yn(false, 'انتبه: هل ٣٨ أكبر من ٤٠؟', '٣٨ &gt; ٤٠ خطأ، فلن يُنفَّذ الأمر.') },
+      { fixed: true, pre: pseudo(['<span class="kw">إذا</span> الدرجة &gt;= ٥٠:', '    اطبع «ناجح»']), q: 'درجة الطالب <b>٥٠</b>. هل سيطبع البرنامج «ناجح»؟',
+        opts: yn(true, '٥٠ ≥ ٥٠ صح! العلامة &gt;= تعني «أكبر من أو يساوي».', 'انتبه للعلامة &gt;= … إنها تشمل «يساوي».') },
+      { fixed: true, pre: pseudo(['<span class="kw">إذا</span> كان اليوم الجمعة <span class="kw">و</span> الجو جميل:', '    اذهب في نزهة']), q: 'اليوم <b>الجمعة</b>، لكن الجو <b>ممطر</b>. هل سيذهب بتّو في نزهة؟',
+        opts: yn(false, '«و» تحتاج أن يكون الشرطان صحيحين معًا.', '«و» تحتاج الشرطين معًا. الجو ممطر ← الشرط كله خطأ.') },
+      { fixed: true, pre: pseudo(['<span class="kw">إذا</span> كانت معك تذكرة <span class="kw">أو</span> كنت طالبًا:', '    ادخل المتحف']), q: 'ليست معك تذكرة، لكنك <b>طالب</b>. هل ستدخل المتحف؟',
+        opts: yn(true, '«أو» يكفيها شرط واحد صحيح.', '«أو» يكفيها شرط واحد صحيح، وأنت طالب!') }
+    ];
+    quiz($('#qz'), QS, wrong => finish({ id: 'c1', map: 'w2', next: 'c2', stars: wrong === 0 ? 3 : wrong <= 2 ? 2 : 1,
+      memo: `<p><b>إذا (<span dir="ltr">if</span>)</b> = بوابة لا تُفتح إلا عندما يكون الشرط <mark>صحيحًا</mark>. وإذا كان خطأ، يتخطّاها البرنامج ويكمل.</p>
+        <div class="ops"><span><b>&gt;</b>أكبر من</span><span><b>&lt;</b>أصغر من</span><span><b>==</b>يساوي</span><span><b>!=</b>لا يساوي</span><span><b>&gt;=</b>أكبر أو يساوي</span><span><b>&lt;=</b>أصغر أو يساوي</span><span><b>و</b>الشرطان معًا</span><span><b>أو</b>يكفي واحد</span></div>
+        ${code('if weather == "rain":\n    take_umbrella()\ngo_to_school()')}` }));
+  }
+};
+
+/* ---------- if 2: if/else sorting machine ---------- */
+ROUTES.c2 = () => {
+  frame('الشروط ٢ · آلة الفرز', 'w2', `
+  ${talk('أحيانًا نريد أن نفعل شيئًا إذا تحقق الشرط، و<b>شيئًا آخر</b> إذا لم يتحقق. هذه هي <b>«إذا… وإلا»</b> (<span dir="ltr">if … else</span>). كل عنصر يذهب في طريق واحد فقط، لا الاثنين معًا! أنت الآن المعالج: افرز بسرعة قبل أن ينتهي الوقت.')}
+  <section class="panel" id="P"></section><div id="after"></div>`, 'orange');
+  const RULES = [
+    { cond: 'العدد زوجي', yes: 'الصندوق الأزرق 🟦', no: 'الصندوق الأحمر 🟥',
+      make() { return shuffle([rand(1, 49) * 2, rand(1, 49) * 2, rand(0, 49) * 2 + 1, rand(0, 49) * 2 + 1]).map(n => ({ show: ar(n), ans: n % 2 === 0, why: n % 2 === 0 ? `${ar(n)} يقبل القسمة على ٢ ← زوجي` : `${ar(n)} ÷ ٢ يبقى ١ ← فردي` })); } },
+    { cond: 'العمر ≥ ١٢', yes: 'تذكرة كبار 🎟️', no: 'تذكرة أطفال 🎈',
+      make() { return shuffle([12, rand(13, 40), rand(4, 11), rand(4, 11)]).map(n => ({ show: ar(n), small: 'سنة', ans: n >= 12, why: n === 12 ? '١٢ ≥ ١٢ صح! العلامة ≥ تشمل المساواة.' : n > 12 ? `${ar(n)} أكبر من ١٢` : `${ar(n)} أصغر من ١٢` })); } },
+    { cond: 'الحيوان يطير', yes: 'قفص الطيور 🪺', no: 'الحديقة 🌳',
+      make() {
+        const all = [['🦅', 'نسر', 1], ['🐘', 'فيل', 0], ['🦋', 'فراشة', 1], ['🐪', 'جمل', 0], ['🐝', 'نحلة', 1], ['🐢', 'سلحفاة', 0], ['🦉', 'بومة', 1], ['🐄', 'بقرة', 0]];
+        const pick = shuffle(all).slice(0, 3).map(([e, n, f]) => ({ show: e, small: n, ans: !!f, why: `${n} ${f ? 'يطير' : 'لا يطير'}` }));
+        pick.push({ show: '🐧', small: 'بطريق', ans: false, why: 'خدعة! البطريق طائر لكنه <b>لا يطير</b>. الحاسب يفحص الشرط بدقة: «يطير؟» لا.' });
+        return shuffle(pick);
+      } }
+  ];
+  const items = []; RULES.forEach(r => items.push(...r.make().map(x => ({ ...x, r }))));
+  const P = $('#P'), MS = 6000;
+  let k = 0, score = 0, tid = null, acc = false;
+  P.innerHTML = `<div class="sorthead"><span class="pill" id="rn">القاعدة ١ من ٣</span><span>النقاط: <b id="sc">٠</b> من ${ar(items.length)}</span></div>
+    <div id="code"></div>
+    <div class="machine"><div class="item" id="it">؟</div><div class="itn" id="itn"></div><div class="tbar"><i id="tb"></i></div>
+      <div class="branches"><button class="branch yes" id="by" disabled>✓ صح<small id="byl"></small></button><button class="branch no" id="bn" disabled>✗ خطأ ← وإلا<small id="bnl"></small></button></div>
+      <button class="btn hot" id="go">ابدأ الفرز ▶</button></div>
+    <div class="fb" id="fb" hidden></div>`;
+  const showRule = r => { $('#code').innerHTML = pseudo([`<span class="kw">إذا</span> ${r.cond}:`, `    ضعه في ${r.yes}`, '<span class="kw">وإلا</span>:', `    ضعه في ${r.no}`], 'ps'); $('#byl').textContent = r.yes; $('#bnl').textContent = r.no; };
+  showRule(RULES[0]);
+  const TB = $('#tb');
+  const enable = on => { $('#by').disabled = !on; $('#bn').disabled = !on; };
+  $('#go').onclick = () => { $('#go').hidden = true; next(); };
+  function next() {
+    if (k === items.length) return end();
+    const it = items[k];
+    if (k % 4 === 0) { showRule(it.r); $('#rn').textContent = `القاعدة ${ar(k / 4 + 1)} من ٣`; }
+    const lines = $$('#ps .ln'); lines.forEach(l => l.classList.remove('on', 'skip')); lines[0].classList.add('on');
+    const I = $('#it'); I.textContent = it.show; I.classList.remove('pop'); void I.offsetWidth; I.classList.add('pop');
+    $('#itn').textContent = it.small || '';
+    TB.style.transition = 'none'; TB.style.width = '100%'; void TB.offsetWidth; TB.style.transition = `width ${MS}ms linear`; TB.style.width = '0%';
+    tid = later(() => answer(null), MS); acc = true; enable(true);
+  }
+  function answer(v) {
+    if (!acc) return; acc = false; clearTimeout(tid); enable(false);
+    TB.style.width = getComputedStyle(TB).width; TB.style.transition = 'none';
+    const it = items[k], ok = v === it.ans, lines = $$('#ps .ln');
+    lines[0].classList.remove('on');
+    (it.ans ? [lines[1]] : [lines[2], lines[3]]).forEach(l => l.classList.add('on'));
+    (it.ans ? [lines[2], lines[3]] : [lines[1]]).forEach(l => l.classList.add('skip'));
+    if (ok) { score++; sfx.ok(); } else sfx.bad();
+    $('#sc').textContent = ar(score);
+    fb($('#fb'), (v === null ? '⏰ انتهى الوقت! ' : ok ? '✓ ' : '✗ ') + it.why + ` ← الشرط <b>${it.ans ? 'صح' : 'خطأ'}</b> ← ${it.ans ? it.r.yes : it.r.no}`, ok);
+    k++; later(next, ok ? 1400 : 2600);
+  }
+  $('#by').onclick = () => answer(true); $('#bn').onclick = () => answer(false);
+  function end() {
+    $('#it').textContent = '🏁'; $('#itn').textContent = `${ar(score)} من ${ar(items.length)}`;
+    P.insertAdjacentHTML('beforeend', '<div class="row"><button class="btn" id="again">العب مرة أخرى</button></div>');
+    $('#again').onclick = () => go('c2');
+    finish({ id: 'c2', map: 'w2', next: 'c3', stars: score >= 11 ? 3 : score >= 8 ? 2 : 1,
+      memo: `<p><b>إذا… وإلا</b> = مفترق طرق: <mark>طريق واحد فقط</mark> يُنفَّذ دائمًا. لا الاثنان معًا، ولا لا شيء.</p>${code('if number % 2 == 0:\n    print("الصندوق الأزرق")\nelse:\n    print("الصندوق الأحمر")')}<p>والحاسب لا ينخدع بالمظاهر: البطريق طائر، لكن جواب «يطير؟» هو <b>لا</b> 🐧</p>` });
+  }
+};
+
+/* ---------- if 3: else-if chain ---------- */
+ROUTES.c3 = () => {
+  frame('الشروط ٣ · مُصنِّف الدرجات', 'w2', `
+  ${talk('عندما تكون الاحتمالات <b>أكثر من اثنين</b> نستخدم <b>«وإلا إذا»</b> (<span dir="ltr">else if</span>). الحاسب يفحص الشروط <b>من الأعلى إلى الأسفل</b>، و<mark>يتوقف عند أول شرط صحيح</mark> ويتجاهل الباقي. أنت المعالج: ماذا سيطبع البرنامج؟')}
+  <section class="panel" id="P"></section><div id="after"></div>`, 'orange');
+  const GOOD = [[90, 'ممتاز'], [80, 'جيد جدًا'], [65, 'جيد'], [null, 'يحتاج إلى تحسين']];
+  const BUG = [[65, 'جيد'], [80, 'جيد جدًا'], [90, 'ممتاز'], [null, 'يحتاج إلى تحسين']];
+  const ROUNDS = [{ g: 95, c: GOOD }, { g: 72, c: GOOD }, { g: 83, c: GOOD }, { g: 40, c: GOOD }, { g: 90, c: GOOD }, { g: 95, c: BUG, bug: true }];
+  const P = $('#P'); let r = 0, score = 0;
+  function show() {
+    const R = ROUNDS[r]; let busy = false;
+    P.innerHTML = `<div class="sorthead"><span class="pill">${R.bug ? 'جولة المحقق 🕵️' : `الطالب ${ar(r + 1)} من ${ar(ROUNDS.length - 1)}`}</span><span>إجابات صحيحة: <b>${ar(score)}</b></span></div>
+      ${R.bug ? '<p class="task">زميلك غيّر <b>ترتيب</b> الشروط! انتبه جيدًا…</p>' : ''}
+      <div class="grade"><small>درجة الطالب</small>${ar(R.g)}</div>
+      <div class="chain">${R.c.map(([v, o], i) => `<div class="crow"><span class="cc">${v === null ? '<span class="kw2">وإلا</span>' : `<span class="kw2">${i === 0 ? 'إذا' : 'وإلا إذا'}</span> الدرجة ≥ ${ar(v)}`}</span><span class="co">اطبع «${o}»</span><span class="cs"></span></div>`).join('')}</div>
+      <p class="q">ماذا سيطبع البرنامج؟</p>
+      <div class="answers">${shuffle(GOOD.map(x => x[1])).map(o => `<button class="opt" data-o="${o}">${o}</button>`).join('')}</div>
+      <div class="fb" id="fb" hidden></div><div class="row" id="nx" hidden><button class="btn hot">${r < ROUNDS.length - 1 ? 'التالي ←' : 'إنهاء ←'}</button></div>`;
+    P.querySelector('.answers').onclick = async e => {
+      const b = e.target.closest('.opt'); if (!b || busy) return; busy = true;
+      P.querySelectorAll('.answers .opt').forEach(x => x.disabled = true);
+      const pick = b.dataset.o, rows = P.querySelectorAll('.crow'); let out = null;
+      for (let i = 0; i < R.c.length; i++) {
+        const [v, o] = R.c[i]; rows[i].classList.add('chk'); await wait(650); rows[i].classList.remove('chk');
+        const t = v === null || R.g >= v;
+        rows[i].querySelector('.cs').textContent = v === null ? 'نُفِّذ' : t ? 'صح ✓' : 'خطأ ✗';
+        rows[i].classList.add(t ? 't' : 'f'); sfx.step();
+        if (t) { out = o; for (let j = i + 1; j < rows.length; j++) { rows[j].classList.add('skip'); rows[j].querySelector('.cs').textContent = 'لم يُفحص'; } break; }
+      }
+      const ok = pick === out;
+      if (ok) { score++; sfx.ok(); b.classList.add('ok'); } else { sfx.bad(); b.classList.add('bad'); }
+      let msg = ok ? `✓ صحيح! طبع البرنامج «${out}».` : `✗ البرنامج طبع «${out}».`;
+      if (R.g === 95 && !R.bug) msg += ' لاحظ: ٩٥ ≥ ٦٥ صح أيضًا، لكن الحاسب توقف عند <b>أول</b> شرط صحيح ولم يكمل.';
+      if (R.g === 90) msg += ' ٩٠ ≥ ٩٠ صح، لأن العلامة ≥ تعني «أكبر من أو يساوي».';
+      if (R.g === 40) msg += ' لم يتحقق أي شرط، فنُفِّذ جزء «وإلا» الأخير.';
+      if (R.bug) msg += ' 🐛 هذا <b>خطأ منطقي</b>! طالب درجته ٩٥ حصل على «جيد» لأن الشرط ≥ ٦٥ جاء أولًا وكان صحيحًا. <b>ترتيب الشروط مهم</b>: نبدأ بالأعلى ثم الأقل.';
+      fb($('#fb'), msg, ok); $('#nx').hidden = false;
+    };
+    $('#nx button').onclick = () => {
+      r++;
+      if (r < ROUNDS.length) show();
+      else finish({ id: 'c3', map: 'w2', next: 'boss', nextLabel: 'التحدي النهائي', stars: score >= 6 ? 3 : score >= 4 ? 2 : 1,
+        memo: `<p><b>وإلا إذا (<span dir="ltr">else if</span>)</b> = سلسلة شروط تُفحص <mark>من الأعلى إلى الأسفل</mark>. أول شرط صحيح يُنفَّذ، والباقي يُتجاهل. وإن لم يصح أي شرط يُنفَّذ «وإلا».</p>
+          ${code('if grade >= 90:\n    print("ممتاز")\nelif grade >= 80:\n    print("جيد جدًا")\nelif grade >= 65:\n    print("جيد")\nelse:\n    print("يحتاج إلى تحسين")')}<p>⚠️ الترتيب الخاطئ يصنع <b>خطأً منطقيًا</b>: البرنامج يعمل… لكنه يعطي نتيجة خاطئة.</p>` });
+    };
+  }
+  show();
+};
+
+/* ---------- boss: fizz (loop + if) ---------- */
+ROUTES.boss = () => {
+  frame('التحدي النهائي · بِز', 'w2', `
+  ${talk('الآن تجمع القوّتين: <b>حلقة</b> تعدّ من ١ إلى ١٥، وداخلها <b>شرط</b>. أنت الحاسب! لكل عدد: إذا كان يقبل القسمة على ٣ اضغط <b>«بِز!»</b>، وإلا اضغط <b>«قل العدد»</b>. أسرع قبل أن ينتهي الوقت!', 'wow', 't')}
+  <section class="panel" id="P"></section><div id="after"></div>`, 'orange');
+  const MODES = {
+    1: { ms: 3500, title: 'الجولة ١: بِز',
+      lines: ['<span class="kw">كرر</span> لكل عدد من ١ إلى ١٥:', '    <span class="kw">إذا</span> العدد يقبل القسمة على ٣:', '        قل «بِز»', '    <span class="kw">وإلا</span>:', '        قل العدد'],
+      btns: [['num', 'قل العدد'], ['fizz', 'بِز!']],
+      ans: n => n % 3 === 0 ? 'fizz' : 'num',
+      path: { fizz: [1, 2], num: [1, 3, 4] },
+      why: (n, a) => a === 'fizz' ? `${ar(n)} ÷ ٣ = ${ar(n / 3)} بلا باقٍ ← «بِز»` : `${ar(n)} لا يقبل القسمة على ٣ ← «${ar(n)}»` },
+    2: { ms: 5000, title: 'جولة الأبطال: بِزطَن',
+      lines: ['<span class="kw">كرر</span> لكل عدد من ١ إلى ١٥:', '    <span class="kw">إذا</span> يقبل القسمة على ٣ <span class="kw">و</span> على ٥:', '        قل «بِزطَن»', '    <span class="kw">وإلا إذا</span> يقبل القسمة على ٣:', '        قل «بِز»', '    <span class="kw">وإلا إذا</span> يقبل القسمة على ٥:', '        قل «طَن»', '    <span class="kw">وإلا</span>:', '        قل العدد'],
+      btns: [['num', 'العدد'], ['fizz', 'بِز'], ['buzz', 'طَن'], ['fb', 'بِزطَن']],
+      ans: n => n % 15 === 0 ? 'fb' : n % 3 === 0 ? 'fizz' : n % 5 === 0 ? 'buzz' : 'num',
+      path: { fb: [1, 2], fizz: [1, 3, 4], buzz: [1, 3, 5, 6], num: [1, 3, 5, 7, 8] },
+      why: (n, a) => ({ fb: `${ar(n)} يقبل القسمة على ٣ و ٥ معًا ← «بِزطَن»`, fizz: `${ar(n)} يقبل القسمة على ٣ فقط ← «بِز»`, buzz: `${ar(n)} يقبل القسمة على ٥ فقط ← «طَن»`, num: `${ar(n)} لا يقبل القسمة على ٣ ولا ٥ ← «${ar(n)}»` })[a] }
+  };
+  const P = $('#P');
+  play(1);
+
+  function play(m) {
+    const M = MODES[m]; let n = 0, score = 0, tid = null, acc = false;
+    if (m === 2) setTalk($('#t'), 'جولة الأبطال! الآن ٤ أزرار. لاحظ أن شرط <b>«٣ و ٥ معًا»</b> جاء <b>أولًا</b>… تذكّر لماذا من مصنّف الدرجات!', 'wow');
+    P.innerHTML = `<div class="sorthead"><span class="pill">${M.title}</span><span>النقاط: <b id="sc">٠</b> من ١٥</span></div>
+      <div class="bosswrap"><div>${pseudo(M.lines, 'ps')}</div>
+      <div class="machine" style="margin-top:0"><div class="dots" id="dots">${'<i></i>'.repeat(15)}</div><div class="lbl" style="margin:0">العدد في هذه الدورة</div><div class="bigno" id="no">—</div><div class="tbar"><i id="tb"></i></div>
+        <div class="answers">${M.btns.map(([k, t]) => `<button class="branch ${k}" data-k="${k}" disabled>${t}</button>`).join('')}</div>
+        <button class="btn hot" id="go">ابدأ ▶</button></div></div><div class="fb" id="fb" hidden></div>`;
+    const TB = $('#tb'), dots = $$('#dots i'), btns = $$('.answers .branch');
+    const enable = on => btns.forEach(b => b.disabled = !on);
+    $('#go').onclick = () => { $('#go').hidden = true; next(); };
+    btns.forEach(b => b.onclick = () => answer(b.dataset.k));
+    function next() {
+      n++; if (n > 15) return end();
+      dots[n - 1].classList.add('cur'); $('#no').textContent = ar(n);
+      const lines = $$('#ps .ln'); lines.forEach(l => l.classList.remove('on', 'skip')); lines[0].classList.add('on');
+      TB.style.transition = 'none'; TB.style.width = '100%'; void TB.offsetWidth; TB.style.transition = `width ${M.ms}ms linear`; TB.style.width = '0%';
+      tid = later(() => answer(null), M.ms); acc = true; enable(true);
+    }
+    function answer(k) {
+      if (!acc) return; acc = false; clearTimeout(tid); enable(false);
+      TB.style.width = getComputedStyle(TB).width; TB.style.transition = 'none';
+      const a = M.ans(n), ok = k === a;
+      const lines = $$('#ps .ln'); M.path[a].forEach(i => lines[i].classList.add('on'));
+      dots[n - 1].classList.remove('cur'); dots[n - 1].classList.add(ok ? 'ok' : 'bad');
+      if (ok) { score++; sfx.ok(); } else sfx.bad();
+      $('#sc').textContent = ar(score);
+      fb($('#fb'), (k === null ? '⏰ انتهى الوقت! ' : ok ? '✓ ' : '✗ ') + M.why(n, a), ok);
+      later(next, ok ? 800 : 1900);
+    }
+    function end() {
+      $('#no').textContent = '🏁';
+      if (m === 1) {
+        if (score >= 10) {
+          finish({ id: 'boss', map: 'w2', next: 'cert', nextLabel: 'شهادتي 🏅', stars: score === 15 ? 3 : score >= 12 ? 2 : 1,
+            extra: '<button class="btn hot" id="r2">جولة الأبطال ⚡</button>',
+            memo: `<p><b>الحلقة تكرّر، والشرط يقرّر.</b> <mark>ومعًا يصنعان كل البرامج تقريبًا!</mark> الألعاب مثلًا تكرر رسم الشاشة ٦٠ مرة في الثانية، وفي كل مرة تسأل: إذا لمس اللاعب العدو ← انتهت اللعبة.</p>${code('for n in range(1, 16):\n    if n % 3 == 0:\n        print("بِز")\n    else:\n        print(n)')}` });
+          $('#r2').onclick = () => { $('#after').innerHTML = ''; play(2); window.scrollTo({ top: 0, behavior: REDUCE ? 'auto' : 'smooth' }); };
+        } else {
+          fb($('#fb'), `حصلت على ${ar(score)} من ١٥. تحتاج ١٠ على الأقل لتهزم التحدي. ركّز: هل العدد في جدول الضرب للرقم ٣؟`, false);
+          P.insertAdjacentHTML('beforeend', '<div class="row"><button class="btn hot" id="again">حاول مرة أخرى ↻</button></div>');
+          $('#again').onclick = () => play(1);
+        }
+      } else {
+        if (score >= 12) { S.done.boss2 = true; save(); sfx.win(); confetti(); }
+        fb($('#fb'), score >= 12 ? `🏆 بطل حقيقي! ${ar(score)} من ١٥ في جولة الأبطال. هذه اللعبة اسمها عالميًا <span dir="ltr">FizzBuzz</span>، ويُسأل عنها المبرمجون في مقابلات العمل!` : `حصلت على ${ar(score)} من ١٥. جولة الأبطال صعبة فعلًا! حاول مرة أخرى.`, score >= 12);
+        P.insertAdjacentHTML('beforeend', '<div class="row"><button class="btn hot" id="again">العب جولة الأبطال مرة أخرى ↻</button><button class="btn" data-go="cert">شهادتي 🏅</button></div>');
+        $('#again').onclick = () => play(2);
+      }
+    }
+  }
+};
+
+/* ---------- certificate ---------- */
+ROUTES.cert = () => {
+  const ALL = [...W1IDS, ...W2IDS], n = ALL.filter(k => S.done[k]).length;
+  const BADGES = [['مهندس الخوارزميات', W1IDS], ['سيّد الحلقات', ['l1', 'l2', 'l3']], ['حارس الشروط', ['c1', 'c2', 'c3']], ['قاهر بِز', ['boss']], ['بطل بِزطَن', ['boss2']]];
+  let date = ''; try { date = new Date().toLocaleDateString('ar-SA', { year: 'numeric', month: 'long', day: 'numeric' }); } catch (e) {}
+  frame('شهادتي', 'home', `
+  <section class="panel"><label class="lbl" for="nm">اكتب اسمك ليظهر في الشهادة</label><input id="nm" class="inp" maxlength="40" value="${esc(S.name)}" placeholder="اسمك هنا" autocomplete="name"></section>
+  <div class="cert"><div>${bot('happy', 70)}</div><p class="cert-k">شهادة مبرمج صغير</p><h1 class="cert-name" id="cn">${esc(S.name) || '…'}</h1>
+    <p>أتمّ <b>${ar(n)}</b> من <b>${ar(ALL.length)}</b> مهمة في مغامرات بتّو البرمجية</p>
+    <div class="badges">${BADGES.map(([t, ids]) => { const ok = ids.every(k => S.done[k]); return `<div class="badge${ok ? ' on' : ''}"><span>${ok ? '🏅' : '🔒'}</span>${t}</div>`; }).join('')}</div>
+    <p class="cert-sign">توقيع: بتّو${date ? ' · ' + date : ''}</p></div>
+  <div class="row"><button class="btn primary" data-go="home">الرئيسية</button><button class="btn" id="reset">ابدأ من جديد</button></div>`);
+  $('#nm').oninput = e => { S.name = e.target.value; save(); $('#cn').textContent = S.name || '…'; };
+  let armed = false;
+  $('#reset').onclick = () => {
+    if (!armed) { armed = true; $('#reset').textContent = 'متأكد؟ سيُمسح كل تقدّمك. اضغط مرة أخرى'; $('#reset').classList.add('stop'); return; }
+    S.done = {}; S.stars = {}; save(); go('cert');
+  };
+};
+
+go(location.hash.slice(1) || 'home');
+</script>
