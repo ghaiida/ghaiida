@@ -18,57 +18,11 @@ const wait = ms => new Promise(r => later(r, ms));
 
 /* ---------- player state (local first, cloud when available) ---------- */
 const KEY = 'aql-v1';
-const blank = () => ({ name: '', intro: false, xp: 0, logic: 0, bugs: 0, sound: true, streak: { last: '', count: 0 }, daily: { date: '', done: false }, missions: {} });
+const blank = () => ({ intro: false, xp: 0, logic: 0, bugs: 0, sound: true, streak: { last: '', count: 0 }, daily: { date: '', done: false }, missions: {} });
 let S = blank();
 try { const o = JSON.parse(localStorage.getItem(KEY) || 'null'); if (o) S = Object.assign(blank(), o); } catch (e) {}
 const M = id => (S.missions[id] = S.missions[id] || { done: false, stars: 0, attempts: 0, fails: 0, hints: 0, firstTry: false, bestMs: 0 });
-let syncTimer = null;
-function save() {
-  try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {}
-  clearTimeout(syncTimer); syncTimer = setTimeout(pushCloud, 1200);
-}
-
-/* cloud: each student writes progress/<their id>; owner + editors read all (teacher view) */
-const CLOUD = { db: null, user: null, uid: null, ready: false, teacher: false };
-async function initCloud() {
-  try {
-    if (!window.claude || !window.claude.use) return;
-    const [db, user] = await Promise.all([window.claude.use('db'), window.claude.use('user')]);
-    CLOUD.db = db; CLOUD.user = user;
-    if (user) {
-      CLOUD.uid = await user.id();
-      CLOUD.teacher = (await user.isOwner()) || (await user.canEdit());
-    }
-    if (db && CLOUD.uid) {
-      const snap = await db.doc('progress/' + CLOUD.uid).get();
-      if (snap.exists) mergeCloud(snap.data() || {});
-      CLOUD.ready = true;
-    }
-    if (typeof onCloudReady === 'function') onCloudReady();
-  } catch (e) { /* stay local */ }
-}
-function mergeCloud(d) {
-  S.xp = Math.max(S.xp, d.xp || 0); S.logic = Math.max(S.logic, d.logic || 0); S.bugs = Math.max(S.bugs, d.bugs || 0);
-  if (!S.name && d.name) S.name = d.name;
-  if (d.streak && (d.streak.last || '') > (S.streak.last || '')) S.streak = d.streak;
-  for (const [id, m] of Object.entries(d.missions || {})) {
-    const L = M(id);
-    L.done = L.done || !!m.done; L.stars = Math.max(L.stars, m.stars || 0);
-    L.attempts = Math.max(L.attempts, m.attempts || 0); L.fails = Math.max(L.fails, m.fails || 0); L.hints = Math.max(L.hints, m.hints || 0);
-    L.firstTry = L.firstTry || !!m.firstTry; if (m.bestMs && (!L.bestMs || m.bestMs < L.bestMs)) L.bestMs = m.bestMs;
-  }
-  try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {}
-}
-let cloudFailed = false;
-async function pushCloud() {
-  if (!CLOUD.db || !CLOUD.uid || cloudFailed) return;
-  try {
-    await CLOUD.db.doc('progress/' + CLOUD.uid).set({
-      name: S.name || '', xp: S.xp, logic: S.logic, bugs: S.bugs, streak: S.streak,
-      missions: S.missions, updatedAt: Date.now()
-    });
-  } catch (e) { if (e && e.code === 'invalid_argument') cloudFailed = true; }
-}
+function save() { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {} }
 
 /* ---------- levels ---------- */
 const LEVELS = [

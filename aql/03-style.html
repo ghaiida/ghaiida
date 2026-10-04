@@ -131,28 +131,5 @@ input[type=range]{width:100%;accent-color:var(--royal);height:28px}
 .ending .line.show{opacity:1;transform:none}
 .ending .big{font-size:clamp(1.8rem,7vw,3.2rem);font-weight:900;color:var(--amber)}
 
-/* ===== teacher ===== */
-.tgrid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-bottom:18px}
-@media(max-width:700px){.tgrid{grid-template-columns:repeat(2,minmax(0,1fr))}}
-.bars{display:flex;flex-direction:column;gap:10px}
-.hbar{display:grid;grid-template-columns:130px 1fr 48px;gap:10px;align-items:center;font-size:.92rem}
-.hbar .t{height:14px;border-radius:999px;background:var(--royal-t);overflow:hidden}
-.hbar .t i{display:block;height:100%;border-radius:999px;background:var(--royal);transition:width .5s var(--ease)}
-.hbar .vlab{font-weight:800;text-align:end}
-.hbar[data-tip]{cursor:default}
-@media(max-width:520px){.hbar{grid-template-columns:96px 1fr 42px}}
-.stable{width:100%;border-collapse:collapse;min-width:620px;font-size:.93rem}
-.stable th,.stable td{padding:10px;border-bottom:1px solid var(--line);text-align:start;vertical-align:middle}
-.stable th{font-family:var(--f-display);font-size:.82rem;color:var(--ink-2)}
-.stable td{white-space:nowrap}
-.stable tr.sel td{background:var(--royal-t)}
-.stable tbody tr{cursor:pointer}
-.mini{height:8px;border-radius:999px;background:var(--line);overflow:hidden;width:90px;display:inline-block;vertical-align:middle;margin-inline-start:6px}
-.mini i{display:block;height:100%;background:var(--emerald)}
-.pill2{display:inline-block;border-radius:999px;padding:1px 9px;font-size:.8rem;font-weight:800;margin:2px}
-.pill2.m{background:var(--emerald-t);color:var(--emerald-d)}
-.pill2.s{background:var(--amber-t);color:var(--amber-d)}
-.demo-note{background:var(--amber-t);color:#7A4A00;border-radius:12px;padding:10px 14px;font-weight:700;margin-bottom:14px}
-.tip{position:fixed;z-index:80;background:var(--ink);color:#fff;border-radius:10px;padding:6px 10px;font-size:.85rem;font-weight:700;pointer-events:none;transform:translate(-50%,-120%)}
 </style>
 <div id="app" dir="rtl" lang="ar"></div>

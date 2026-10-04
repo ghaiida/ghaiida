@@ -8,8 +8,6 @@ ROUTES.intro = async () => {
     <div id="story" hidden style="max-width:560px">
       <p style="font-size:1.15rem;font-weight:700">هناك نظام رقمي ذكي تعطّل، وأنت الآن المبرمج الذي سيعيد تشغيله.</p>
       <p class="muted">لن تستطيع إصلاح النظام إلا إذا تعلّمت كيف يفكّر المبرمج.</p>
-      <label class="lbl" for="nm" style="margin-top:14px">ما اسمك أيها المبرمج؟</label>
-      <input class="field" id="nm" maxlength="24" value="${esc(S.name)}" placeholder="اكتب اسمك" style="max-width:320px;text-align:center;font-size:1.1rem" autocomplete="given-name">
       <div class="row c"><button class="btn lg royal" id="start">ابدأ المغامرة ←</button></div>
     </div></div>`;
   const L = [['> تشغيل النظام «النواة»…', ''], ['⚠ خطأ: وحدة التفكير المنطقي متوقفة', 'err'], ['⚠ خطأ: ملفات الخوارزميات مفقودة', 'err'], ['⚠ خطأ: القرارات لا تعمل', 'err'], ['> البحث عن مبرمج قادر على الإصلاح…', ''], ['✓ تم العثور على مبرمج: أنت', 'ok']];
@@ -19,9 +17,8 @@ ROUTES.intro = async () => {
     for (let i = 1; i <= t.length; i++) { s.textContent = t.slice(0, i); if (i % 3 === 0) await wait(REDUCE ? 0 : 14); }
     s.classList.remove('cur'); if (c === 'err') sfx.oops(); await wait(REDUCE ? 50 : 260);
   }
-  $('#story').hidden = false; $('#nm').focus();
-  $('#start').onclick = () => { S.name = ($('#nm').value || '').trim(); S.intro = true; touchStreak(); save(); sfx.win(); go('home'); };
-  $('#nm').onkeydown = e => { if (e.key === 'Enter') $('#start').click(); };
+  $('#story').hidden = false; $('#start').focus();
+  $('#start').onclick = () => { S.intro = true; touchStreak(); save(); sfx.win(); go('home'); };
 };
 
 /* ---------- home ---------- */
@@ -30,11 +27,11 @@ ROUTES.home = () => {
   if (!S.intro) return go('intro');
   const L = levelInfo(), g1 = gateStats('build'), g2 = gateStats('think');
   const all = CONTENT.missions.length, done = CONTENT.missions.filter(m => M(m.id).done).length, sys = Math.round(done / all * 100);
-  const fin = missionById('final'), finOpen = isUnlocked(fin), finDone = M('final').done;
+  const finDone = M('final').done;
   const dailyDone = S.daily.date === today() && S.daily.done;
   app.innerHTML = hud('مهمة: عقل المبرمج') + `
     <section class="home-head"><div class="rb idle">${robot(sys >= 100 ? 'happy' : 'wow', 92)}</div>
-      <div><span class="eyebrow">النظام مستعاد بنسبة ${ar(sys)}٪</span><h1>${S.name ? `أهلًا يا ${esc(S.name)}، ` : ''}اختر مهمتك</h1>
+      <div><span class="eyebrow">النظام مستعاد بنسبة ${ar(sys)}٪</span><h1>اختر مهمتك</h1>
       <p class="muted" style="margin:0">${sys >= 100 ? 'أعدت تشغيل النظام بالكامل. أنت تفكّر الآن مثل المبرمج 🧠' : 'كل مهمة تنجزها تعيد جزءًا من النظام إلى الحياة.'}</p></div></section>
     <div class="me">
       <div class="stat"><span class="l">المستوى ${ar(L.n)}</span><span class="v" style="font-size:1.1rem">${L.title}</span><div class="xpbar"><i style="width:${L.pct}%"></i></div><span class="l" style="margin-top:4px">${L.max ? 'أعلى مستوى!' : `${ar(L.toNext)} ⭐ للمستوى التالي`}</span></div>
@@ -49,9 +46,9 @@ ROUTES.home = () => {
     </div>
     <div class="side-row">
       <button class="tile${dailyDone ? ' done' : ''}" data-go="daily"><span class="ti">🎯</span><span><b>تحدي اليوم</b><span>${dailyDone ? 'أنجزته اليوم ✓ عُد غدًا' : 'لغز سريع جديد كل يوم · +٣٠ ⭐'}</span></span></button>
-      <button class="tile${finDone ? ' done' : ''}" ${finOpen ? 'data-go="m:final"' : 'disabled style="opacity:.6;cursor:not-allowed"'}><span class="ti">🧠</span><span><b>مهمة المبرمج الأخيرة</b><span>${finDone ? 'أعدت تشغيل النظام ✓' : finOpen ? 'كل شيء جاهز… أعد تشغيل النظام!' : '🔒 تُفتح بعد إكمال البوابتين'}</span></span></button>
+      <button class="tile${finDone ? ' done' : ''}" data-go="m:final"><span class="ti">🧠</span><span><b>مهمة المبرمج الأخيرة</b><span>${finDone ? 'أعدت تشغيل النظام ✓' : 'كل المفاهيم معًا… أعد تشغيل النظام!'}</span></span></button>
     </div>
-    <div class="row c" style="margin-top:26px"><button class="btn ghost sm" data-go="intro">📜 قصة النظام</button><button class="btn ghost sm" data-go="teacher">👩‍🏫 لوحة المعلم</button></div>`;
+    <div class="row c" style="margin-top:26px"><button class="btn ghost sm" data-go="intro">📜 قصة النظام</button></div>`;
 };
 
 /* ---------- gate maps ---------- */
@@ -64,7 +61,7 @@ function mapNode(m, i, label) {
 ROUTES.build = () => {
   const list = gateMissions('build'), s = gateStats('build');
   const names = { '١': 'فهم المشكلة', '٢': 'المدخلات والمخرجات', '٣': 'تصميم الخوارزمية', '٤': 'كتابة البرنامج', '٥': 'اختبار البرنامج', '٦': 'اكتشاف الأخطاء وتصحيحها', '٧': 'تحسين الحل' };
-  app.innerHTML = hud('🧩 كيف يصنع المبرمج برنامجًا؟', 'home') + guide(`كل برنامج في العالم يمر بهذه <b>المراحل السبع</b> بالترتيب. لن تُفتح المهمة التالية إلا بعد أن تجرّب التي قبلها. (${ar(s.d)} من ${ar(s.n)})`, 'happy') +
+  app.innerHTML = hud('🧩 كيف يصنع المبرمج برنامجًا؟', 'home') + guide(`كل برنامج في العالم يمر بهذه <b>المراحل السبع</b> بالترتيب. يمكن البدء من أي مرحلة، والترتيب المقترح من الأعلى إلى الأسفل. (${ar(s.d)} من ${ar(s.n)})`, 'happy') +
     `<ol class="path">${list.map((m, i) => mapNode(m, i, `المرحلة ${m.stage} · ${names[m.stage]}`)).join('')}</ol>`;
 };
 ROUTES.think = () => {
@@ -107,12 +104,4 @@ ROUTES.daily = () => {
 function start() {
   const h = (location.hash || '').slice(1).replace('-', ':');
   go(h && h !== 'intro' && S.intro ? h : (S.intro ? 'home' : 'intro'));
-  initCloud();
-}
-function onCloudReady() {
-  const cur = (location.hash || '').slice(1);
-  if (!S.intro) return;
-  if (cur === 'home' || cur === '') go('home');
-  if (cur === 'teacher') go('teacher');
-  pushCloud();
 }

@@ -9,11 +9,7 @@ const CONCEPTS = {
 };
 const missionById = id => CONTENT.missions.find(m => m.id === id);
 const gateMissions = g => CONTENT.missions.filter(m => m.gate === g);
-function isUnlocked(m) {
-  if (m.gate === 'final') return gateMissions('build').every(x => M(x.id).done) && gateMissions('think').every(x => M(x.id).done);
-  const list = gateMissions(m.gate), i = list.indexOf(m);
-  return i <= 0 || M(list[i - 1].id).done;
-}
+function isUnlocked() { return true; } // classroom mode: the teacher can open any mission in any order
 
 ROUTES.m = id => {
   const def = missionById(id); if (!def) return go('home');
