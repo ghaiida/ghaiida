@@ -217,14 +217,70 @@ bdi.m{font-family:var(--f-body);font-weight:700;white-space:nowrap}
 .rv p{font-size:.88rem;color:var(--ink-2)}
 .perfect{text-align:center;padding:16px;color:var(--ink-2)}
 
+/* ---------- lesson groups in lobby ---------- */
+.grp{display:grid;gap:8px}
+.glab{font-family:var(--f-body);font-weight:700;font-size:.82rem;color:var(--ink-2);letter-spacing:.02em}
+.subj.add{border-style:dashed;background:transparent}
+.subj.add .glyph{background:rgba(255,210,58,.16);color:var(--gold);font-size:1.4rem}
+.lnote{font-size:.8rem;color:#FFD98A}
+
 /* ---------- teacher ---------- */
-.tcard{width:min(760px,100%);background:linear-gradient(180deg,var(--panel-2),var(--panel));border:1px solid rgba(140,170,255,.3);border-radius:22px;padding:20px;display:grid;gap:14px}
-.tcard textarea{width:100%;min-height:220px;background:rgba(3,10,32,.65);border:1px solid var(--line);border-radius:14px;padding:12px;font-size:.95rem;line-height:1.7;resize:vertical}
-.tcard textarea:focus{border-color:var(--gold);outline:none}
-.tcard code{direction:rtl;display:block;background:rgba(3,10,32,.65);padding:10px 12px;border-radius:10px;font-size:.85rem;color:var(--gold);overflow-x:auto;white-space:pre}
+#tModal{place-items:start center}
+.tcard{width:min(1000px,100%);background:linear-gradient(180deg,var(--panel-2),var(--panel));border:1px solid rgba(140,170,255,.3);border-radius:22px;padding:20px;display:grid;gap:16px}
 .tcard p{font-size:.9rem;color:var(--ink-2)}
+.tcard code{direction:rtl;display:block;background:rgba(3,10,32,.65);padding:10px 12px;border-radius:10px;font-size:.85rem;color:var(--gold);overflow-x:auto;white-space:pre}
+.tcard textarea{width:100%;background:rgba(3,10,32,.6);border:1px solid var(--line);border-radius:12px;padding:10px 12px;font-size:1rem;line-height:1.6;resize:vertical}
+.tcard textarea:focus{border-color:var(--gold);outline:none}
+.tgrid{display:grid;grid-template-columns:230px minmax(0,1fr);gap:16px;align-items:start}
+@media (max-width:760px){.tgrid{grid-template-columns:minmax(0,1fr)}}
+.tside{display:grid;gap:10px;min-width:0}
+.tlist{display:grid;gap:6px}
+@media (max-width:760px){.tlist{grid-template-columns:repeat(auto-fill,minmax(170px,1fr))}}
+.titem{display:flex;align-items:center;gap:10px;text-align:start;background:rgba(3,10,32,.5);border:2px solid transparent;border-radius:12px;padding:8px 10px;min-width:0}
+.titem:hover{border-color:rgba(255,210,58,.5)}
+.titem[aria-pressed="true"]{border-color:var(--gold);background:rgba(255,210,58,.12)}
+.titem i{font-style:normal;flex:none;width:34px;height:34px;display:grid;place-items:center;border-radius:10px;color:var(--night);font-weight:700}
+.titem span{display:grid;min-width:0}
+.titem b{font-size:.92rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.titem small{font-size:.75rem;color:var(--ink-3)}
+.tmain{display:grid;gap:14px;min-width:0;background:rgba(3,10,32,.35);border:1px solid rgba(140,170,255,.18);border-radius:16px;padding:16px}
+.tfields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+@media (max-width:560px){.tfields{grid-template-columns:minmax(0,1fr)}}
+.swatches{display:flex;gap:8px;flex-wrap:wrap}
+.swatches button{width:30px;height:30px;border-radius:50%;border:3px solid transparent}
+.swatches button[aria-pressed="true"]{border-color:#fff;box-shadow:0 0 0 2px var(--night)}
+.qhdr{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 12px}
+.qhdr h3{font-size:1.3rem}
+.qhdr small{font-size:.8rem;color:#FFD98A}
+.qlist{list-style:none;margin:0;padding:0;display:grid;gap:6px;max-height:300px;overflow-y:auto}
+.qlist li{display:flex;align-items:center;gap:10px;background:rgba(3,10,32,.5);border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:8px 10px}
+.qlist li.editing{border-color:var(--gold)}
+.qlist .qn{flex:none;width:26px;height:26px;display:grid;place-items:center;border-radius:8px;background:var(--panel-2);font-size:.8rem;font-weight:700}
+.qlist .qx{flex:1;min-width:0;display:grid}
+.qlist b{font-size:.92rem;overflow-wrap:anywhere}
+.qlist small{font-size:.76rem;color:var(--ink-3)}
+.qlist .none{justify-content:center;color:var(--ink-3);font-size:.88rem;padding:14px}
+.qact{display:flex;gap:4px;flex:none}
+.mini{font-size:.76rem;font-weight:700;padding:4px 10px;border-radius:8px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15)}
+.mini:hover{border-color:var(--gold)}
+.mini.del,.btn.del{color:#FF9DAE}
+.mini.del.armed,.btn.del.armed{background:var(--danger);border-color:var(--danger);color:#fff}
+.qform{display:grid;gap:10px;padding:14px;border-radius:14px;border:1px dashed rgba(255,210,58,.45);background:rgba(255,210,58,.05)}
+.qform h4{margin:0;font-family:var(--f-display);font-weight:400;font-size:1.25rem;color:var(--gold)}
+.field.ok label{color:#8DF3B6}
+.field.ok input{border-color:rgba(62,220,129,.55)}
+.field.bad label{color:#FFB4C0}
+.fwrong{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+@media (max-width:620px){.fwrong{grid-template-columns:minmax(0,1fr)}}
+.ferr{color:#FF9DAE;font-weight:700;font-size:.88rem}
+.bulk summary{cursor:pointer;font-weight:700;color:var(--ink-2);font-size:.92rem}
+.bulk .bin{display:grid;gap:8px;margin-top:10px}
+.tfoot{display:flex;flex-wrap:wrap;align-items:center;gap:12px;border-top:1px solid rgba(255,255,255,.1);padding-top:14px}
+.tempty{text-align:center;padding:36px 10px;display:grid;gap:6px;color:var(--ink-2)}
+.tempty h3{font-size:1.4rem;color:#fff}
 .tstatus{font-weight:700;font-size:.9rem}
 .tstatus.err{color:#FF9DAE}
+.tstatus.warn{color:#FFD98A}
 .tstatus.okk{color:#8DF3B6}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
@@ -236,7 +292,7 @@ bdi.m{font-family:var(--f-body);font-weight:700;white-space:nowrap}
       <div class="logo"><h1>جزيرة <span>المعرفة</span></h1><span class="season">الموسم الأول</span></div>
       <div class="lvl"><b id="lvNum" class="num">1</b><div><small id="lvTxt">المستوى 1 · 0 / 1000 XP</small><div class="xpbar"><i id="lvBar" style="width:0%"></i></div></div></div>
       <button class="chip-btn" id="soundBtn" type="button" aria-pressed="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 5 6 9H3v6h3l5 4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7M18.5 5.5a9 9 0 0 1 0 13"/></svg><span>الصوت</span></button>
-      <button class="chip-btn" id="teacherBtn" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 5h18v11H3z"/><path d="M8 20h8M12 16v4"/><path d="M7 9h6M7 12h4"/></svg><span>لوحة المعلم</span></button>
+      <button class="chip-btn" id="teacherBtn" type="button" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 5h18v11H3z"/><path d="M8 20h8M12 16v4"/><path d="M7 9h6M7 12h4"/></svg><span>لوحة المعلم</span></button>
     </header>
 
     <div class="main">
@@ -249,8 +305,16 @@ bdi.m{font-family:var(--f-body);font-weight:700;white-space:nowrap}
       </section>
 
       <section class="panel" aria-label="إعداد المباراة">
-        <div class="ptitle"><h2>اختر المادة</h2><span>أسئلة متدرجة: تصعب كلما ضاقت العاصفة</span></div>
-        <div class="subjects" id="subjects"></div>
+        <div class="ptitle"><h2>اختر الدرس</h2><span>تصعب الأسئلة كلما ضاقت العاصفة</span></div>
+        <div class="grp" id="grpLessons" hidden>
+          <h3 class="glab">دروس المعلم</h3>
+          <div class="subjects" id="lessonCards"></div>
+          <p class="lnote" id="lessonNote" hidden></p>
+        </div>
+        <div class="grp">
+          <h3 class="glab">بنوك أسئلة جاهزة</h3>
+          <div class="subjects" id="subjects"></div>
+        </div>
         <div class="row"><span class="lab">مدة المباراة</span>
           <div class="seg" id="lenSeg"><button type="button" data-len="short" aria-pressed="true">سريعة · 5 د</button><button type="button" data-len="normal" aria-pressed="false">كاملة · 8 د</button></div>
         </div>
@@ -346,14 +410,16 @@ bdi.m{font-family:var(--f-body);font-weight:700;white-space:nowrap}
 <!-- ============ TEACHER ============ -->
 <div class="overlay" id="tModal" hidden role="dialog" aria-modal="true" aria-labelledby="tTitle">
   <div class="tcard">
-    <div class="ptitle"><h2 id="tTitle">لوحة المعلم: أسئلتك الخاصة</h2><button class="btn ghost" id="tClose" type="button">إغلاق</button></div>
-    <p>اكتب كل سؤال في سطر مستقل، وافصل بين أجزائه بالرمز <b>|</b>. الإجابة الصحيحة تأتي أولًا مباشرة بعد السؤال، وتُخلط الخيارات تلقائيًا أثناء اللعب. الخانة السادسة (الشرح) اختيارية.</p>
-    <code>السؤال | الإجابة الصحيحة | خطأ 1 | خطأ 2 | خطأ 3 | شرح قصير
-عاصمة المملكة العربية السعودية؟ | الرياض | جدة | الدمام | مكة المكرمة | الرياض هي العاصمة.</code>
-    <div class="field"><label for="tName">اسم المجموعة (يظهر في بطاقة المادة)</label><input id="tName" maxlength="24" placeholder="مثال: علوم الصف الثاني متوسط"></div>
-    <div class="field"><label for="tArea">الأسئلة</label><textarea id="tArea" spellcheck="false" placeholder="ما ناتج 9 × 6 ؟ | 54 | 45 | 56 | 63 | جدول التسعة: 9 × 6 = 54"></textarea></div>
-    <div class="row"><button class="btn" id="tSave" type="button">حفظ الأسئلة</button><button class="btn ghost" id="tSample" type="button">أدرج مثالًا</button><span class="tstatus" id="tStatus"></span></div>
-    <p>تُحفظ الأسئلة في هذا المتصفح فقط. لعرض اللعبة على شاشة الفصل، افتحها من جهاز المعلم واختر بطاقة «أسئلة المعلم».</p>
+    <div class="ptitle"><h2 id="tTitle">لوحة المعلم</h2><button class="btn ghost" id="tClose" type="button">إغلاق</button></div>
+    <p>أنشئ درسًا، سمِّه، وأضف أسئلته. بعد «حفظ ونشر» يظهر الدرس بطاقةً في الردهة لكل طالب يفتح اللعبة. تُخلط الخيارات تلقائيًا أثناء اللعب.</p>
+    <div class="tgrid">
+      <aside class="tside">
+        <button class="btn" id="tNew" type="button">+ درس جديد</button>
+        <div class="tlist" id="tList"></div>
+      </aside>
+      <div class="tmain" id="tMain"></div>
+    </div>
+    <div class="tfoot"><button class="btn" id="tSave" type="button">حفظ ونشر للطلاب</button><span class="tstatus" id="tStatus"></span></div>
   </div>
 </div>
 
@@ -372,7 +438,8 @@ const fmtQ = s => esc(s).replace(/\{\{(.+?)\}\}/g, '<bdi dir="ltr" class="m">$1<
 const plain = s => String(s).replace(/\{\{(.+?)\}\}/g, '$1');
 const store = {
   get(k, d) { try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch (e) { return d; } },
-  set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
+  set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} },
+  del(k) { try { localStorage.removeItem(k); } catch (e) {} }
 };
 
 /* ================= QUESTION BANK =================
@@ -466,10 +533,8 @@ const BANK = {
     Q(3, 'تحدث الفصول الأربعة بسبب:', 'ميل محور الأرض مع دورانها حول الشمس', 'دوران الأرض حول محورها', 'تغير بُعد القمر', 'حركة الرياح', 'ميل محور الأرض يجعل أشعة الشمس تسقط بزوايا مختلفة خلال السنة.')
   ]}
 };
-const SUBJ_ORDER = ['math', 'sci', 'ar', 'en', 'soc', 'mix', 'custom'];
+const BUILTIN = ['math', 'sci', 'ar', 'en', 'soc', 'mix'];
 BANK.mix = { name: 'مزيج المواد', glyph: '✦', color: '#FFD23A', get qs() { return ['math', 'sci', 'ar', 'en', 'soc'].flatMap(k => BANK[k].qs.map(q => Object.assign({ s: k }, q))); } };
-let customSet = store.get('jazira.custom', { name: '', qs: [] });
-BANK.custom = { name: 'أسئلة المعلم', glyph: '✎', color: '#3DB9FF', get qs() { return customSet.qs; } };
 
 /* ================= PROFILE ================= */
 const SKINS = [
@@ -492,7 +557,7 @@ const perkCut = r => r >= 4 ? 2 : r >= 2 ? 1 : 0;
 let profile = Object.assign({ name: '', xp: 0, skin: 0, games: 0, wins: 0, best: 0 }, store.get('jazira.profile', {}));
 const levelOf = xp => Math.floor(xp / 1000) + 1;
 const saveProfile = () => store.set('jazira.profile', profile);
-let settings = Object.assign({ subj: 'math', len: 'short', sound: true }, store.get('jazira.settings', {}));
+let settings = Object.assign({ subj: '', len: 'short', sound: true }, store.get('jazira.settings', {}));
 const saveSettings = () => store.set('jazira.settings', settings);
 
 /* ================= SOUND ================= */
@@ -573,19 +638,27 @@ function renderLobby() {
     b.onclick = () => { profile.skin = i; saveProfile(); renderLobby(); };
     lk.appendChild(b);
   });
-  const sj = $('#subjects'); sj.innerHTML = '';
-  SUBJ_ORDER.forEach(k => {
-    const s = BANK[k], n = s.qs.length;
+  settings.subj = currentSubj();
+  const card = (box, key, s, small, onclick, cls = '') => {
     const b = document.createElement('button');
-    b.type = 'button'; b.className = 'subj'; b.setAttribute('aria-pressed', settings.subj === k);
-    const nm = k === 'custom' && customSet.name ? customSet.name : s.name;
-    b.innerHTML = `<span class="glyph" style="background:${s.color}">${s.glyph}</span><b>${esc(nm)}</b><small>${k === 'custom' && !n ? 'أضف أسئلتك من لوحة المعلم' : n + ' سؤالًا'}</small>`;
-    b.onclick = () => {
-      if (k === 'custom' && !BANK.custom.qs.length) { openTeacher(); return; }
-      settings.subj = k; saveSettings(); renderLobby();
-    };
-    sj.appendChild(b);
+    b.type = 'button'; b.className = 'subj ' + cls; b.setAttribute('aria-pressed', settings.subj === key);
+    b.innerHTML = `<span class="glyph" style="${s.color ? `background:${s.color}` : ''}">${esc(s.glyph)}</span><b>${esc(s.name)}</b><small>${esc(small)}</small>`;
+    b.onclick = onclick || (() => { settings.subj = key; saveSettings(); renderLobby(); });
+    box.appendChild(b);
+  };
+  const lc = $('#lessonCards'); lc.innerHTML = '';
+  const shown = lessons.filter(l => l.qs.length || canTeach);
+  shown.forEach(l => {
+    const n = l.qs.length, s = subjOf(lessonKey(l));
+    card(lc, lessonKey(l), s, n ? `${l.label ? l.label + ' · ' : ''}${n} سؤالًا` : 'بلا أسئلة بعد. اضغط لإضافتها', n ? null : () => openTeacher(false, l.id));
   });
+  if (canTeach) card(lc, '', { name: 'درس جديد', glyph: '+' }, 'سمِّه وأضف أسئلتك', () => openTeacher(true), 'add');
+  $('#grpLessons').hidden = !shown.length && !canTeach;
+  $('#lessonNote').hidden = !(canTeach && lessonsLocal);
+  $('#lessonNote').textContent = 'هذه الدروس محفوظة على هذا الجهاز فقط ولم تُنشر للطلاب بعد.';
+  $('#teacherBtn').hidden = !canTeach;
+  const sj = $('#subjects'); sj.innerHTML = '';
+  BUILTIN.forEach(k => card(sj, k, BANK[k], BANK[k].qs.length + ' سؤالًا'));
   document.querySelectorAll('#lenSeg button').forEach(b => b.setAttribute('aria-pressed', b.dataset.len === settings.len));
   $('#soundBtn').setAttribute('aria-pressed', settings.sound);
   $('#soundBtn span').textContent = settings.sound ? 'الصوت' : 'صامت';
@@ -594,46 +667,197 @@ $('#pname').addEventListener('input', e => { profile.name = e.target.value.trim(
 document.querySelectorAll('#lenSeg button').forEach(b => b.onclick = () => { settings.len = b.dataset.len; saveSettings(); renderLobby(); });
 $('#soundBtn').onclick = () => { settings.sound = !settings.sound; saveSettings(); renderLobby(); };
 
-/* ================= TEACHER PANEL ================= */
-function openTeacher() {
-  $('#tName').value = customSet.name || '';
-  $('#tArea').value = customSet.qs.map(q => [q.q, ...q.a, q.ex || ''].filter((x, i, arr) => i < arr.length - 1 || x).join(' | ')).join('\n');
-  $('#tStatus').textContent = customSet.qs.length ? `محفوظ: ${customSet.qs.length} سؤالًا` : '';
-  $('#tStatus').className = 'tstatus okk';
-  $('#tModal').hidden = false; $('#tArea').focus();
+/* ================= TEACHER LESSONS =================
+   Lessons live in lessons.json, published next to the page, so every viewer
+   (signed in or not) loads them. Editors save through the artifact capability;
+   anywhere that cannot publish, the lessons fall back to this browser. */
+const LCOLORS = ['#FFD23A', '#3BA3FF', '#4CCB5A', '#FF9F1C', '#B05CFF', '#FF4D6A'];
+const LEVELS = ['أي مستوى', 'سهل', 'متوسط', 'متقدم'];
+let lessons = [], lessonsLocal = false, canTeach = false, artifactApi = null;
+let saved = '[]', tSel = null, tEdit = -1, tLevel = 0, closeArmed = false;
+const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
+const glyphOf = n => { const w = String(n || '').trim().split(/\s+/).find(x => x.length > 1 && !/^(ال)?درس$/.test(x)) || '✎'; return w.replace(/^ال(?=..)/, '').charAt(0); };
+const lessonKey = l => 'L:' + l.id;
+function cleanLessons(arr) {
+  return (Array.isArray(arr) ? arr : []).filter(l => l && typeof l.name === 'string').map(l => ({
+    id: String(l.id || uid()), name: l.name.slice(0, 40), label: String(l.label || '').slice(0, 40),
+    color: LCOLORS.includes(l.color) ? l.color : LCOLORS[0],
+    qs: (Array.isArray(l.qs) ? l.qs : []).filter(q => q && q.q && Array.isArray(q.a) && q.a.length >= 2)
+      .map(q => ({ q: String(q.q), a: q.a.slice(0, 4).map(String), ex: String(q.ex || ''), d: [0, 1, 2, 3].includes(q.d) ? q.d : 0 }))
+  }));
 }
-function parseCustom(text) {
-  const qs = [], bad = [];
-  text.split('\n').forEach((line, i) => {
-    if (!line.trim()) return;
-    const p = line.split('|').map(s => s.trim());
-    if (p.length < 3 || !p[0] || !p[1] || !p[2]) { bad.push(i + 1); return; }
-    let ex = '';
-    if (p.length >= 6) ex = p.slice(5).join(' | ');
-    const ans = p.slice(1, 5).filter(Boolean);
-    qs.push({ d: 0, q: p[0], a: ans, ex });
-  });
-  return { qs, bad };
+function subjOf(key) {
+  if (key && key.startsWith('L:')) {
+    const l = lessons.find(x => lessonKey(x) === key);
+    return l ? { name: l.name, glyph: glyphOf(l.name), color: l.color, qs: l.qs } : null;
+  }
+  return BANK[key] || null;
 }
-$('#teacherBtn').onclick = openTeacher;
-$('#tClose').onclick = () => { $('#tModal').hidden = true; renderLobby(); };
-$('#tSample').onclick = () => {
-  const t = $('#tArea');
-  t.value = (t.value.trim() ? t.value.trim() + '\n' : '') +
-    'ما ناتج 9 × 6 ؟ | 54 | 45 | 56 | 63 | جدول التسعة: 9 × 6 = 54\n' +
-    'أكبر كوكب في المجموعة الشمسية؟ | المشتري | زحل | الأرض | المريخ | المشتري أضخم الكواكب.\n' +
-    'جمع كلمة «قلم»: | أقلام | قلمات | قلامون | مقالم';
-};
-$('#tSave').onclick = () => {
-  const { qs, bad } = parseCustom($('#tArea').value);
-  const st = $('#tStatus');
-  if (bad.length) { st.className = 'tstatus err'; st.textContent = `تحقق من السطر ${bad.join('، ')}: يلزم سؤال وإجابة صحيحة وخيار خاطئ واحد على الأقل.`; return; }
-  customSet = { name: $('#tName').value.trim(), qs };
-  store.set('jazira.custom', customSet);
-  if (qs.length) settings.subj = 'custom'; else if (settings.subj === 'custom') settings.subj = 'math';
-  saveSettings();
-  st.className = 'tstatus okk'; st.textContent = qs.length ? `تم حفظ ${qs.length} سؤالًا واختيار بطاقة «أسئلة المعلم».` : 'تم مسح الأسئلة.';
+function currentSubj() {
+  const s = subjOf(settings.subj);
+  if (s && s.qs.length) return settings.subj;
+  const l = lessons.find(x => x.qs.length);
+  return l ? lessonKey(l) : 'math';
+}
+async function loadLessons() {
+  let pub = { updatedAt: 0, lessons: [] };
+  try { const r = await fetch('lessons.json', { cache: 'no-store' }); if (r.ok) pub = await r.json(); } catch (e) {}
+  const loc = store.get('jazira.lessons.local', null);
+  lessonsLocal = !!(loc && (loc.updatedAt || 0) > (pub.updatedAt || 0));
+  lessons = cleanLessons(lessonsLocal ? loc.lessons : pub.lessons);
+  saved = JSON.stringify(lessons);
   renderLobby();
+}
+async function initCaps() {
+  const cl = window.claude;
+  // A copy opened outside the viewer has no runtime: let its owner edit locally.
+  if (!cl || typeof cl.use !== 'function') { canTeach = true; renderLobby(); return; }
+  try {
+    const [u, a] = await Promise.all([cl.use('user'), cl.use('artifact')]);
+    artifactApi = a;
+    canTeach = !!(u && await u.canEdit());
+  } catch (e) { canTeach = false; }
+  renderLobby();
+}
+
+const selLesson = () => lessons.find(l => l.id === tSel);
+const isDirty = () => JSON.stringify(lessons) !== saved;
+function setTStatus(t, kind) { const s = $('#tStatus'); s.textContent = t; s.className = 'tstatus ' + (kind || ''); }
+function markDirty() { closeArmed = false; setTStatus(isDirty() ? 'لديك تغييرات غير محفوظة.' : '', 'warn'); }
+function openTeacher(isNew, id) {
+  closeArmed = false; tEdit = -1; tLevel = 0;
+  if (id) tSel = id;
+  if (isNew || !lessons.length) addLesson();
+  else if (!selLesson()) tSel = lessons[0].id;
+  renderTList(); renderTMain();
+  if (!isDirty()) setTStatus(lessonsLocal ? 'الدروس محفوظة على هذا الجهاز فقط ولم تُنشر بعد.' : '', 'warn');
+  $('#tModal').hidden = false;
+  const n = $('#lName'); if (n && isNew) { n.focus(); n.select(); }
+}
+function addLesson() {
+  const l = { id: uid(), name: 'درس جديد', label: '', color: LCOLORS[lessons.length % LCOLORS.length], qs: [] };
+  lessons.push(l); tSel = l.id; markDirty();
+}
+function renderTList() {
+  const box = $('#tList');
+  box.innerHTML = lessons.map(l => `<button type="button" class="titem" data-id="${esc(l.id)}" aria-pressed="${l.id === tSel}"><i style="background:${l.color}">${esc(glyphOf(l.name))}</i><span><b>${esc(l.name.trim() || 'بلا اسم')}</b><small>${l.qs.length} سؤالًا</small></span></button>`).join('');
+  box.querySelectorAll('.titem').forEach(b => b.onclick = () => { tSel = b.dataset.id; tEdit = -1; tLevel = 0; renderTList(); renderTMain(); });
+}
+function renderTMain() {
+  const l = selLesson(), m = $('#tMain');
+  if (!l) { m.innerHTML = '<div class="tempty"><h3>ابدأ بدرسك الأول</h3><p>اضغط «+ درس جديد»، اكتب اسم الدرس، ثم أضف أسئلته.</p></div>'; return; }
+  const n = l.qs.length;
+  m.innerHTML = `
+    <div class="tfields">
+      <div class="field"><label for="lName">اسم الدرس</label><input id="lName" maxlength="40" value="${esc(l.name)}" placeholder="مثال: الكسور العشرية"></div>
+      <div class="field"><label for="lLabel">المادة والصف (اختياري)</label><input id="lLabel" maxlength="40" value="${esc(l.label)}" placeholder="مثال: رياضيات · الصف الخامس"></div>
+    </div>
+    <div class="row"><span class="lab">لون البطاقة</span><div class="swatches">${LCOLORS.map(c => `<button type="button" data-c="${c}" style="background:${c}" aria-label="اختيار هذا اللون" aria-pressed="${c === l.color}"></button>`).join('')}</div></div>
+    <div class="qhdr"><h3>الأسئلة <span class="num">(${n})</span></h3>${n && n < 8 ? '<small>ننصح بثمانية أسئلة على الأقل حتى لا تتكرر كثيرًا أثناء المباراة.</small>' : ''}</div>
+    <ol class="qlist">${n ? l.qs.map((q, i) => `<li class="${i === tEdit ? 'editing' : ''}"><span class="qn num">${i + 1}</span><div class="qx"><b dir="auto">${esc(q.q)}</b><small>الصحيح: <bdi>${esc(q.a[0])}</bdi> · ${q.a.length - 1} خيار خاطئ · ${LEVELS[q.d]}</small></div><div class="qact"><button type="button" class="mini" data-edit="${i}">تعديل</button><button type="button" class="mini del" data-del="${i}">حذف</button></div></li>`).join('') : '<li class="none">لم تُضف أسئلة بعد. اكتب أول سؤال في النموذج بالأسفل.</li>'}</ol>
+    <form class="qform" id="qForm" novalidate>
+      <h4>${tEdit >= 0 ? `تعديل السؤال ${tEdit + 1}` : 'إضافة سؤال'}</h4>
+      <div class="field"><label for="fQ">نص السؤال</label><textarea id="fQ" rows="2" maxlength="300" placeholder="مثال: ما ناتج 9 × 6 ؟"></textarea></div>
+      <div class="field ok"><label for="fC">الإجابة الصحيحة</label><input id="fC" maxlength="120" autocomplete="off"></div>
+      <div class="fwrong">
+        <div class="field bad"><label for="fW1">خيار خاطئ 1</label><input id="fW1" maxlength="120" autocomplete="off"></div>
+        <div class="field bad"><label for="fW2">خيار خاطئ 2</label><input id="fW2" maxlength="120" autocomplete="off"></div>
+        <div class="field bad"><label for="fW3">خيار خاطئ 3 (اختياري)</label><input id="fW3" maxlength="120" autocomplete="off"></div>
+      </div>
+      <div class="field"><label for="fEx">شرح يظهر بعد الإجابة (اختياري)</label><input id="fEx" maxlength="240" autocomplete="off" placeholder="لماذا هذه الإجابة صحيحة؟"></div>
+      <div class="row"><span class="lab">المستوى</span><div class="seg" id="fLvl">${LEVELS.map((t, i) => `<button type="button" data-l="${i}" aria-pressed="${i === tLevel}">${t}</button>`).join('')}</div></div>
+      <p class="ferr" id="fErr" hidden></p>
+      <div class="row"><button class="btn" type="submit">${tEdit >= 0 ? 'حفظ التعديل' : 'إضافة السؤال'}</button>${tEdit >= 0 ? '<button class="btn ghost" type="button" id="fCancel">إلغاء التعديل</button>' : ''}</div>
+    </form>
+    <details class="bulk" id="bulk"><summary>لصق عدة أسئلة دفعة واحدة</summary><div class="bin">
+      <p>سطر لكل سؤال، والأجزاء مفصولة بالرمز | . الإجابة الصحيحة أولًا بعد السؤال، والشرح في الخانة السادسة اختياري.</p>
+      <code>السؤال | الإجابة الصحيحة | خطأ | خطأ | خطأ | شرح
+ما ناتج 9 × 6 ؟ | 54 | 45 | 56 | 63 | جدول التسعة</code>
+      <textarea id="bulkArea" rows="4" spellcheck="false"></textarea>
+      <div class="row"><button class="btn ghost" type="button" id="bulkAdd">إضافة هذه الأسئلة</button><span class="tstatus" id="bulkMsg"></span></div>
+    </div></details>
+    <div class="row"><button class="btn ghost del" type="button" id="lDel">حذف هذا الدرس</button></div>`;
+  if (tEdit >= 0) {
+    const q = l.qs[tEdit];
+    $('#fQ').value = q.q; $('#fC').value = q.a[0]; $('#fEx').value = q.ex;
+    ['#fW1', '#fW2', '#fW3'].forEach((s, i) => $(s).value = q.a[i + 1] || '');
+  }
+  $('#lName').oninput = e => { l.name = e.target.value; renderTList(); markDirty(); };
+  $('#lLabel').oninput = e => { l.label = e.target.value; markDirty(); };
+  m.querySelectorAll('.swatches button').forEach(b => b.onclick = () => { l.color = b.dataset.c; renderTList(); m.querySelectorAll('.swatches button').forEach(x => x.setAttribute('aria-pressed', x === b)); markDirty(); });
+  m.querySelectorAll('[data-edit]').forEach(b => b.onclick = () => {
+    tEdit = +b.dataset.edit; tLevel = l.qs[tEdit].d; renderTMain();
+    $('#qForm').scrollIntoView({ block: 'nearest' }); $('#fQ').focus({ preventScroll: true });
+  });
+  m.querySelectorAll('[data-del]').forEach(b => b.onclick = () => {
+    if (!b.classList.contains('armed')) { b.classList.add('armed'); b.textContent = 'تأكيد الحذف'; return; }
+    l.qs.splice(+b.dataset.del, 1); tEdit = -1; renderTList(); renderTMain(); markDirty();
+  });
+  m.querySelectorAll('#fLvl button').forEach(b => b.onclick = () => { tLevel = +b.dataset.l; m.querySelectorAll('#fLvl button').forEach(x => x.setAttribute('aria-pressed', x === b)); });
+  $('#qForm').onsubmit = e => {
+    e.preventDefault();
+    const v = s => $(s).value.trim();
+    const q = v('#fQ'), c = v('#fC'), wrong = ['#fW1', '#fW2', '#fW3'].map(v).filter(Boolean), err = $('#fErr');
+    const fail = (msg, focus) => { err.textContent = msg; err.hidden = false; $(focus).focus(); };
+    if (!q) return fail('اكتب نص السؤال.', '#fQ');
+    if (!c) return fail('اكتب الإجابة الصحيحة.', '#fC');
+    if (!wrong.length) return fail('أضف خيارًا خاطئًا واحدًا على الأقل.', '#fW1');
+    if (wrong.includes(c) || new Set(wrong).size !== wrong.length) return fail('كل خيار يجب أن يختلف عن غيره.', '#fW1');
+    const item = { q, a: [c, ...wrong], ex: v('#fEx'), d: tLevel };
+    const added = tEdit < 0;
+    if (added) l.qs.push(item); else l.qs[tEdit] = item;
+    tEdit = -1; renderTList(); renderTMain(); markDirty();
+    $('#fQ').focus({ preventScroll: true });
+    if (added) { const list = m.querySelector('.qlist'); list.scrollTop = list.scrollHeight; }
+  };
+  const cancel = $('#fCancel'); if (cancel) cancel.onclick = () => { tEdit = -1; tLevel = 0; renderTMain(); };
+  $('#bulkAdd').onclick = () => {
+    const rows = $('#bulkArea').value.split('\n').filter(x => x.trim()), bad = [], add = [];
+    rows.forEach((line, i) => {
+      const p = line.split('|').map(s => s.trim());
+      const ans = p.slice(1, 5).filter(Boolean);
+      if (!p[0] || ans.length < 2) { bad.push(i + 1); return; }
+      add.push({ q: p[0], a: ans, ex: p.length >= 6 ? p.slice(5).join(' | ') : '', d: 0 });
+    });
+    const msg = $('#bulkMsg');
+    if (bad.length) { msg.className = 'tstatus err'; msg.textContent = `تحقق من السطر ${bad.join('، ')}: يلزم سؤال وإجابة صحيحة وخيار خاطئ واحد على الأقل.`; return; }
+    if (!add.length) { msg.className = 'tstatus err'; msg.textContent = 'الصق سطرًا واحدًا على الأقل.'; return; }
+    l.qs.push(...add); renderTList(); renderTMain(); markDirty();
+    $('#bulk').open = true; $('#bulkMsg').className = 'tstatus okk'; $('#bulkMsg').textContent = `أُضيف ${add.length} سؤالًا.`;
+  };
+  $('#lDel').onclick = e => {
+    const b = e.currentTarget;
+    if (!b.classList.contains('armed')) { b.classList.add('armed'); b.textContent = `اضغط مجددًا لحذف «${l.name.trim() || 'الدرس'}»`; return; }
+    lessons = lessons.filter(x => x !== l); tSel = lessons[0] ? lessons[0].id : null; tEdit = -1;
+    renderTList(); renderTMain(); markDirty();
+  };
+}
+async function saveLessons() {
+  if (lessons.some(l => !l.name.trim())) { setTStatus('اكتب اسمًا لكل درس قبل الحفظ.', 'err'); return; }
+  lessons.forEach(l => { l.name = l.name.trim(); l.label = l.label.trim(); });
+  const data = { updatedAt: Date.now(), lessons }, btn = $('#tSave');
+  btn.disabled = true; setTStatus('جارٍ الحفظ…', 'warn');
+  if (artifactApi) {
+    try {
+      await artifactApi.publish({ 'lessons.json': JSON.stringify(data) });
+      store.del('jazira.lessons.local'); lessonsLocal = false; saved = JSON.stringify(lessons);
+      setTStatus('تم الحفظ والنشر. سيظهر الدرس لكل من يفتح اللعبة.', 'okk');
+      btn.disabled = false; renderTList(); renderLobby(); return;
+    } catch (e) {
+      if (e && e.code === 'conflict') { setTStatus('نُشرت نسخة أحدث من مكان آخر، وستُحدَّث الصفحة الآن.', 'err'); btn.disabled = false; return; }
+    }
+  }
+  store.set('jazira.lessons.local', data); lessonsLocal = true; saved = JSON.stringify(lessons);
+  setTStatus(artifactApi ? 'تعذّر النشر من هنا، فحُفظت الدروس على هذا الجهاز فقط. لن يراها الطلاب على أجهزتهم.' : 'حُفظت الدروس على هذا الجهاز.', artifactApi ? 'err' : 'okk');
+  btn.disabled = false; renderTList(); renderLobby();
+}
+$('#teacherBtn').onclick = () => openTeacher(false);
+$('#tNew').onclick = () => { tEdit = -1; tLevel = 0; addLesson(); renderTList(); renderTMain(); const n = $('#lName'); n.focus(); n.select(); };
+$('#tSave').onclick = saveLessons;
+$('#tClose').onclick = () => {
+  if (isDirty() && !closeArmed) { closeArmed = true; setTStatus('لديك تغييرات غير محفوظة. اضغط «إغلاق» مرة أخرى لتجاهلها، أو «حفظ ونشر».', 'err'); return; }
+  if (isDirty()) lessons = JSON.parse(saved);
+  $('#tModal').hidden = true; renderLobby();
 };
 
 /* ================= WORLD ================= */
@@ -738,11 +962,11 @@ const MINB = [20, 13, 8, 4, 2];
 const STORM_DPS = [1, 2, 4, 6, 9, 12];
 
 function startMatch() {
-  const pool = BANK[settings.subj].qs;
-  if (!pool.length) { settings.subj = 'math'; saveSettings(); }
+  const key = currentSubj(), sub = subjOf(key);
+  settings.subj = key; saveSettings();
   G = {
     mode: 'drop', paused: false, time: 0, lenK: settings.len === 'normal' ? 1.5 : 1,
-    pool: BANK[settings.subj].qs.slice(), used: new Set(), subj: settings.subj,
+    pool: sub.qs.slice(), used: new Set(), subj: key, subjName: sub.name,
     P: { x: C, y: C, hp: 100, shield: 0, wood: 0, walls: 0, rar: 0, face: 0, alive: true, dcool: 0, inStorm: false },
     bots: [], feed: [], stats: { correct: 0, total: 0, elims: 0, chests: 0, mistakes: [] },
     keys: {}, joy: null, grace: 0, simT: 6, cam: { x: C, y: C, s: 0 }, hud: {}
@@ -929,7 +1153,7 @@ function openQ(ctxq) {
   $('#qTitle').textContent = duel ? `مواجهة: ${ctxq.bot.name}` : 'صندوق كنز';
   $('#qSub').textContent = duel ? 'أجب صحيحًا قبل نفاد الوقت لتُقصيه' : 'أجب صحيحًا لتفتحه';
   $('#qTimerWrap').hidden = !duel;
-  const sName = q.s ? BANK[q.s].name : (G.subj === 'custom' && customSet.name ? customSet.name : BANK[G.subj].name);
+  const sName = q.s ? BANK[q.s].name : G.subjName;
   const lvl = ['', 'سهل', 'متوسط', 'متقدم'][q.d || 0];
   $('#qMeta').innerHTML = `<span>${esc(sName)}</span>${lvl ? `<span>${lvl}</span>` : ''}${duel ? `<span>سلاحك: ${RAR[P.rar].w}</span>` : ''}`;
   $('#qText').innerHTML = fmtQ(q.q);
@@ -1248,7 +1472,7 @@ function endMatch(win) {
   win ? setTimeout(sfx.win, 200) : null;
   $('#resHero').className = 'res-hero' + (win ? '' : ' lose');
   $('#resHero').innerHTML = win
-    ? `<div class="place num">#1</div><h1>النصر! آخر الناجين</h1><p>تفوّقت بمعرفتك على 29 لاعبًا في ${esc(G.subj === 'custom' && customSet.name ? customSet.name : BANK[G.subj].name)}.</p>`
+    ? `<div class="place num">#1</div><h1>النصر! آخر الناجين</h1><p>تفوّقت بمعرفتك على 29 لاعبًا في «${esc(G.subjName)}».</p>`
     : `<div class="place num">#${place}</div><h1>تم إقصاؤك</h1><p>${G.cause === 'العاصفة' ? 'أمسكت بك العاصفة. راقب الدائرة البيضاء وتحرّك مبكرًا.' : G.cause ? `أقصاك ${esc(G.cause)}. راجع الأسئلة بالأسفل وعُد أقوى.` : 'انتهت المباراة.'}</p>`;
   $('#resTiles').innerHTML = [
     [`${st.correct}/${st.total}`, 'إجابات صحيحة'], [`${acc}%`, 'الدقة'], [st.elims, 'إقصاءات'], [st.chests, 'صناديق فُتحت']
@@ -1269,6 +1493,8 @@ $('#againBtn').onclick = startMatch;
 $('#lobbyBtn').onclick = () => { $('#results').hidden = true; $('#lobby').hidden = false; renderLobby(); scrollTo(0, 0); };
 
 renderLobby();
+loadLessons();
+initCaps();
 if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => drawAvatar($('#avatar'), SKINS[profile.skin], 220, 270));
 })();
 </script>
