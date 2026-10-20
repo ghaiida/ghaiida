@@ -50,7 +50,7 @@ bdi.m{font-family:var(--f-body);font-weight:700;white-space:nowrap}
 .chip-btn svg{width:18px;height:18px}
 
 /* main */
-.main{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:20px}
+.main{display:grid;grid-template-columns:minmax(0,7fr) minmax(0,5fr);gap:20px;align-items:start}
 @media (max-width:860px){.main{grid-template-columns:minmax(0,1fr)}}
 .panel{background:linear-gradient(180deg,rgba(19,40,108,.88),rgba(11,27,77,.92));border:1px solid rgba(140,170,255,.22);border-radius:20px;padding:18px;display:grid;gap:14px;align-content:start;min-width:0}
 .ptitle{display:flex;align-items:center;justify-content:space-between;gap:10px}
@@ -282,6 +282,103 @@ bdi.m{font-family:var(--f-body);font-weight:700;white-space:nowrap}
 .tstatus.err{color:#FF9DAE}
 .tstatus.warn{color:#FFD98A}
 .tstatus.okk{color:#8DF3B6}
+/* ---------- modes + class panel ---------- */
+.modes{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;max-width:680px}
+.mode{display:grid;gap:2px;text-align:start;background:rgba(7,20,55,.55);border:2px solid rgba(255,255,255,.14);border-radius:16px;padding:12px 16px;min-width:0}
+.mode b{font-family:var(--f-display);font-weight:400;font-size:1.45rem;line-height:1.1}
+.mode small{font-size:.8rem;color:var(--ink-2)}
+.mode:hover{border-color:rgba(255,210,58,.6)}
+.mode[aria-pressed="true"]{border-color:var(--gold);background:rgba(255,210,58,.14)}
+.between{justify-content:space-between}
+.center{justify-content:center}
+.cnt{font-weight:700;font-size:.88rem;color:var(--ink-2)}
+.field textarea{background:rgba(3,10,32,.6);border:1px solid var(--line);border-radius:12px;padding:10px 12px;font-size:1rem;line-height:1.7;width:100%;resize:vertical}
+.field textarea:focus{border-color:var(--gold);outline:none}
+.hint{font-size:.85rem;color:var(--ink-2);background:rgba(3,10,32,.45);border-radius:12px;padding:8px 12px}
+.hint.warn{color:#FFD98A}
+.cerr{color:#FF9DAE;font-weight:700;font-size:.9rem}
+.resume{display:flex;flex-wrap:wrap;align-items:center;gap:10px;background:rgba(155,77,255,.22);border:1px solid var(--storm);border-radius:14px;padding:10px 14px}
+.resume p{flex:1;min-width:180px;font-size:.9rem;font-weight:700}
+
+/* ---------- class screen ---------- */
+#cls{position:fixed;inset:0;background:#0F6CBD;overflow:hidden;z-index:6;-webkit-user-select:none;user-select:none}
+#ccv{position:absolute;inset:0;display:block}
+.cbar{position:absolute;z-index:3;top:calc(env(safe-area-inset-top,0px) + 12px);left:calc(env(safe-area-inset-left,0px) + 12px);right:calc(env(safe-area-inset-right,0px) + 12px);display:flex;flex-wrap:wrap;align-items:center;gap:8px 18px;padding:10px 16px;border-radius:16px}
+.cinfo{display:grid;margin-inline-end:auto;min-width:0;max-width:100%}
+.cinfo b{font-family:var(--f-display);font-weight:400;font-size:clamp(1.2rem,2.4vw,1.8rem);line-height:1.15;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cinfo span{font-size:.88rem;color:var(--ink-2)}
+.cstats{display:flex;align-items:center;gap:14px}
+.cnum{display:flex;align-items:baseline;gap:6px;font-weight:700}
+.cnum .big{font-family:var(--f-display);font-weight:400;font-size:2.1rem;line-height:1}
+.cdmg{font-weight:700;font-size:.88rem;padding:4px 12px;border-radius:999px;background:rgba(155,77,255,.6)}
+.cbtns{display:flex;gap:6px;flex-wrap:wrap}
+.croster{position:absolute;z-index:2;top:calc(env(safe-area-inset-top,0px) + 92px);right:calc(env(safe-area-inset-right,0px) + 12px);bottom:calc(env(safe-area-inset-bottom,0px) + 12px);width:300px;border-radius:16px;padding:10px;display:flex;flex-direction:column;gap:5px;overflow-y:auto}
+.croster h3{font-family:var(--f-body);font-size:.8rem;font-weight:700;color:var(--ink-2);padding:4px 4px 0}
+.crow{display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:3px 8px;padding:6px 8px;border-radius:10px;background:rgba(255,255,255,.04)}
+.crow.cur{outline:2px solid var(--gold);background:rgba(255,210,58,.14)}
+.crow.out{opacity:.55}
+.crow .dot{width:12px;height:12px;border-radius:50%}
+.crow b{font-size:.92rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.crow small{font-size:.76rem;color:var(--ink-2);font-variant-numeric:tabular-nums}
+.crow .mb{grid-column:2 / 4;display:grid;gap:2px}
+.mbar{height:5px;border-radius:3px;background:rgba(255,255,255,.12);overflow:hidden}
+.mbar span{display:block;height:100%}
+.mbar.hp span{background:var(--hp)}
+.mbar.sh span{background:var(--shield)}
+.croster .endnow{margin-top:auto;justify-self:stretch;font-size:.85rem}
+@media (max-width:900px){.croster{display:none;width:min(300px,calc(100vw - 24px))}.croster.open{display:flex;z-index:5}}
+@media (min-width:901px){#cListBtn{display:none}}
+.cfeed{position:absolute;z-index:2;left:calc(env(safe-area-inset-left,0px) + 12px);top:calc(env(safe-area-inset-top,0px) + 92px)}
+.cact{position:absolute;z-index:3;bottom:calc(env(safe-area-inset-bottom,0px) + 18px);left:50%;transform:translateX(-50%);display:grid;justify-items:center;gap:6px;width:max-content;max-width:calc(100vw - 32px)}
+@media (min-width:901px){.cact{left:calc(50% - 156px)}}
+.cact .play{font-size:clamp(1.4rem,3vw,2rem)}
+.cact .play:disabled{filter:grayscale(.7);opacity:.55;cursor:default;transform:none}
+.cact small{font-size:.85rem;font-weight:700;color:#fff;text-shadow:0 1px 3px rgba(0,0,0,.7)}
+.cbanner{position:absolute;z-index:4;top:44%;left:50%;transform:translate(-50%,-50%);text-align:center;padding:18px 34px;border-radius:20px;background:rgba(80,20,160,.9);border:2px solid #C79BFF;box-shadow:0 0 60px rgba(155,77,255,.6);width:max-content;max-width:calc(100vw - 32px);animation:ban 3.2s ease-out forwards;pointer-events:none}
+.cbanner h2{font-size:clamp(2rem,6vw,3.6rem);color:#fff}
+.cbanner p{color:#E9DAFF;font-weight:700}
+@keyframes ban{0%{opacity:0;transform:translate(-50%,-50%) scale(.85)}10%{opacity:1;transform:translate(-50%,-50%) scale(1)}80%{opacity:1}100%{opacity:0}}
+.roul{position:absolute;inset:0;z-index:8;display:grid;place-content:center;justify-items:center;gap:10px;background:rgba(3,8,30,.74);-webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px);text-align:center;padding-inline:16px}
+.roul small{font-family:var(--f-display);font-size:clamp(1.2rem,3vw,1.9rem);color:var(--ink-2)}
+.rname{font-family:var(--f-display);font-size:clamp(3rem,12vw,8rem);line-height:1.15;color:#fff;padding:.08em .7em;clip-path:var(--para);background:rgba(255,255,255,.07);max-width:calc(100vw - 32px);overflow-wrap:anywhere}
+.rname.landed{color:#2A1C00;background:linear-gradient(180deg,#FFE36B,var(--gold) 60%,#F2B600);animation:land .5s cubic-bezier(.2,1.6,.4,1)}
+@keyframes land{from{transform:scale(.6)}to{transform:scale(1)}}
+.ccard{width:min(920px,100%)}
+.ccard:focus{outline:none}
+.cqhead{flex-wrap:wrap}
+.cqhead.reboot{background:linear-gradient(90deg,#7A2BD9,var(--storm));color:#fff}
+.cqhead h3{font-size:clamp(1.9rem,4.5vw,2.8rem)}
+.cqhead small{display:block}
+.cvit{display:grid;gap:4px;width:min(260px,100%)}
+.ccard .qtext{font-size:clamp(1.3rem,3vw,2.3rem)}
+.ccard .opt{font-size:clamp(1.05rem,2.2vw,1.6rem);padding:14px 16px}
+.ccard .opt .k{width:40px;height:40px;font-size:1.15rem}
+.ccard .fb h4{font-size:clamp(1.4rem,3vw,2.1rem)}
+.ccard .fb p{font-size:clamp(.95rem,1.8vw,1.2rem)}
+.cnote{color:var(--ink-3);font-size:.8rem}
+.dcard{width:min(560px,100%);background:linear-gradient(180deg,var(--panel-2),var(--panel));border:1px solid rgba(140,170,255,.3);border-radius:22px;padding:24px;display:grid;gap:14px;text-align:center}
+.dcard h2{font-size:2rem;color:var(--gold)}
+.dcard p{color:var(--ink-2)}
+
+/* ---------- class results ---------- */
+.crown{width:88px;height:88px;margin-inline:auto;color:var(--gold);filter:drop-shadow(0 6px 0 #6B4A00)}
+.eyebrow{font-family:var(--f-display);font-size:1.3rem;color:var(--ink-2);letter-spacing:.02em}
+.winners{font-family:var(--f-display);font-size:clamp(2.4rem,8vw,4.6rem);line-height:1.15;color:var(--gold);text-shadow:0 5px 0 #6B4A00;overflow-wrap:anywhere}
+.podium{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;align-items:end;max-width:560px;margin-inline:auto;width:100%}
+.pod{display:grid;justify-items:center;gap:6px;min-width:0}
+.pod b{font-weight:700;text-align:center;overflow-wrap:anywhere}
+.pod div{width:100%;border-radius:14px 14px 4px 4px;display:grid;place-items:center;font-family:var(--f-display);font-size:2rem;color:#2A1C00}
+.tbl{overflow-x:auto}
+.tbl table{width:100%;border-collapse:collapse;font-size:.92rem}
+.tbl th,.tbl td{padding:8px 10px;text-align:start;border-bottom:1px solid rgba(255,255,255,.1);white-space:nowrap}
+.tbl th{color:var(--ink-2);font-size:.8rem;font-weight:700}
+.tbl td{font-variant-numeric:tabular-nums}
+.tag-win{color:var(--gold);font-weight:700}
+#ceRaw{width:100%;background:rgba(3,10,32,.6);border:1px solid var(--line);border-radius:12px;padding:10px;font-size:.85rem}
+.rv summary{cursor:pointer;font-weight:700;display:flex;justify-content:space-between;gap:10px}
+.rv summary span{color:var(--ink-2);font-weight:500;font-size:.85rem}
+.rv ul{margin:6px 0 0;padding-inline-start:18px;display:grid;gap:6px;font-size:.9rem}
+.acc{font-weight:700;color:#FFB4C0}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 
@@ -295,16 +392,13 @@ bdi.m{font-family:var(--f-body);font-weight:700;white-space:nowrap}
       <button class="chip-btn" id="teacherBtn" type="button" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 5h18v11H3z"/><path d="M8 20h8M12 16v4"/><path d="M7 9h6M7 12h4"/></svg><span>لوحة المعلم</span></button>
     </header>
 
-    <div class="main">
-      <section class="panel" aria-label="شخصيتك">
-        <div class="ptitle"><h2>شخصيتك</h2><span id="recTxt">لم تلعب بعد</span></div>
-        <div class="stage"><canvas id="avatar" width="220" height="270" aria-hidden="true"></canvas></div>
-        <div class="skinname"><span id="skinName">المستكشف</span><small>اختر زيّك من الخزانة</small></div>
-        <div class="field"><label for="pname">اسم اللاعب</label><input id="pname" maxlength="16" placeholder="اكتب اسمك" autocomplete="off"></div>
-        <div class="locker" id="locker"></div>
-      </section>
+    <div class="modes" id="modes" role="group" aria-label="طريقة اللعب" hidden>
+      <button type="button" class="mode" data-mode="class" aria-pressed="false"><b>تقويم الفصل</b><small>على شاشة العرض · بأسماء الطالبات</small></button>
+      <button type="button" class="mode" data-mode="solo" aria-pressed="true"><b>تدريب فردي</b><small>كل طالبة تلعب على جهازها</small></button>
+    </div>
 
-      <section class="panel" aria-label="إعداد المباراة">
+    <div class="main">
+      <section class="panel" aria-label="اختيار الدرس">
         <div class="ptitle"><h2>اختر الدرس</h2><span>تصعب الأسئلة كلما ضاقت العاصفة</span></div>
         <div class="grp" id="grpLessons" hidden>
           <h3 class="glab">دروس المعلم</h3>
@@ -315,6 +409,29 @@ bdi.m{font-family:var(--f-body);font-weight:700;white-space:nowrap}
           <h3 class="glab">بنوك أسئلة جاهزة</h3>
           <div class="subjects" id="subjects"></div>
         </div>
+      </section>
+
+      <section class="panel" id="classPanel" aria-label="الفصل" hidden>
+        <div class="ptitle"><h2>الفصل</h2><span id="rosterNote">محفوظ على هذا الجهاز</span></div>
+        <div class="resume" id="resumeBox" hidden><p id="resumeTxt"></p><button class="btn" id="resumeGo" type="button">متابعة</button><button class="mini del" id="resumeDrop" type="button">تجاهل</button></div>
+        <div class="row"><div class="seg" id="classTabs" hidden></div><button class="mini" id="classNew" type="button">+ فصل جديد</button></div>
+        <div class="field"><label for="className">اسم الفصل</label><input id="className" maxlength="30" placeholder="مثال: ثالث متوسط 2" autocomplete="off"></div>
+        <div class="field"><label for="classNames">أسماء الطالبات · اسم في كل سطر</label><textarea id="classNames" rows="7" placeholder="نورة&#10;ريم&#10;لمى"></textarea></div>
+        <div class="row between"><span class="cnt num" id="nameCount">لا توجد أسماء بعد</span><button class="mini del" id="classDel" type="button" hidden>حذف هذا الفصل</button></div>
+        <div class="row"><span class="lab">عدد الجولات</span><div class="seg" id="roundSeg"><button type="button" data-v="2">2</button><button type="button" data-v="3">3</button><button type="button" data-v="4">4</button><button type="button" data-v="5">5</button></div></div>
+        <div class="row"><span class="lab">وقت الإجابة</span><div class="seg" id="timeSeg"><button type="button" data-v="20">20 ث</button><button type="button" data-v="30">30 ث</button><button type="button" data-v="45">45 ث</button><button type="button" data-v="0">بلا وقت</button></div></div>
+        <div class="row"><span class="lab">شاحنة الإحياء</span><div class="seg" id="rebootSeg"><button type="button" data-v="1">مفعّلة</button><button type="button" data-v="0">معطّلة</button></div></div>
+        <p class="hint" id="qNeed"></p>
+        <p class="cerr" id="classErr" hidden></p>
+        <div class="playrow"><p>كل طالبة تُسأل مرة واحدة في كل جولة، ويظهر اسمها فجأة من عجلة الأسماء.</p><button class="play" id="classStart" type="button"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 4l14 8-14 8z"/></svg>ابدأ التقويم</button></div>
+      </section>
+
+      <section class="panel" id="soloPanel" aria-label="التدريب الفردي">
+        <div class="ptitle"><h2>شخصيتك</h2><span id="recTxt">لم تلعب بعد</span></div>
+        <div class="stage"><canvas id="avatar" width="220" height="270" aria-hidden="true"></canvas></div>
+        <div class="skinname"><span id="skinName">المستكشف</span><small>اختر زيّك من الخزانة</small></div>
+        <div class="field"><label for="pname">اسم اللاعب</label><input id="pname" maxlength="16" placeholder="اكتب اسمك" autocomplete="off"></div>
+        <div class="locker" id="locker"></div>
         <div class="row"><span class="lab">مدة المباراة</span>
           <div class="seg" id="lenSeg"><button type="button" data-len="short" aria-pressed="true">سريعة · 5 د</button><button type="button" data-len="normal" aria-pressed="false">كاملة · 8 د</button></div>
         </div>
@@ -328,7 +445,13 @@ bdi.m{font-family:var(--f-body);font-weight:700;white-space:nowrap}
       </section>
     </div>
 
-    <section class="steps" aria-label="طريقة اللعب">
+    <section class="steps" id="stepsClass" aria-label="قواعد التقويم" hidden>
+      <div class="step"><b><i>1</i>الهبوط</b><p>تقفز الطالبات من المنطاد، ويظهر اسم كل واحدة عند هبوطها على الجزيرة.</p></div>
+      <div class="step"><b><i>2</i>اسم مفاجئ</b><p>تدور عجلة الأسماء وتتوقف على الطالبة التالية. كل طالبة تُسأل مرة في كل جولة.</p></div>
+      <div class="step"><b><i>3</i>الصحة والدرع</b><p>لكل طالبة 100 صحة. الإجابة الصحيحة تضيف 25 درعًا، والخاطئة تُنقص بقدر قوة العاصفة.</p></div>
+      <div class="step"><b><i>4</i>العاصفة والتاج</b><p>تشتد العاصفة كل جولة. من تنفد صحتها تُقصى، وآخر من تبقى تنال تاج النصر.</p></div>
+    </section>
+    <section class="steps" id="stepsSolo" aria-label="طريقة اللعب">
       <div class="step"><b><i>1</i>اقفز من المنطاد</b><p>اضغط على أي مكان في الجزيرة لتهبط فيه بالمظلة.</p></div>
       <div class="step"><b><i>2</i>افتح الصناديق</b><p>الإجابة الصحيحة تفتح الصندوق: سلاح أندر، درع، أو صحة.</p></div>
       <div class="step"><b><i>3</i>واجه الخصوم</b><p>عند الاقتراب من خصم يبدأ سؤال بوقت محدود. أجب صحيحًا لتُقصيه.</p></div>
@@ -404,6 +527,82 @@ bdi.m{font-family:var(--f-body);font-weight:700;white-space:nowrap}
       <div class="review" id="resReview"></div>
     </div>
     <div class="row"><button class="play" id="againBtn" type="button"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 4l14 8-14 8z"/></svg>العب مجددًا</button><button class="btn ghost" id="lobbyBtn" type="button">العودة إلى الردهة</button></div>
+  </div>
+</section>
+
+<!-- ============ CLASS ASSESSMENT ============ -->
+<section id="cls" hidden>
+  <canvas id="ccv"></canvas>
+  <header class="cbar glass">
+    <div class="cinfo"><b id="cLesson">الدرس</b><span id="cClass">الفصل</span></div>
+    <div class="cstats">
+      <span class="cnum"><span class="big num" id="cAlive">0</span><span id="cAliveOf">متبقية</span></span>
+      <span class="cdmg" id="cDmg">ضرر الخطأ 35</span>
+    </div>
+    <div class="cbtns">
+      <button class="xbtn" id="cListBtn" type="button">القائمة</button>
+      <button class="xbtn" id="cFull" type="button">ملء الشاشة</button>
+      <button class="xbtn" id="cExit" type="button">خروج</button>
+    </div>
+  </header>
+  <aside class="croster glass" id="cRoster" aria-label="الطالبات"></aside>
+  <div class="feed cfeed" id="cFeed" aria-live="polite"></div>
+  <div class="cact">
+    <button class="play" id="cNext" type="button" disabled><svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 4l14 8-14 8z"/></svg><span id="cNextT">اختيار الطالبة التالية</span></button>
+    <small id="cLeft"></small>
+  </div>
+  <div class="cbanner" id="cBanner" hidden><h2 id="cBanT"></h2><p id="cBanP"></p></div>
+  <div class="roul" id="roul" hidden><small>الطالبة التالية</small><div class="rname" id="rName"></div></div>
+
+  <div class="overlay" id="cq" hidden role="dialog" aria-modal="true" aria-labelledby="cqName">
+    <div class="qcard ccard" id="cqCard" tabindex="-1">
+      <div class="qhead cqhead" id="cqHead">
+        <div><small id="cqTag">الجولة 1</small><h3 id="cqName"></h3></div>
+        <div class="cvit">
+          <div class="bar sh"><i id="cqSh"></i><span id="cqShT"></span></div>
+          <div class="bar hp"><i id="cqHp"></i><span id="cqHpT"></span></div>
+        </div>
+      </div>
+      <div class="qtimer" id="cqTW"><i id="cqTimer" style="width:100%"></i></div>
+      <div class="qbody">
+        <div class="qmeta" id="cqMeta"></div>
+        <div class="qtext" id="cqText" dir="auto"></div>
+        <div class="opts" id="cqOpts"></div>
+        <div class="fb" id="cqFb" hidden></div>
+        <div class="row between" id="cqFoot"><small class="cnote">اختيار الإجابة التي تقولها الطالبة، أو الأرقام 1 إلى 4</small><button class="mini" id="cqSkip" type="button">غائبة؟ استبعادها</button></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="overlay" id="cDecide" hidden role="dialog" aria-modal="true" aria-labelledby="cdT">
+    <div class="dcard">
+      <h2 id="cdT">انتهت الدائرة الأخيرة</h2>
+      <p id="cdP"></p>
+      <div class="row center"><button class="btn" id="cdMore" type="button">جولة حاسمة أخرى</button><button class="btn ghost" id="cdEnd" type="button">إنهاء وتتويج المتبقيات</button></div>
+    </div>
+  </div>
+</section>
+
+<section id="cEnd" class="sky" hidden>
+  <div class="res">
+    <div class="res-hero" id="ceHero"></div>
+    <div class="podium" id="cePod"></div>
+    <div class="tiles" id="ceTiles"></div>
+    <div class="panel">
+      <div class="ptitle"><h2>ترتيب الفصل</h2><span>من التقويم الختامي</span></div>
+      <div class="tbl" id="ceTable"></div>
+      <div class="row"><button class="btn" id="ceCopy" type="button">نسخ النتائج</button><button class="btn ghost" id="ceCsv" type="button" hidden>تنزيل ملف Excel</button><span class="tstatus" id="ceMsg"></span></div>
+      <textarea id="ceRaw" rows="6" readonly hidden></textarea>
+    </div>
+    <div class="panel">
+      <div class="ptitle"><h2>أصعب الأسئلة على الفصل</h2><span>لإعادة شرحها</span></div>
+      <div class="review" id="ceHard"></div>
+    </div>
+    <div class="panel">
+      <div class="ptitle"><h2>أخطاء كل طالبة</h2><span>اضغط على الاسم للتفاصيل</span></div>
+      <div class="review" id="ceMiss"></div>
+    </div>
+    <div class="row"><button class="play" id="ceAgain" type="button"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 4l14 8-14 8z"/></svg>تقويم جديد</button><button class="btn ghost" id="ceLobby" type="button">العودة إلى الردهة</button></div>
   </div>
 </section>
 
@@ -659,6 +858,7 @@ function renderLobby() {
   $('#teacherBtn').hidden = !canTeach;
   const sj = $('#subjects'); sj.innerHTML = '';
   BUILTIN.forEach(k => card(sj, k, BANK[k], BANK[k].qs.length + ' سؤالًا'));
+  updateCount();
   document.querySelectorAll('#lenSeg button').forEach(b => b.setAttribute('aria-pressed', b.dataset.len === settings.len));
   $('#soundBtn').setAttribute('aria-pressed', settings.sound);
   $('#soundBtn span').textContent = settings.sound ? 'الصوت' : 'صامت';
@@ -711,13 +911,13 @@ async function loadLessons() {
 async function initCaps() {
   const cl = window.claude;
   // A copy opened outside the viewer has no runtime: let its owner edit locally.
-  if (!cl || typeof cl.use !== 'function') { canTeach = true; renderLobby(); return; }
+  if (!cl || typeof cl.use !== 'function') { canTeach = true; teacherReady(); return; }
   try {
-    const [u, a] = await Promise.all([cl.use('user'), cl.use('artifact')]);
-    artifactApi = a;
+    const [u, a, d] = await Promise.all([cl.use('user'), cl.use('artifact'), cl.use('downloads')]);
+    artifactApi = a; dlApi = d;
     canTeach = !!(u && await u.canEdit());
   } catch (e) { canTeach = false; }
-  renderLobby();
+  teacherReady();
 }
 
 const selLesson = () => lessons.find(l => l.id === tSel);
@@ -860,6 +1060,529 @@ $('#tClose').onclick = () => {
   $('#tModal').hidden = true; renderLobby();
 };
 
+/* ================= CLASS ASSESSMENT =================
+   One shared screen for the whole class: the students drop onto the island,
+   a name roulette picks who answers next, and every round the storm hits
+   harder. Rosters stay private to the teacher (their own db path, or this
+   browser), and a run in progress is kept locally so a reload can resume it. */
+let mode = 'solo', dlApi = null;
+let rosters = { classes: [], sel: null }, rosterDoc = null, rosterTimer = 0, rosterWrite = Promise.resolve();
+const CSET = Object.assign({ rounds: 3, time: 30, reboot: true }, store.get('jazira.cset', {}));
+const COLS = ['#FF6B6B', '#FFD23A', '#4CCB5A', '#3BA3FF', '#B05CFF', '#FF9F1C', '#2EC4B6', '#F15BB5', '#9BDE7E', '#5EC8F2'];
+const CROWN = '<svg class="crown" viewBox="0 0 64 64" fill="currentColor" aria-hidden="true"><path d="M8 22l12 10 12-18 12 18 12-10-5 28H13z"/><rect x="13" y="52" width="38" height="6" rx="2"/><circle cx="8" cy="20" r="4"/><circle cx="32" cy="11" r="4"/><circle cx="56" cy="20" r="4"/></svg>';
+const parseNames = t => [...new Set(t.split('\n').map(s => s.trim().replace(/\s+/g, ' ')).filter(Boolean))].slice(0, 60);
+const selClass = () => rosters.classes.find(c => c.id === rosters.sel) || null;
+function cleanRosters(d) {
+  const cls = (d && Array.isArray(d.classes) ? d.classes : []).filter(c => c && typeof c.id === 'string').map(c => ({
+    id: c.id, name: String(c.name || '').slice(0, 30), names: (Array.isArray(c.names) ? c.names : []).map(String).filter(Boolean).slice(0, 60)
+  }));
+  return { classes: cls, sel: cls.some(c => c.id === (d && d.sel)) ? d.sel : (cls[0] ? cls[0].id : null) };
+}
+async function initRosters() {
+  rosters = cleanRosters(store.get('jazira.rosters', null));
+  renderClassPanel();
+  const cl = window.claude;
+  if (!cl || typeof cl.use !== 'function') return;
+  try {
+    const [db, u] = await Promise.all([cl.use('db'), cl.use('user')]);
+    const id = u && await u.id();
+    if (!db || !id) return;
+    const doc = db.collection('data/users/' + id).doc('rosters');
+    const snap = await doc.get();
+    rosterDoc = doc;
+    if (snap.exists) { rosters = cleanRosters(snap.data()); store.set('jazira.rosters', rosters); }
+    else if (rosters.classes.length) await doc.set(JSON.parse(JSON.stringify(rosters)));
+  } catch (e) { rosterDoc = null; }
+  renderClassPanel();
+}
+function saveRosters() {
+  store.set('jazira.rosters', rosters);
+  clearTimeout(rosterTimer);
+  if (rosterDoc) rosterTimer = setTimeout(() => {
+    const data = JSON.parse(JSON.stringify(rosters));
+    rosterWrite = rosterWrite.then(() => rosterDoc.set(data)).catch(() => {});
+  }, 900);
+}
+function ensureClass() {
+  let c = selClass();
+  if (!c) { c = { id: uid(), name: '', names: [] }; rosters.classes.push(c); rosters.sel = c.id; }
+  return c;
+}
+function renderClassTabs() {
+  const tabs = $('#classTabs');
+  tabs.hidden = rosters.classes.length < 2 && !(rosters.classes[0] && rosters.classes[0].name);
+  tabs.innerHTML = rosters.classes.map(c => `<button type="button" data-id="${esc(c.id)}" aria-pressed="${c.id === rosters.sel}">${esc(c.name || 'فصل بلا اسم')}</button>`).join('');
+  tabs.querySelectorAll('button').forEach(b => b.onclick = () => { rosters.sel = b.dataset.id; saveRosters(); renderClassPanel(); });
+}
+function renderClassPanel() {
+  renderClassTabs();
+  const c = selClass();
+  $('#className').value = c ? c.name : '';
+  $('#classNames').value = c ? c.names.join('\n') : '';
+  $('#classDel').hidden = !c; $('#classDel').classList.remove('armed'); $('#classDel').textContent = 'حذف هذا الفصل';
+  $('#rosterNote').textContent = rosterDoc ? 'محفوظ في حسابك' : 'محفوظ على هذا الجهاز';
+  document.querySelectorAll('#roundSeg button').forEach(b => b.setAttribute('aria-pressed', +b.dataset.v === CSET.rounds));
+  document.querySelectorAll('#timeSeg button').forEach(b => b.setAttribute('aria-pressed', +b.dataset.v === CSET.time));
+  document.querySelectorAll('#rebootSeg button').forEach(b => b.setAttribute('aria-pressed', (b.dataset.v === '1') === CSET.reboot));
+  updateCount(); renderResume();
+}
+function updateCount() {
+  const c = selClass(), n = c ? c.names.length : 0;
+  $('#nameCount').textContent = n ? `${n} ${n === 1 ? 'طالبة' : n <= 10 ? 'طالبات' : 'طالبة'}` : 'لا توجد أسماء بعد';
+  const sub = subjOf(currentSubj()), need = n * CSET.rounds, have = sub ? sub.qs.length : 0, h = $('#qNeed');
+  if (!n) { h.className = 'hint'; h.textContent = `الدرس المختار: «${sub ? sub.name : ''}». أضف أسماء الطالبات لتبدأ.`; return; }
+  const warn = have < need;
+  h.className = 'hint' + (warn ? ' warn' : '');
+  h.textContent = warn
+    ? `الدرس «${sub.name}» فيه ${have} سؤالًا، والتقويم يحتاج قرابة ${need} سؤالًا (${n} × ${CSET.rounds} جولات)، لذلك ستتكرر بعض الأسئلة.`
+    : `الدرس «${sub.name}»: ${have} سؤالًا تكفي ${CSET.rounds} جولات لـ ${n} طالبة دون تكرار.`;
+}
+function renderResume() {
+  const run = store.get('jazira.classRun', null), box = $('#resumeBox');
+  const ok = !!(run && !run.done && Array.isArray(run.students) && Array.isArray(run.pool));
+  box.hidden = !ok;
+  if (ok) {
+    const left = run.students.filter(s => s.alive && !s.absent).length;
+    $('#resumeTxt').textContent = `تقويم لم يكتمل: ${run.className} · ${run.lessonName} · بقيت ${left} في المعركة`;
+  }
+}
+$('#className').addEventListener('input', e => { const c = ensureClass(); c.name = e.target.value.trim(); saveRosters(); renderClassTabs(); $('#classDel').hidden = false; });
+$('#classNames').addEventListener('input', e => { const c = ensureClass(); c.names = parseNames(e.target.value); saveRosters(); updateCount(); $('#classDel').hidden = false; $('#classErr').hidden = true; });
+$('#classNew').onclick = () => { const c = { id: uid(), name: '', names: [] }; rosters.classes.push(c); rosters.sel = c.id; saveRosters(); renderClassPanel(); $('#className').focus(); };
+$('#classDel').onclick = e => {
+  const b = e.currentTarget, c = selClass(); if (!c) return;
+  if (!b.classList.contains('armed')) { b.classList.add('armed'); b.textContent = 'اضغط مجددًا للتأكيد'; return; }
+  rosters.classes = rosters.classes.filter(x => x !== c); rosters.sel = rosters.classes[0] ? rosters.classes[0].id : null;
+  saveRosters(); renderClassPanel();
+};
+[['#roundSeg', 'rounds', v => +v], ['#timeSeg', 'time', v => +v], ['#rebootSeg', 'reboot', v => v === '1']].forEach(([sel, k, conv]) =>
+  document.querySelectorAll(sel + ' button').forEach(b => b.onclick = () => { CSET[k] = conv(b.dataset.v); store.set('jazira.cset', CSET); renderClassPanel(); }));
+$('#classStart').onclick = () => startClass(null);
+$('#resumeGo').onclick = () => { const run = store.get('jazira.classRun', null); if (run) startClass(run); };
+$('#resumeDrop').onclick = () => { store.del('jazira.classRun'); renderResume(); };
+
+function setMode(m) {
+  mode = m;
+  $('#classPanel').hidden = m !== 'class'; $('#soloPanel').hidden = m !== 'solo';
+  $('#stepsClass').hidden = m !== 'class'; $('#stepsSolo').hidden = m !== 'solo';
+  document.querySelectorAll('.mode').forEach(b => b.setAttribute('aria-pressed', b.dataset.mode === m));
+}
+document.querySelectorAll('.mode').forEach(b => b.onclick = () => { setMode(b.dataset.mode); store.set('jazira.mode', b.dataset.mode); });
+
+/* ---------- run ---------- */
+let CL = null, CV = null, craf = 0, clast = 0, bannerT = 0;
+const ccv = $('#ccv'), cctx = ccv.getContext('2d');
+const aliveS = () => CL.students.filter(s => s.alive && !s.absent);
+const dmgFor = r => r > CL.N ? 200 : CL.N <= 1 ? 100 : Math.round(35 + 65 * (r - 1) / (CL.N - 1));
+const stormFor = r => r > CL.N ? 140 : Math.round(lerp(1000, 200, (r - 1) / Math.max(1, CL.N - 1)));
+const roundName = r => r > CL.N ? 'جولة حاسمة' : r === CL.N ? 'الدائرة الأخيرة' : `الجولة ${r} من ${CL.N}`;
+const persist = () => { if (CL) store.set('jazira.classRun', CL); };
+const rosterShown = () => vw > 900;
+const cFit = () => Math.min((vw - (rosterShown() ? 330 : 0) - 30) / 1900, (vh - 150) / 1900);
+
+function startClass(run) {
+  if (!run) {
+    const c = selClass(), names = c ? c.names : [], err = $('#classErr');
+    if (names.length < 2) { err.textContent = 'تحتاج قائمة الفصل إلى اسمين على الأقل.'; err.hidden = false; $('#classNames').focus(); return; }
+    const key = currentSubj(), sub = subjOf(key), a = rnd(0, 6.28), off = rnd(0, 130);
+    run = {
+      v: 1, className: c.name || 'الفصل', lessonName: sub.name, seed: rnd(0, 6.28),
+      pool: sub.qs.map(q => ({ q: q.q, a: q.a.slice(), ex: q.ex || '', d: q.d || 0 })),
+      N: CSET.rounds, time: CSET.time, reboot: CSET.reboot, round: 1, queue: [], cur: null, use: {}, lastQ: -1,
+      outOrder: [], log: [], done: false, dropped: false, sc: { x: C + Math.cos(a) * off, y: C + Math.sin(a) * off },
+      students: names.map((n, i) => ({ id: i, name: n, hp: 100, sh: 0, alive: true, absent: false, place: 0, rebootUsed: false, back: false, correct: 0, total: 0, misses: [], col: COLS[i % COLS.length] }))
+    };
+    run.queue = shuffle(run.students.map(s => s.id));
+  }
+  CL = run;
+  if (CL.cur && CL.cur.done) CL.cur = null;
+  persist();
+  G = { mode: 'off', keys: {} }; genWorld(CL.seed); resize();
+  CV = { cam: { x: C, y: C, s: cFit() }, focus: null, timer: null, phase: CL.dropped ? 'idle' : 'drop', storm: { r: stormFor(CL.round), tr: stormFor(CL.round) }, pos: [] };
+  const n = CL.students.length, minD = clamp(1150 / Math.sqrt(n), 85, 210), pts = [];
+  CL.students.forEach(() => {
+    let p;
+    for (let k = 0; k < 80; k++) {
+      p = islandPoint(90);
+      if (Math.hypot(p.x - CL.sc.x, p.y - CL.sc.y) < Math.min(CV.storm.r, 900) * .82 && pts.every(q => Math.hypot(q.x - p.x, q.y - p.y) > minD)) break;
+    }
+    pts.push(p);
+  });
+  CV.pos = pts.map(p => ({ x: p.x, y: p.y, tx: p.x, ty: p.y, face: rnd(0, 6.28), drop: null }));
+  if (!CL.dropped) {
+    const y0 = rnd(500, 1500);
+    CV.ship = { x0: -220, y0, x1: W + 220, y1: W - y0, t: 0, dur: 4.6 };
+    CV.pos.forEach((p, i) => { p.drop = { t0: .5 + i * (3.6 / n), t: -1 }; });
+    sfx.jump();
+  }
+  $('#lobby').hidden = true; $('#cEnd').hidden = true; $('#cls').hidden = false;
+  ['#cq', '#cDecide', '#roul', '#cBanner'].forEach(s => $(s).hidden = true);
+  $('#cFeed').innerHTML = ''; $('#cRoster').classList.remove('open');
+  $('#cExit').classList.remove('confirm'); $('#cExit').textContent = 'خروج';
+  renderRoster(); updateCHud();
+  if (CL.cur) { CV.focus = CL.cur.id; openCQ(); }
+  cancelAnimationFrame(craf); clast = 0; craf = requestAnimationFrame(cframe);
+}
+function exitClass() {
+  persist(); cancelAnimationFrame(craf); clearTimeout(bannerT);
+  $('#cls').hidden = true; $('#lobby').hidden = false; CL = null;
+  renderLobby(); renderResume(); scrollTo(0, 0);
+}
+function updateCHud() {
+  const al = aliveS().length, tot = CL.students.filter(s => !s.absent).length;
+  $('#cLesson').textContent = CL.lessonName;
+  $('#cClass').textContent = `${CL.className} · ${roundName(CL.round)}`;
+  $('#cAlive').textContent = al; $('#cAliveOf').textContent = `من ${tot} متبقية`;
+  $('#cDmg').textContent = `ضرر الخطأ ${dmgFor(CL.round)}`;
+  $('#cNext').disabled = CV.phase !== 'idle';
+  $('#cNextT').textContent = CL.queue.length ? 'اختيار الطالبة التالية' : CL.round >= CL.N ? 'إنهاء الجولة' : 'بدء الجولة التالية';
+  $('#cLeft').textContent = CV.phase === 'drop' ? 'الطالبات يهبطن على الجزيرة…' : CL.queue.length ? `بقي في هذه الجولة ${CL.queue.length}` : 'انتهت هذه الجولة';
+}
+function renderRoster() {
+  const list = CL.students.filter(s => !s.absent);
+  const alive = list.filter(s => s.alive).sort((a, b) => (b.hp + b.sh) - (a.hp + a.sh));
+  const out = CL.outOrder.slice().reverse().map(id => CL.students[id]).filter(s => !s.alive && !s.absent);
+  const curId = CL.cur && CV.phase !== 'roulette' ? CL.cur.id : -1;
+  const row = s => `<div class="crow${s.alive ? '' : ' out'}${s.id === curId ? ' cur' : ''}"><span class="dot" style="background:${s.col}"></span><b>${esc(s.name)}</b><small>${s.alive ? `${s.hp}${s.sh ? ' + ' + s.sh : ''}` : `#${s.place}`}</small>${s.alive ? `<div class="mb"><div class="mbar sh"><span style="width:${s.sh}%"></span></div><div class="mbar hp"><span style="width:${s.hp}%"></span></div></div>` : ''}</div>`;
+  $('#cRoster').innerHTML = `<h3>في المعركة (${alive.length})</h3>${alive.map(row).join('')}${out.length ? `<h3>المُقصيات (${out.length})</h3>${out.map(row).join('')}` : ''}<button class="btn ghost endnow" id="cEndNow" type="button">إنهاء التقويم وعرض النتائج</button>`;
+  $('#cEndNow').onclick = e => {
+    const b = e.currentTarget;
+    if (!b.classList.contains('armed')) { b.classList.add('armed'); b.textContent = 'اضغط مجددًا لتتويج المتبقيات'; return; }
+    finishClass();
+  };
+}
+function cFeed(text, me) {
+  const el = document.createElement('div'); el.textContent = text; if (me) el.className = 'me';
+  const f = $('#cFeed'); f.prepend(el); while (f.children.length > 5) f.lastChild.remove();
+  setTimeout(() => el.remove(), 9000);
+}
+function roundBanner(reb) {
+  const b = $('#cBanner');
+  $('#cBanT').textContent = CL.round === 1 ? 'هبطت الطالبات!' : CL.round > CL.N ? 'جولة حاسمة!' : CL.round === CL.N ? 'الدائرة الأخيرة!' : 'العاصفة تتقلص!';
+  $('#cBanP').textContent = `${roundName(CL.round)} · ضرر الإجابة الخاطئة ${dmgFor(CL.round)}${reb ? ` · محاولات العودة عبر شاحنة الإحياء: ${reb}` : ''}`;
+  b.hidden = true; void b.offsetWidth; b.hidden = false;
+  tone([196, 247, 294], .16, 'sawtooth', .05);
+  clearTimeout(bannerT); bannerT = setTimeout(() => { b.hidden = true; }, 3300);
+}
+
+function cNext() {
+  if (!CL || CV.phase !== 'idle') return;
+  if (!CL.queue.length) { endRound(); return; }
+  const id = CL.queue.shift(), s = CL.students[id];
+  if (s.absent || (!s.alive && s.rebootUsed)) { persist(); updateCHud(); cNext(); return; }
+  CL.cur = { id, reboot: !s.alive, qi: -1, opts: null, done: false };
+  persist();
+  CV.phase = 'roulette'; updateCHud();
+  const names = CL.students.filter(x => !x.absent && (x.alive || x.id === id)).map(x => x.name);
+  const box = $('#roul'), el = $('#rName');
+  el.classList.remove('landed'); box.hidden = false;
+  let delay = 45, last = '';
+  const step = () => {
+    if (!CL || $('#cls').hidden) return;
+    if (delay > 340) {
+      el.textContent = s.name; el.classList.add('landed'); tone([660, 880, 1320], .09, 'square', .07);
+      setTimeout(() => {
+        if (!CL || $('#cls').hidden) return;
+        box.hidden = true; CV.focus = id; CV.phase = 'focus'; renderRoster();
+        setTimeout(openCQ, 750);
+      }, 1200);
+      return;
+    }
+    let nm; do { nm = pick(names); } while (names.length > 1 && nm === last);
+    last = nm; el.textContent = nm; tone([900], .025, 'square', .025);
+    delay *= 1.12; setTimeout(step, delay);
+  };
+  step();
+}
+function pickQ() {
+  const r = Math.min(CL.round, CL.N), want = CL.N <= 1 ? 2 : 1 + Math.round(2 * (r - 1) / (CL.N - 1));
+  const score = i => (CL.use[i] || 0) * 10 + (CL.pool[i].d && CL.pool[i].d !== want ? 4 : 0) + (i === CL.lastQ ? 100 : 0);
+  const idx = CL.pool.map((q, i) => i), best = Math.min(...idx.map(score));
+  return pick(idx.filter(i => score(i) === best));
+}
+function cqVitals(s) {
+  $('#cqSh').style.width = s.sh + '%'; $('#cqShT').textContent = `درع ${s.sh}`;
+  $('#cqHp').style.width = s.hp + '%'; $('#cqHpT').textContent = `صحة ${s.hp}`;
+}
+function openCQ() {
+  if (!CL || !CL.cur || $('#cls').hidden) return;
+  const c = CL.cur, s = CL.students[c.id];
+  if (c.qi < 0) { c.qi = pickQ(); c.opts = shuffle(CL.pool[c.qi].a.map((t, i) => ({ t, ok: i === 0 }))); persist(); }
+  const q = CL.pool[c.qi];
+  CV.phase = 'question'; CV.focus = c.id; updateCHud(); renderRoster();
+  $('#cqHead').className = 'qhead cqhead' + (c.reboot ? ' reboot' : '');
+  $('#cqTag').textContent = c.reboot ? 'شاحنة الإحياء · فرصة العودة' : roundName(CL.round);
+  $('#cqName').textContent = s.name; cqVitals(s);
+  $('#cqMeta').innerHTML = `<span>${esc(CL.lessonName)}</span>${q.d ? `<span>${['', 'سهل', 'متوسط', 'متقدم'][q.d]}</span>` : ''}<span>${c.reboot ? 'الإجابة الصحيحة تعيدها بـ 50 صحة' : `ضرر الخطأ ${dmgFor(CL.round)}`}</span>`;
+  $('#cqText').innerHTML = fmtQ(q.q);
+  const box = $('#cqOpts'), L = ['أ', 'ب', 'ج', 'د'];
+  box.innerHTML = '';
+  c.opts.forEach((o, i) => {
+    const b = document.createElement('button');
+    b.type = 'button'; b.className = 'opt';
+    b.innerHTML = `<span class="k">${L[i]}</span><span dir="auto">${fmtQ(o.t)}</span>`;
+    b.onclick = () => canswer(i);
+    box.appendChild(b);
+  });
+  $('#cqFb').hidden = true; $('#cqFoot').hidden = false;
+  $('#cqSkip').classList.remove('armed'); $('#cqSkip').textContent = 'غائبة؟ استبعادها';
+  CV.timer = CL.time ? { t: CL.time, max: CL.time } : null;
+  $('#cqTW').hidden = !CL.time; $('#cqTimer').style.width = '100%'; $('#cqTimer').classList.remove('low');
+  $('#cq').hidden = false; $('#cqCard').focus({ preventScroll: true });
+}
+function canswer(i) {
+  const c = CL && CL.cur; if (!c || c.done || !c.opts) return;
+  c.done = true; CV.timer = null;
+  const s = CL.students[c.id], q = CL.pool[c.qi], o = c.opts[i], ok = !!(o && o.ok);
+  CL.use[c.qi] = (CL.use[c.qi] || 0) + 1; CL.lastQ = c.qi;
+  s.total++; if (ok) s.correct++; else s.misses.push({ qi: c.qi, chosen: o ? o.t : 'انتهى الوقت' });
+  CL.log.push({ qi: c.qi, ok, sid: s.id, round: CL.round });
+  [...$('#cqOpts').children].forEach((b, j) => { b.disabled = true; if (c.opts[j].ok) b.classList.add('ok'); else if (j === i) b.classList.add('bad'); });
+  let title, line;
+  if (c.reboot) {
+    s.rebootUsed = true;
+    if (ok) {
+      s.alive = true; s.hp = 50; s.sh = 0; s.place = 0; s.back = true;
+      CL.outOrder = CL.outOrder.filter(x => x !== s.id);
+      title = 'عادت إلى المعركة!'; line = `${s.name} عادت عبر شاحنة الإحياء بـ 50 صحة.`;
+      cFeed(`${s.name} عادت إلى المعركة`, true); sfx.win();
+    } else { title = 'لم تنجح محاولة العودة'; line = `تبقى ${s.name} مع المشجعات حتى نهاية التقويم.`; sfx.bad(); }
+  } else if (ok) {
+    const g = Math.min(25, 100 - s.sh); s.sh += g;
+    title = 'إجابة صحيحة!'; line = g ? `فتحت ${s.name} صندوقًا: +${g} درع` : `درع ${s.name} ممتلئ بالكامل!`;
+    sfx.ok(); setTimeout(sfx.chest, 250);
+  } else {
+    const dmg = dmgFor(CL.round), a = Math.min(s.sh, dmg);
+    s.sh -= a; s.hp = Math.max(0, s.hp - (dmg - a)); sfx.hit();
+    if (s.hp <= 0) {
+      s.alive = false; CL.outOrder.push(s.id); s.place = aliveS().length + 1;
+      title = 'تم الإقصاء'; line = `أصابت العاصفة ${s.name} · المركز #${s.place}`;
+      cFeed(`أُقصيت ${s.name} · #${s.place}`); setTimeout(() => tone([300, 200, 120], .16, 'sawtooth', .06), 200);
+    } else {
+      title = o ? 'إجابة خاطئة' : 'انتهى الوقت';
+      line = `−${dmg}${a ? ` (امتص الدرع ${a})` : ''} · صحة ${s.name} الآن ${s.hp}`;
+    }
+  }
+  cqVitals(s);
+  const fb = $('#cqFb');
+  fb.className = 'fb ' + (ok ? 'good' : 'bad');
+  fb.innerHTML = `<h4>${esc(title)}</h4><p class="reward">${esc(line)}</p>` +
+    (!ok ? `<p>الإجابة الصحيحة: <b dir="auto">${fmtQ(q.a[0])}</b></p>` : '') + (q.ex ? `<p>${fmtQ(q.ex)}</p>` : '') +
+    '<button class="btn" id="cqGo" type="button">التالي</button>';
+  fb.hidden = false; $('#cqFoot').hidden = true;
+  $('#cqGo').onclick = cContinue; $('#cqGo').focus({ preventScroll: true });
+  persist(); renderRoster(); updateCHud();
+}
+function cContinue() {
+  if (!CL || !CL.cur || !CL.cur.done) return;
+  CL.cur = null; CV.focus = null; CV.phase = 'idle'; $('#cq').hidden = true;
+  persist(); renderRoster(); updateCHud();
+  if (aliveS().length <= 1) { setTimeout(finishClass, 500); return; }
+  if (!CL.queue.length) endRound();
+  else $('#cNext').focus({ preventScroll: true });
+}
+$('#cqSkip').onclick = e => {
+  const b = e.currentTarget, c = CL && CL.cur; if (!c || c.done) return;
+  if (!b.classList.contains('armed')) { b.classList.add('armed'); b.textContent = 'تأكيد الاستبعاد'; return; }
+  const s = CL.students[c.id]; s.absent = true; s.alive = false;
+  CL.queue = CL.queue.filter(x => x !== s.id); CL.outOrder = CL.outOrder.filter(x => x !== s.id);
+  CL.cur = null; CV.focus = null; CV.timer = null; CV.phase = 'idle'; $('#cq').hidden = true;
+  cFeed(`استُبعدت ${s.name} من هذا التقويم`);
+  persist(); renderRoster(); updateCHud();
+  if (aliveS().length <= 1) setTimeout(finishClass, 500);
+  else if (!CL.queue.length) endRound();
+};
+function endRound() {
+  if (CL.round >= CL.N) {
+    const n = aliveS().length;
+    $('#cdT').textContent = CL.round > CL.N ? 'انتهت الجولة الحاسمة' : 'انتهت الدائرة الأخيرة';
+    $('#cdP').textContent = `صمدت ${n} ${n <= 10 ? 'طالبات' : 'طالبة'} حتى الآن. في الجولة الحاسمة تُقصي أي إجابة خاطئة صاحبتها مهما كان درعها، أو يمكن إنهاء التقويم وتتويج المتبقيات معًا.`;
+    $('#cDecide').hidden = false; $('#cdMore').focus({ preventScroll: true });
+    return;
+  }
+  CL.round++; setupRound();
+}
+function setupRound() {
+  const al = aliveS().map(s => s.id);
+  const reb = CL.reboot && CL.round < CL.N ? CL.students.filter(s => !s.alive && !s.absent && !s.rebootUsed).map(s => s.id) : [];
+  CL.queue = shuffle(al.concat(reb)); persist();
+  CV.storm.tr = stormFor(CL.round);
+  aliveS().forEach(s => {
+    const p = CV.pos[s.id];
+    if (Math.hypot(p.x - CL.sc.x, p.y - CL.sc.y) > CV.storm.tr * .78) {
+      for (let k = 0; k < 20; k++) {
+        const a = rnd(0, 6.28), d = Math.sqrt(Math.random()) * CV.storm.tr * .7, x = CL.sc.x + Math.cos(a) * d, y = CL.sc.y + Math.sin(a) * d;
+        if (onIsland(x, y, 30)) { p.tx = x; p.ty = y; break; }
+      }
+    }
+  });
+  roundBanner(reb.length); renderRoster(); updateCHud();
+}
+$('#cdMore').onclick = () => { $('#cDecide').hidden = true; CL.round++; setupRound(); };
+$('#cdEnd').onclick = () => { $('#cDecide').hidden = true; finishClass(); };
+$('#cNext').onclick = cNext;
+$('#cListBtn').onclick = () => $('#cRoster').classList.toggle('open');
+$('#cFull').onclick = () => {
+  try { if (document.fullscreenElement) document.exitFullscreen(); else document.documentElement.requestFullscreen().catch(() => {}); } catch (e) {}
+};
+$('#cExit').onclick = e => {
+  const b = e.currentTarget;
+  if (!b.classList.contains('confirm')) { b.classList.add('confirm'); b.textContent = 'اضغط مجددًا للخروج (يُحفظ التقدم)'; setTimeout(() => { b.classList.remove('confirm'); b.textContent = 'خروج'; }, 3500); return; }
+  exitClass();
+};
+
+/* ---------- class canvas ---------- */
+function cframe(ts) {
+  const now = ts / 1000, dt = clast ? Math.min(.05, now - clast) : 0; clast = now;
+  if (!CL || $('#cls').hidden) return;
+  if (CV.phase === 'drop') {
+    const sh = CV.ship; sh.t += dt;
+    let done = sh.t > sh.dur;
+    CV.pos.forEach((p, i) => {
+      const d = p.drop; if (!d) return;
+      if (sh.t < d.t0) { done = false; return; }
+      if (d.t < 0) { const k = clamp(d.t0 / sh.dur, 0, 1); d.fx = lerp(sh.x0, sh.x1, k); d.fy = lerp(sh.y0, sh.y1, k); d.t = 0; }
+      d.t = Math.min(1, d.t + dt / 1.3);
+      if (d.t < 1) done = false;
+      else if (!d.landed) { d.landed = true; tone([520 + (i % 5) * 70], .05, 'triangle', .04); }
+    });
+    if (done) { CV.phase = 'idle'; CL.dropped = true; persist(); CV.pos.forEach(p => { p.drop = null; }); roundBanner(0); updateCHud(); $('#cNext').focus({ preventScroll: true }); }
+  }
+  CV.pos.forEach(p => {
+    const dx = p.tx - p.x, dy = p.ty - p.y, d = Math.hypot(dx, dy);
+    if (d > 1) { const st = Math.min(d, 170 * dt); p.x += dx / d * st; p.y += dy / d * st; p.face = Math.atan2(dy, dx); }
+  });
+  CV.storm.r = lerp(CV.storm.r, CV.storm.tr, Math.min(1, dt * 1.1));
+  const fit = cFit(), f = CV.focus != null ? CV.pos[CV.focus] : null;
+  const tx = f ? f.x : C, ty = f ? f.y : C, ts2 = f ? fit * 2.3 : fit, k = Math.min(1, dt * 3.5);
+  CV.cam.x = lerp(CV.cam.x, tx, k); CV.cam.y = lerp(CV.cam.y, ty, k); CV.cam.s = lerp(CV.cam.s, ts2, k);
+  if (CV.timer && CL.cur && !CL.cur.done && !$('#cq').hidden) {
+    CV.timer.t -= dt;
+    const r = Math.max(0, CV.timer.t / CV.timer.max), bar = $('#cqTimer');
+    bar.style.width = (r * 100) + '%'; bar.classList.toggle('low', r < .3);
+    if (CV.timer.t <= 0) canswer(-1);
+  }
+  crender(now);
+  craf = requestAnimationFrame(cframe);
+}
+function crender(now) {
+  const c = cctx, cam = CV.cam, pw = rosterShown() ? 324 : 0;
+  c.setTransform(dpr, 0, 0, dpr, 0, 0);
+  c.fillStyle = '#0F6CBD'; c.fillRect(0, 0, vw, vh);
+  c.save(); c.translate((vw - pw) / 2, vh / 2 + 36); c.scale(cam.s, cam.s); c.translate(-cam.x, -cam.y);
+  c.drawImage(groundCv, 0, 0);
+  for (const t of G.trees) {
+    c.fillStyle = 'rgba(0,0,0,.22)'; c.beginPath(); c.arc(t.x + 6, t.y + 8, t.r, 0, 7); c.fill();
+    c.fillStyle = '#2E8B3E'; c.beginPath(); c.arc(t.x, t.y, t.r, 0, 7); c.fill();
+    c.fillStyle = '#49AE4F'; c.beginPath(); c.arc(t.x - t.r * .25, t.y - t.r * .25, t.r * .6, 0, 7); c.fill();
+  }
+  const S = CV.storm;
+  c.beginPath(); c.rect(-3000, -3000, W + 6000, W + 6000); c.arc(CL.sc.x, CL.sc.y, S.r, 0, Math.PI * 2);
+  c.fillStyle = 'rgba(120,40,220,.36)'; c.fill('evenodd');
+  c.strokeStyle = 'rgba(200,150,255,.95)'; c.lineWidth = 6 / cam.s; c.beginPath(); c.arc(CL.sc.x, CL.sc.y, S.r, 0, 7); c.stroke();
+  const pulse = .5 + .5 * Math.sin(now * 5);
+  CL.students.forEach((s, i) => {
+    if (s.absent) return;
+    const p = CV.pos[i]; let x = p.x, y = p.y, glide = 0;
+    if (p.drop) { const d = p.drop; if (d.t < 0) return; const e = 1 - Math.pow(1 - d.t, 3); x = lerp(d.fx, p.x, e); y = lerp(d.fy, p.y, e); glide = 1 - d.t; }
+    if (!s.alive) {
+      c.globalAlpha = .6; c.fillStyle = '#5B6475'; c.beginPath(); c.arc(x, y, 12, 0, 7); c.fill();
+      c.strokeStyle = '#FF4D6A'; c.lineWidth = 3; c.beginPath(); c.moveTo(x - 7, y - 7); c.lineTo(x + 7, y + 7); c.moveTo(x + 7, y - 7); c.lineTo(x - 7, y + 7); c.stroke();
+      c.globalAlpha = 1; label(c, s.name, x, y - 24, cam.s, '#AAB3C5', 12); return;
+    }
+    if (CV.focus === i) { c.strokeStyle = `rgba(255,210,58,${.5 + .5 * pulse})`; c.lineWidth = 5; c.beginPath(); c.arc(x, y, 30 + 6 * pulse, 0, 7); c.stroke(); }
+    if (glide > 0) {
+      c.save(); c.translate(x, y); const sc = 1 + glide * 1.2; c.scale(sc, sc);
+      c.fillStyle = s.col; c.beginPath(); c.moveTo(-30, -24); c.quadraticCurveTo(0, -42, 30, -24); c.lineTo(0, -15); c.closePath(); c.fill();
+      c.restore();
+    }
+    drawUnit(c, x, y, p.face, s.col, '#1B2340', '#E8B48A', null);
+    if (!p.drop || p.drop.t >= .85) label(c, s.name, x, y - 30, cam.s, CV.focus === i ? '#FFD23A' : '#fff', CV.focus === i ? 17 : 14);
+  });
+  if (CV.phase === 'drop' && CV.ship && CV.ship.t < CV.ship.dur + .6) {
+    const sh = CV.ship, k = clamp(sh.t / sh.dur, 0, 1.2);
+    c.save(); c.translate(lerp(sh.x0, sh.x1, k), lerp(sh.y0, sh.y1, k)); c.rotate(Math.atan2(sh.y1 - sh.y0, sh.x1 - sh.x0));
+    c.fillStyle = '#2F80ED'; c.beginPath(); c.ellipse(0, 0, 90, 34, 0, 0, 7); c.fill();
+    c.fillStyle = '#FFD23A'; for (let i = -2; i <= 2; i++) { c.beginPath(); c.ellipse(i * 30, 0, 9, 33, 0, 0, 7); c.fill(); }
+    c.fillStyle = '#C4553D'; c.beginPath(); c.moveTo(-86, 0); c.lineTo(-112, -24); c.lineTo(-112, 24); c.closePath(); c.fill();
+    c.restore();
+  }
+  c.restore();
+}
+
+/* ---------- class results ---------- */
+function ranking() {
+  const winners = CL.students.filter(s => !s.absent && s.alive);
+  const out = CL.outOrder.slice().reverse().map(id => CL.students[id]).filter(s => !s.absent && !s.alive);
+  return winners.map(s => ({ s, place: 1 })).concat(out.map((s, i) => ({ s, place: winners.length + i + 1 })));
+}
+const pct = (a, b) => b ? Math.round(a / b * 100) : 0;
+function finishClass() {
+  if (!CL) return;
+  CL.done = true; CL.cur = null; persist();
+  cancelAnimationFrame(craf); clearTimeout(bannerT);
+  ['#cq', '#cDecide', '#roul'].forEach(s => $(s).hidden = true);
+  $('#cls').hidden = true;
+  renderEnd(); $('#cEnd').hidden = false; scrollTo(0, 0); sfx.win();
+}
+function renderEnd() {
+  const rows = ranking(), win = rows.filter(r => r.place === 1).map(r => r.s.name);
+  const tot = rows.reduce((a, r) => a + r.s.total, 0), cor = rows.reduce((a, r) => a + r.s.correct, 0);
+  $('#ceHero').className = 'res-hero';
+  $('#ceHero').innerHTML = `${CROWN}<p class="eyebrow">تاج النصر</p><div class="winners">${win.map(esc).join(' · ') || '—'}</div><p>${esc(CL.className)} · ${esc(CL.lessonName)}</p>`;
+  const top = rows.slice(0, 3), H = [130, 96, 72], colr = ['#FFD23A', '#C9D3E6', '#E3A367'];
+  const podOrder = [1, 0, 2].filter(i => top[i]);
+  $('#cePod').hidden = rows.length < 3 || win.length > 1;
+  $('#cePod').innerHTML = podOrder.map(i => `<div class="pod"><b>${esc(top[i].s.name)}</b><div style="height:${H[i]}px;background:${colr[i]}">${top[i].place}</div></div>`).join('');
+  $('#ceTiles').innerHTML = [[rows.length, 'طالبة شاركت'], [pct(cor, tot) + '%', 'دقة الفصل'], [CL.log.length, 'سؤالًا طُرح'], [rows.filter(r => r.s.back).length, 'عادت عبر الإحياء']]
+    .map(t => `<div class="tile"><b class="num">${t[0]}</b><span>${t[1]}</span></div>`).join('');
+  $('#ceTable').innerHTML = `<table><thead><tr><th>المركز</th><th>الطالبة</th><th>صحيحة</th><th>الدقة</th><th>النتيجة</th></tr></thead><tbody>${rows.map(r =>
+    `<tr><td>#${r.place}</td><td>${esc(r.s.name)}</td><td>${r.s.correct} / ${r.s.total}</td><td>${pct(r.s.correct, r.s.total)}%</td><td${r.place === 1 ? ' class="tag-win"' : ''}>${r.place === 1 ? 'تاج النصر' : 'أُقصيت'}${r.s.back ? ' · عادت مرة' : ''}</td></tr>`).join('')}</tbody></table>`;
+  const qs = {};
+  CL.log.forEach(l => { const o = qs[l.qi] || (qs[l.qi] = { n: 0, ok: 0 }); o.n++; if (l.ok) o.ok++; });
+  const hard = Object.entries(qs).map(([qi, o]) => ({ q: CL.pool[qi], ...o })).filter(x => x.ok < x.n).sort((a, b) => a.ok / a.n - b.ok / b.n || b.n - a.n).slice(0, 6);
+  $('#ceHard').innerHTML = hard.length ? hard.map(h => `<div class="rv"><div class="q" dir="auto">${fmtQ(h.q.q)}</div><div class="a"><span class="acc">إجابات صحيحة: ${h.ok} من ${h.n}</span><span class="yes">الصحيح: <bdi>${fmtQ(h.q.a[0])}</bdi></span></div>${h.q.ex ? `<p>${fmtQ(h.q.ex)}</p>` : ''}</div>`).join('')
+    : '<div class="perfect">لم يُخطئ الفصل في أي سؤال.</div>';
+  const miss = rows.filter(r => r.s.misses.length);
+  $('#ceMiss').innerHTML = miss.length ? miss.map(r => `<details class="rv"><summary>${esc(r.s.name)}<span>${r.s.misses.length} ${r.s.misses.length === 1 ? 'خطأ' : 'أخطاء'}</span></summary><ul>${r.s.misses.map(m => `<li><b dir="auto">${fmtQ(CL.pool[m.qi].q)}</b><br><span class="no">إجابتها: <bdi>${fmtQ(m.chosen)}</bdi></span> · <span class="yes">الصحيح: <bdi>${fmtQ(CL.pool[m.qi].a[0])}</bdi></span></li>`).join('')}</ul></details>`).join('')
+    : '<div class="perfect">لا توجد أخطاء.</div>';
+  $('#ceCsv').hidden = !dlApi; $('#ceMsg').textContent = ''; $('#ceRaw').hidden = true;
+}
+function resultsTable(sep) {
+  const cell = v => { const s = String(v); return sep === ',' && /[",\n]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s; };
+  const head = ['المركز', 'الطالبة', 'إجابات صحيحة', 'عدد الأسئلة', 'الدقة %', 'النتيجة'];
+  return [head].concat(ranking().map(r => [r.place, plain(r.s.name), r.s.correct, r.s.total, pct(r.s.correct, r.s.total), r.place === 1 ? 'تاج النصر' : 'أُقصيت']))
+    .map(row => row.map(cell).join(sep)).join('\n');
+}
+$('#ceCopy').onclick = () => {
+  const txt = `${CL.className} · ${CL.lessonName}\n` + resultsTable('\t'), msg = $('#ceMsg');
+  const fallback = () => { const t = $('#ceRaw'); t.value = txt; t.hidden = false; t.focus(); t.select(); msg.className = 'tstatus warn'; msg.textContent = 'النتائج محددة في المربع بالأسفل، انسخها يدويًا.'; };
+  try { navigator.clipboard.writeText(txt).then(() => { msg.className = 'tstatus okk'; msg.textContent = 'نُسخت النتائج. يمكن لصقها في Excel أو في رسالة.'; }, fallback); } catch (e) { fallback(); }
+};
+$('#ceCsv').onclick = () => {
+  if (!dlApi) return;
+  const msg = $('#ceMsg'), name = `تقويم ${CL.className} - ${CL.lessonName}.csv`.replace(/[\\/:*?"<>|]/g, '-');
+  dlApi.save({ filename: name, data: '﻿' + resultsTable(',') })
+    .then(() => { msg.className = 'tstatus okk'; msg.textContent = 'حُفظ الملف.'; })
+    .catch(() => { msg.className = 'tstatus warn'; msg.textContent = 'لم يُحفظ الملف. يمكن استخدام «نسخ النتائج» بدلًا منه.'; });
+};
+$('#ceAgain').onclick = () => { $('#cEnd').hidden = true; startClass(null); };
+$('#ceLobby').onclick = () => { $('#cEnd').hidden = true; $('#lobby').hidden = false; CL = null; renderLobby(); renderResume(); scrollTo(0, 0); };
+
+function classKeys(e) {
+  if (!$('#cEnd').hidden) return true;
+  if ($('#cls').hidden) return false;
+  if (e.target.matches('input,textarea')) return true;
+  const n = { Digit1: 0, Digit2: 1, Digit3: 2, Digit4: 3, Numpad1: 0, Numpad2: 1, Numpad3: 2, Numpad4: 3 }[e.code];
+  if (!$('#cq').hidden && CL && CL.cur) {
+    if (n !== undefined && !CL.cur.done) { e.preventDefault(); canswer(n); }
+    else if ((e.code === 'Space' || e.code === 'Enter') && CL.cur.done && !e.target.closest('button')) { e.preventDefault(); cContinue(); }
+    return true;
+  }
+  if ((e.code === 'Space' || e.code === 'Enter') && $('#cDecide').hidden && !e.target.closest('button')) { e.preventDefault(); cNext(); }
+  return true;
+}
+
 /* ================= WORLD ================= */
 const W = 2000, C = 1000, R = 800;
 const POI_DEF = [
@@ -892,8 +1615,8 @@ function islandPath(c, off, s = 1, ox = 0, oy = 0) {
 let G = null;
 const groundCv = document.createElement('canvas'), miniBase = document.createElement('canvas');
 
-function genWorld() {
-  SEED = rnd(0, 6.28);
+function genWorld(seed) {
+  SEED = seed == null ? rnd(0, 6.28) : seed;
   G.pois = POI_DEF.map(p => ({ n: p.n, x: C + Math.cos(p.a) * p.d, y: C + Math.sin(p.a) * p.d }));
   G.buildings = []; G.chests = []; G.trees = []; G.rocks = [];
   G.pois.forEach((p, i) => {
@@ -949,7 +1672,8 @@ function renderGround() {
 /* ================= MATCH ================= */
 const cv = $('#cv'), ctx = cv.getContext('2d');
 let vw = 0, vh = 0, dpr = 1;
-function resize() { dpr = Math.min(2, window.devicePixelRatio || 1); vw = innerWidth; vh = innerHeight; cv.width = vw * dpr; cv.height = vh * dpr; cv.style.width = vw + 'px'; cv.style.height = vh + 'px'; }
+function resize() { dpr = Math.min(2, window.devicePixelRatio || 1); vw = innerWidth; vh = innerHeight; cv.width = vw * dpr; cv.height = vh * dpr; cv.style.width = vw + 'px'; cv.style.height = vh + 'px';
+  const cc = document.getElementById('ccv'); if (cc) { cc.width = vw * dpr; cc.height = vh * dpr; cc.style.width = vw + 'px'; cc.style.height = vh + 'px'; } }
 addEventListener('resize', resize);
 const gameScale = () => clamp(Math.min(vw, vh) / 640, .62, 1.3);
 const fitScale = () => Math.min(vw, vh) / 2050;
@@ -1406,6 +2130,7 @@ function frame(ts) {
 
 /* ================= INPUT ================= */
 addEventListener('keydown', e => {
+  if (classKeys(e)) return;
   if (e.target.matches('input,textarea')) return;
   if (!$('#qModal').hidden && G && G.cur) {
     const n = { Digit1: 0, Digit2: 1, Digit3: 2, Digit4: 3, Numpad1: 0, Numpad2: 1, Numpad3: 2, Numpad4: 3 }[e.code];
@@ -1492,9 +2217,16 @@ $('#playBtn').onclick = startMatch;
 $('#againBtn').onclick = startMatch;
 $('#lobbyBtn').onclick = () => { $('#results').hidden = true; $('#lobby').hidden = false; renderLobby(); scrollTo(0, 0); };
 
+function teacherReady() {
+  $('#modes').hidden = !canTeach;
+  setMode(canTeach ? store.get('jazira.mode', 'class') : 'solo');
+  renderLobby();
+}
+setMode('solo');
 renderLobby();
 loadLessons();
 initCaps();
+initRosters();
 if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => drawAvatar($('#avatar'), SKINS[profile.skin], 220, 270));
 })();
 </script>
