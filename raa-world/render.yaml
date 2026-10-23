@@ -1,0 +1,23 @@
+# Render Blueprint: one Node web service + a persistent disk for the SQLite database.
+# A persistent disk requires a paid instance type (Starter or higher).
+services:
+  - type: web
+    name: raa-world
+    runtime: node
+    plan: starter
+    buildCommand: npm ci --include=dev && npm run build
+    startCommand: npm start
+    healthCheckPath: /api/health
+    disk:
+      name: raa-data
+      mountPath: /var/data
+      sizeGB: 1
+    envVars:
+      - key: NODE_VERSION
+        value: "22"
+      - key: NODE_ENV
+        value: production
+      - key: DATA_DIR
+        value: /var/data
+      - key: REQUIRE_ACTIVATION_CODE
+        value: "false"

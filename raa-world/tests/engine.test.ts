@@ -80,3 +80,20 @@ describe('samples & validation', () => {
     expect(issues.map((i) => i.section)).toContain('info');
   });
 });
+
+import { generateMaze, neighbours } from '../shared/maze.ts';
+
+describe('maze', () => {
+  it('builds a solvable maze with distinct checkpoints for any question count', () => {
+    for (const n of [3, 6, 12, 40, 100]) {
+      const m = generateMaze(n, createRng(n));
+      expect(m.checkpoints).toHaveLength(n);
+      expect(new Set(m.checkpoints).size).toBe(n);
+      expect(m.checkpoints[0]).toBeGreaterThan(0);
+      expect(m.checkpoints[n - 1]).toBeLessThan(m.path.length - 1);
+      for (let i = 1; i < m.path.length; i++) expect(neighbours(m, m.path[i - 1])).toContain(m.path[i]);
+      expect(m.path[0]).toBe(m.cols - 1);
+      expect(m.path[m.path.length - 1]).toBe((m.rows - 1) * m.cols);
+    }
+  });
+});
