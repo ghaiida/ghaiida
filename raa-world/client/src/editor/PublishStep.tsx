@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { copyText, formatDate, useFeedback } from '../ui/kit.tsx';
 import { Icon } from '../ui/Icon.tsx';
 import { shareUrl } from '../pages/Dashboard.tsx';
+import { LOCAL } from '../api.ts';
 import type { GameDoc, GameRecord } from '../../../shared/schema.ts';
 import type { Issue } from '../../../shared/validation.ts';
 import type { StepId } from './EditorPage.tsx';
@@ -44,7 +45,7 @@ export function PublishStep({
   const changed = record.status === 'changed' || (record.status === 'live' && saveState !== 'saved');
 
   useEffect(() => {
-    if (!everPublished) return;
+    if (!everPublished || LOCAL) return;
     import('qrcode')
       .then((QR) => QR.toDataURL(url, { margin: 1, width: 360, color: { dark: '#0E1B3D', light: '#FFFFFF' } }))
       .then(setQr)
@@ -120,7 +121,26 @@ export function PublishStep({
         </div>
       </section>
 
-      {everPublished && (
+      {everPublished && LOCAL && (
+        <section className="panel">
+          <h2 className="panel-title">جرّبي اللعبة كطالبة</h2>
+          <p className="muted">
+            في هذه النسخة التجريبية تُفتح اللعبة على الجهاز نفسه فقط. في النسخة المنشورة على الإنترنت تحصلين هنا على رابط ورمز QR تفتحهما الطالبات من أجهزتهن.
+          </p>
+          <div className="btn-row">
+            <Link className="btn primary lg" to={`/play/${record.id}`}>
+              <Icon name="play" /> افتحي اللعبة كما تراها الطالبة
+            </Link>
+            {doc.settings.recordResults && (
+              <Link className="btn outline lg" to={`/games/${record.id}/results`}>
+                <Icon name="chart" /> النتائج
+              </Link>
+            )}
+          </div>
+        </section>
+      )}
+
+      {everPublished && !LOCAL && (
         <section className="panel share">
           <div className="share-main">
             <h2 className="panel-title">رابط اللعبة</h2>

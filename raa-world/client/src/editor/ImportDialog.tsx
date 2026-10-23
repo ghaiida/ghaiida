@@ -1,6 +1,7 @@
 // Import questions from CSV / Excel: download template → upload → review & fix → add.
 import { useState } from 'react';
 import { Modal } from '../ui/kit.tsx';
+import { LOCAL } from '../api.ts';
 import { Icon } from '../ui/Icon.tsx';
 import { QuestionEditor } from './QuestionEditor.tsx';
 import { downloadBlob } from './QuestionsStep.tsx';
@@ -84,15 +85,23 @@ export function ImportDialog({ room, concepts, onClose, onImport }: { room: numb
         <div className="import-start">
           <ol className="import-steps">
             <li>
-              <b>نزّلي النموذج</b> واكتبي أسئلتكِ فيه دون تغيير أسماء الأعمدة.
-              <div className="btn-row">
+              {LOCAL ? (
+                <>
+                  <b>جهّزي ملف Excel أو CSV</b> صفّه الأول فيه هذه العناوين بالترتيب: {TEMPLATE_HEADERS.join('، ')}. (تنزيل النموذج الجاهز متاح في النسخة المنشورة على الإنترنت.)
+                </>
+              ) : (
+                <>
+                  <b>نزّلي النموذج</b> واكتبي أسئلتكِ فيه دون تغيير أسماء الأعمدة.
+                </>
+              )}
+              {!LOCAL && <div className="btn-row">
                 <button className="btn outline small" onClick={() => downloadXlsxTemplate().catch(() => setError('تعذّر تجهيز ملف Excel.'))}>
                   <Icon name="download" size={16} /> نموذج Excel (.xlsx)
                 </button>
                 <button className="btn ghost small" onClick={() => downloadBlob(new Blob([toCsv([TEMPLATE_HEADERS, ...TEMPLATE_EXAMPLE_ROWS])], { type: 'text/csv;charset=utf-8' }), 'نموذج أسئلة راء وورلد.csv')}>
                   <Icon name="download" size={16} /> نموذج CSV
                 </button>
-              </div>
+              </div>}
             </li>
             <li>
               <b>ارفعي الملف</b> بصيغة .xlsx أو .csv، وسنراجعه قبل إضافة أي سؤال.
@@ -108,7 +117,7 @@ export function ImportDialog({ room, concepts, onClose, onImport }: { room: numb
               <Icon name="warn" size={18} /> {error}
             </div>
           )}
-          <details className="columns-help">
+          <details className="columns-help" open={LOCAL}>
             <summary>
               <Icon name="info" size={16} /> طريقة تعبئة الأعمدة
             </summary>

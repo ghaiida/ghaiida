@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { api } from '../api.ts';
+import { api, LOCAL } from '../api.ts';
 import { useAuth } from '../auth.tsx';
 import { TopBar } from '../ui/TopBar.tsx';
 import { EmptyState, Modal, Spinner, copyText, formatDate, useFeedback } from '../ui/kit.tsx';
@@ -125,7 +125,7 @@ export function Dashboard() {
         <div className="page-head">
           <div>
             <h1>أهلًا {user?.name.split(' ')[0]}</h1>
-            <p className="muted">ألعابكِ محفوظة في حسابكِ، وتستطيعين فتحها من أي جهاز.</p>
+            <p className="muted">{LOCAL ? 'ألعابكِ محفوظة في متصفح هذا الجهاز.' : 'ألعابكِ محفوظة في حسابكِ، وتستطيعين فتحها من أي جهاز.'}</p>
           </div>
           <button className="btn primary lg" onClick={() => setCreating(true)}>
             <Icon name="plus" /> لعبة جديدة
@@ -174,7 +174,11 @@ export function Dashboard() {
                   <Link className="btn small primary" to={`/games/${g.id}/edit/info`}>
                     <Icon name="edit" size={16} /> تعديل
                   </Link>
-                  {g.status === 'live' || g.status === 'changed' ? (
+                  {LOCAL && (g.status === 'live' || g.status === 'changed') ? (
+                    <Link className="btn small ghost" to={`/play/${g.id}`}>
+                      <Icon name="play" size={16} /> العبي
+                    </Link>
+                  ) : g.status === 'live' || g.status === 'changed' ? (
                     <button className="btn small ghost" onClick={() => copyLink(g)}>
                       <Icon name="link" size={16} /> نسخ الرابط
                     </button>

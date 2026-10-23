@@ -1,7 +1,7 @@
 // Class results for one game: summary, hardest questions, concepts to review, attempts, CSV.
 import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
-import { api } from '../api.ts';
+import { api, LOCAL } from '../api.ts';
 import { TopBar } from '../ui/TopBar.tsx';
 import { EmptyState, Spinner, formatDuration, useFeedback } from '../ui/kit.tsx';
 import { Icon } from '../ui/Icon.tsx';
@@ -91,9 +91,9 @@ export default function ResultsPage() {
             </Link>
             {s && s.attemptCount > 0 && (
               <>
-                <a className="btn primary" href={`/api/games/${id}/results.csv`} download>
+                {!LOCAL && <a className="btn primary" href={`/api/games/${id}/results.csv`} download>
                   <Icon name="download" /> تصدير إلى Excel (CSV)
-                </a>
+                </a>}
                 <button className="btn ghost danger-text" onClick={clear}>
                   <Icon name="trash" /> حذف النتائج
                 </button>

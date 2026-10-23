@@ -4,3 +4,4 @@ data
 *.sqlite
 *.sqlite-*
 e2e/out
+dist-trial

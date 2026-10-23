@@ -1,5 +1,7 @@
 import { Link } from 'react-router-dom';
 import { useAuth } from '../auth.tsx';
+import { LOCAL } from '../api.ts';
+import { TrialNote } from '../ui/TopBar.tsx';
 import { Logo } from '../ui/kit.tsx';
 import { Icon, type IconName } from '../ui/Icon.tsx';
 import { TemplateArt } from '../ui/TemplateArt.tsx';
@@ -18,6 +20,7 @@ export function Landing() {
   const { user } = useAuth();
   return (
     <div className="landing">
+      {LOCAL && <TrialNote />}
       <header className="landing-top">
         <Logo />
         <nav>

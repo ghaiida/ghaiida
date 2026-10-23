@@ -1,3 +1,8 @@
+import { localAssetUrl, localRequest, LocalError } from './localApi.ts';
+
+// The single-file trial build runs without a server and keeps data in the browser.
+export const LOCAL = import.meta.env.VITE_LOCAL_DEMO === '1';
+
 // Thin fetch wrapper: JSON in/out, cookies for the teacher session, Arabic error messages.
 export class ApiError extends Error {
   constructor(
@@ -10,6 +15,14 @@ export class ApiError extends Error {
 }
 
 export async function api<T>(path: string, init: { method?: string; body?: unknown; raw?: Blob } = {}): Promise<T> {
+  if (LOCAL) {
+    try {
+      return (await localRequest(init.method ?? (init.body !== undefined || init.raw ? 'POST' : 'GET'), path, init.body, init.raw)) as T;
+    } catch (e) {
+      if (e instanceof LocalError) throw new ApiError(e.status, e.message, e.data);
+      throw new ApiError(0, 'حدث خطأ غير متوقع. حاولي مرة أخرى.');
+    }
+  }
   let res: Response;
   try {
     res = await fetch(`/api${path}`, {
@@ -32,4 +45,4 @@ export async function api<T>(path: string, init: { method?: string; body?: unkno
   return data as T;
 }
 
-export const assetUrl = (id: string | null | undefined) => (id ? `/api/assets/${id}` : '');
+export const assetUrl = (id: string | null | undefined) => (!id ? '' : LOCAL ? localAssetUrl(id) : `/api/assets/${id}`);

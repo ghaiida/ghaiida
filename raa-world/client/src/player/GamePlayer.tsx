@@ -3,6 +3,7 @@
 // how the adventure looks and in which order questions are asked.
 import { useCallback, useEffect, useMemo, useRef, useState, type CSSProperties } from 'react';
 import '../styles/player.css';
+import { Link } from 'react-router-dom';
 import { api, assetUrl } from '../api.ts';
 import { Icon, StarShape } from '../ui/Icon.tsx';
 import { formatDuration } from '../ui/kit.tsx';
@@ -163,9 +164,9 @@ export function GamePlayer({ doc, mode, gameId, version, onExit }: { doc: GameDo
       {mode === 'demo' && (
         <div className="preview-banner demo">
           <Icon name="sparkles" size={16} /> لعبة تجريبية من {BRAND.product}. أنشئي حسابًا لتصنعي لعبة بأسئلتكِ.
-          <a className="pbtn tiny" href="/register">
+          <Link className="pbtn tiny" to="/register">
             أنشئي حسابًا
-          </a>
+          </Link>
         </div>
       )}
 

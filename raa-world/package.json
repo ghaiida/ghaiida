@@ -10,6 +10,7 @@
   "scripts": {
     "dev": "node scripts/dev.mjs",
     "build": "vite build && node scripts/build-server.mjs",
+    "build:trial": "node scripts/build-trial.mjs",
     "start": "node --disable-warning=ExperimentalWarning dist/server.mjs",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "test": "vitest run",

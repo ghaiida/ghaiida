@@ -1,6 +1,7 @@
 import { StrictMode, lazy, Suspense } from 'react';
 import { createRoot } from 'react-dom/client';
-import { Outlet, RouterProvider, createBrowserRouter } from 'react-router-dom';
+import { Outlet, RouterProvider, createBrowserRouter, createMemoryRouter } from 'react-router-dom';
+import { LOCAL } from './api.ts';
 import '@fontsource/tajawal/arabic-400.css';
 import '@fontsource/tajawal/arabic-500.css';
 import '@fontsource/tajawal/arabic-700.css';
@@ -35,7 +36,7 @@ function Root() {
   );
 }
 
-const router = createBrowserRouter([
+const routes = [
   {
     element: <Root />,
     children: [
@@ -50,7 +51,9 @@ const router = createBrowserRouter([
       { path: '*', element: <NotFound /> },
     ],
   },
-]);
+];
+// The trial build runs inside a host page whose address bar it cannot use, so it routes in memory.
+const router = LOCAL ? createMemoryRouter(routes) : createBrowserRouter(routes);
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>

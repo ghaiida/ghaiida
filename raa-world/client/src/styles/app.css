@@ -220,6 +220,9 @@ select.input { cursor: pointer; }
 .status-pill.changed { background: var(--amber-t); color: var(--amber-d); }
 .status-pill.paused { background: var(--rose-t); color: #a32336; }
 
+.trial-note { display: flex; gap: 8px; align-items: center; justify-content: center; margin: 0; padding: 8px max(16px, env(safe-area-inset-left, 0px)); background: var(--amber-t); color: #6b4300; font-size: 0.86rem; font-weight: 700; text-align: center; }
+.trial-note svg { flex: none; }
+
 /* ---------- Landing ---------- */
 .landing { background: radial-gradient(1200px 500px at 85% -10%, var(--emerald-t), transparent 60%), radial-gradient(900px 500px at 0% 10%, var(--royal-t), transparent 60%), var(--bg); }
 .landing-top { display: flex; justify-content: space-between; align-items: center; gap: 12px; width: min(1180px, 100% - 32px); margin: 0 auto; padding: 18px 0; }

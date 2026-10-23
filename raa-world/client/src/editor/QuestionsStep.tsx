@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react';
 import { useFeedback } from '../ui/kit.tsx';
 import { Icon } from '../ui/Icon.tsx';
-import { assetUrl } from '../api.ts';
+import { assetUrl, LOCAL } from '../api.ts';
 import { QuestionEditor, emptyQuestion } from './QuestionEditor.tsx';
 import { ImportDialog } from './ImportDialog.tsx';
 import { QUESTION_TYPE_LABELS } from '../../../shared/catalog.ts';
@@ -71,7 +71,7 @@ export function QuestionsStep({ doc, update }: StepProps) {
           <button className="btn outline" onClick={() => setImporting(true)} disabled={qs.length >= 100}>
             <Icon name="upload" /> استيراد من Excel أو CSV
           </button>
-          {qs.length > 0 && (
+          {qs.length > 0 && !LOCAL && (
             <button
               className="btn ghost"
               onClick={() => {

@@ -2,7 +2,7 @@
 // Publishing copies the saved draft to the version students play.
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useBlocker, useNavigate, useParams } from 'react-router-dom';
-import { api, ApiError } from '../api.ts';
+import { api, ApiError, LOCAL } from '../api.ts';
 import { TopBar } from '../ui/TopBar.tsx';
 import { Spinner, useFeedback } from '../ui/kit.tsx';
 import { Icon, type IconName } from '../ui/Icon.tsx';
@@ -316,7 +316,7 @@ function SaveIndicator({ state, error, onRetry, onReload }: { state: SaveState; 
         </>
       ) : (
         <>
-          <Icon name="check" size={16} /> المسودة محفوظة في حسابكِ
+          <Icon name="check" size={16} /> {LOCAL ? 'المسودة محفوظة على هذا الجهاز' : 'المسودة محفوظة في حسابكِ'}
         </>
       )}
     </div>
