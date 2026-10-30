@@ -1,0 +1,280 @@
+<title>حقيبة درس اختيار الملابس</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=El+Messiri:wght@500;600;700&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap">
+<style>
+/* Layout: a fashion-catalogue lookbook — plum hero on a clothing rack, then sections marked by hang-tags, slide previews hung in a gallery */
+:root {
+  --bg: #FFFFFF;
+  --surface: #FBF1F5;
+  --surface-2: #F3EAF7;
+  --ink: #2B1B33;
+  --muted: #6B5876;
+  --line: #EADCEF;
+  --plum: #5B2A6E;
+  --plum-deep: #45204F;
+  --on-plum: #FFFFFF;
+  --on-plum-muted: #E7D3EE;
+  --rose: #C9476B;
+  --saffron: #F2A93B;
+  --teal: #20877B;
+  --tag-hole: #FFFFFF;
+  --font-display: "El Messiri", "Noto Naskh Arabic", "Traditional Arabic", serif;
+  --font-body: "IBM Plex Sans Arabic", "Noto Sans Arabic", "Segoe UI", Tahoma, sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #17111B; --surface: #221828; --surface-2: #2A1E31; --ink: #F3EAF6; --muted: #BCA9C6; --line: #3A2B42;
+    --plum: #4A2259; --plum-deep: #3A1A46; --on-plum: #FFFFFF; --on-plum-muted: #E2CDEA;
+    --rose: #F07D9C; --saffron: #F5B85A; --teal: #4FC0B1; --tag-hole: #17111B; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #17111B; --surface: #221828; --surface-2: #2A1E31; --ink: #F3EAF6; --muted: #BCA9C6; --line: #3A2B42;
+  --plum: #4A2259; --plum-deep: #3A1A46; --on-plum: #FFFFFF; --on-plum-muted: #E2CDEA;
+  --rose: #F07D9C; --saffron: #F5B85A; --teal: #4FC0B1; --tag-hole: #17111B; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--ink); font-family: var(--font-body); font-size: 17px; line-height: 1.75; direction: rtl; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+.wrap { max-width: 1080px; margin-inline: auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+h1, h2, h3 { font-family: var(--font-display); text-wrap: balance; margin: 0; line-height: 1.3; }
+h2 { font-size: clamp(1.6rem, 3.4vw, 2.2rem); color: var(--plum); }
+:root:not([data-theme="light"]) h2 { color: var(--ink); }
+:root[data-theme="light"] h2 { color: var(--plum); }
+@media (prefers-color-scheme: light) { :root:not([data-theme="dark"]) h2 { color: var(--plum); } }
+p { margin: 0; }
+
+/* hang-tag motif */
+.tag { display: inline-flex; align-items: center; gap: .55em; background: var(--rose); color: #fff; font-weight: 700; font-size: .85rem; letter-spacing: .02em; padding: .3em 1.1em .3em .9em; border-radius: 999px; }
+.tag::before { content: ""; width: .55em; height: .55em; border-radius: 50%; background: var(--tag-hole); }
+.tag.teal { background: var(--teal); }
+.tag.saffron { background: var(--saffron); color: #2B1B33; }
+.tag.plum { background: var(--plum); }
+
+/* hero */
+.hero { background: var(--plum); color: var(--on-plum); }
+.hero .wrap { display: grid; grid-template-columns: 1.1fr .9fr; gap: 32px; align-items: center; padding-block: 56px 48px; }
+.hero h1 { font-size: clamp(2.6rem, 7vw, 4.6rem); color: var(--on-plum); margin-block: 14px 10px; }
+.hero .lead { color: var(--on-plum-muted); font-size: 1.12rem; max-width: 34em; }
+.hero .subject { color: var(--saffron); font-weight: 700; font-size: 1rem; }
+.hero .tag { background: var(--saffron); color: #2B1B33; }
+.hero .tag::before { background: var(--plum); }
+.hero img { width: 100%; max-width: 100%; height: auto; display: block; }
+.facts { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; margin-top: 28px; }
+.fact { background: var(--plum-deep); border-radius: 14px; padding: 14px 12px; text-align: center; }
+.fact b { display: block; font-family: var(--font-display); font-size: 2rem; color: var(--saffron); line-height: 1.2; font-variant-numeric: tabular-nums; }
+.fact span { font-size: .88rem; color: var(--on-plum-muted); }
+
+section { padding-block: 56px 8px; }
+.sec-head { display: grid; gap: 10px; margin-bottom: 26px; max-width: 46em; }
+.sec-head p { color: var(--muted); }
+.sec-head .tag { justify-self: start; }
+
+/* gallery */
+.gallery { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 22px; }
+.shot { margin: 0; min-width: 0; }
+.frame { position: relative; border-radius: 12px; overflow: hidden; border: 1px solid var(--line); box-shadow: 0 6px 18px rgba(60, 20, 70, .10); }
+.frame img { display: block; width: 100%; height: auto; }
+.frame .wm { position: absolute; top: 10px; left: 10px; background: rgba(43, 27, 51, .72); color: #fff; font-size: .72rem; font-weight: 700; padding: 2px 10px; border-radius: 999px; }
+.shot figcaption { padding-top: 10px; display: grid; gap: 4px; }
+.shot .stage { font-size: .8rem; font-weight: 700; color: var(--rose); }
+.shot .cap { font-size: .95rem; color: var(--ink); }
+
+/* journey */
+.bar { display: flex; border-radius: 12px; overflow: hidden; height: 54px; margin-bottom: 18px; }
+.bar div { display: grid; place-items: center; color: #fff; font-weight: 700; font-variant-numeric: tabular-nums; font-size: .95rem; min-width: 0; }
+.steps { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+.step { background: var(--surface); border-radius: 14px; padding: 16px 18px; display: grid; gap: 6px; align-content: start; min-width: 0; }
+.step header { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
+.step h3 { font-size: 1.2rem; color: var(--ink); }
+.step .min { font-weight: 700; color: var(--teal); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.step p { font-size: .93rem; color: var(--muted); }
+.dot { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-left: 6px; }
+
+/* print list */
+.print-grid { display: grid; grid-template-columns: 1.35fr .65fr; gap: 28px; align-items: start; }
+.table-box { overflow-x: auto; min-width: 0; }
+table { width: 100%; border-collapse: collapse; font-size: .95rem; }
+th { text-align: right; font-weight: 700; color: var(--muted); font-size: .82rem; letter-spacing: .02em; padding: 8px 10px; border-bottom: 2px solid var(--line); }
+td { padding: 11px 10px; border-bottom: 1px solid var(--line); vertical-align: top; }
+td.pg { font-weight: 700; color: var(--plum); font-variant-numeric: tabular-nums; white-space: nowrap; }
+:root[data-theme="dark"] td.pg { color: var(--rose); }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) td.pg { color: var(--rose); } }
+td.qty { color: var(--teal); font-weight: 600; white-space: nowrap; }
+.paper { display: grid; gap: 14px; }
+.paper .frame { box-shadow: 0 4px 14px rgba(60, 20, 70, .12); }
+
+/* value */
+.values { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+.value { display: grid; grid-template-columns: 52px 1fr; gap: 14px; align-items: start; padding: 18px; border-radius: 14px; border: 1px solid var(--line); min-width: 0; }
+.value svg { width: 52px; height: 52px; }
+.value h3 { font-size: 1.15rem; color: var(--ink); margin-bottom: 4px; }
+.value p { font-size: .94rem; color: var(--muted); }
+
+/* package + custom */
+.duo { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; }
+.panel { background: var(--surface); border-radius: 18px; padding: 24px; min-width: 0; }
+.panel.alt { background: var(--surface-2); }
+.panel h3 { font-size: 1.4rem; margin-bottom: 12px; color: var(--ink); }
+.panel ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; }
+.panel li { display: grid; grid-template-columns: 22px 1fr; gap: 10px; }
+.panel li::before { content: ""; width: 12px; height: 12px; margin-top: .55em; border-radius: 50%; background: var(--teal); }
+.panel.alt li::before { background: var(--rose); }
+.panel li b { color: var(--ink); }
+.panel li span { color: var(--muted); font-size: .94rem; }
+
+.note { margin-top: 22px; border-radius: 14px; padding: 16px 20px; background: var(--surface); color: var(--muted); font-size: .93rem; }
+.note b { color: var(--ink); }
+
+.closing { background: var(--plum); color: var(--on-plum); margin-top: 56px; }
+.closing .wrap { padding-block: 44px; display: grid; gap: 10px; text-align: center; justify-items: center; }
+.closing h2 { color: var(--on-plum) !important; }
+.closing p { color: var(--on-plum-muted); max-width: 40em; }
+
+@media (max-width: 860px) {
+  .hero .wrap { grid-template-columns: 1fr; padding-block: 40px 36px; }
+  .hero .art { order: -1; max-width: 520px; }
+  .gallery, .steps { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .print-grid, .duo, .values { grid-template-columns: 1fr; }
+  .paper { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+@media (max-width: 520px) {
+  body { font-size: 16px; }
+  .facts { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .gallery, .steps { grid-template-columns: 1fr; }
+  .bar { height: 44px; font-size: .8rem; }
+  .bar div { font-size: .78rem; }
+}
+@media print {
+  @page { size: A4; margin: 10mm; }
+  body { font-size: 12.5pt; }
+  .wrap { max-width: none; }
+  .hero .wrap { grid-template-columns: 1.1fr .9fr; padding-block: 28px; }
+  .gallery { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .steps { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .print-grid { grid-template-columns: 1fr; }
+  .values, .duo { grid-template-columns: 1fr 1fr; }
+  .paper { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .hero .art { order: 0; }
+  .facts { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .fact b { font-size: 1.6rem; }
+  .fact span { font-size: .75rem; }
+  section { padding-block: 22px 0; }
+  .shot, .step, .value, .panel, tr, .sec-head { break-inside: avoid; }
+  .pb { break-before: page; }
+  .closing { margin-top: 24px; }
+}
+</style>
+
+<div dir="rtl">
+<header class="hero">
+  <div class="wrap">
+    <div>
+      <span class="tag">حقيبة درس جاهزة</span>
+      <h1>اختيار الملابس</h1>
+      <p class="subject">المهارات الحياتية والأسرية • الصف السادس الابتدائي • الوحدة: ملبسي</p>
+      <p class="lead" style="margin-top:10px">عرض تفاعلي ومطبوعات كاملة لحصة نموذجية مدتها ٤٥ دقيقة، صُممت لتُظهر أثر التعلم على الطالبات أمام المقوِّمة الخارجية: الطالبة تكتشف وتقرر وتبرّر، والمعلمة تيسّر وتقيس.</p>
+      <div class="facts">
+        <div class="fact"><b>٤٥</b><span>دقيقة مخططة</span></div>
+        <div class="fact"><b>٢٦</b><span>شريحة تعليمية</span></div>
+        <div class="fact"><b>٩</b><span>شرائح تغذية راجعة</span></div>
+        <div class="fact"><b>١١</b><span>صفحة مطبوعات</span></div>
+      </div>
+    </div>
+    <div class="art"><img src="{{rack}}" alt="رف ملابس عليه معطف وفساتين محتشمة وعباءة"></div>
+  </div>
+</header>
+
+<main>
+<section>
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="tag">ماذا تشاهدين في العرض</span>
+      <h2>كل شريحة لها دور في الحصة</h2>
+      <p>تصميم موحّد بألوان مبهجة وراقية، ورسوم ملابس محتشمة، ونصوص مختصرة. على كل شريحة بطاقة تُظهر المرحلة وزمنها ورمز الهدف الذي تخدمه، وتحتها ملاحظات المعلمة كاملة.</p>
+    </div>
+    <div class="gallery">
+      {{gallery}}
+    </div>
+  </div>
+</section>
+
+<section class="pb">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="tag teal">رحلة الحصة</span>
+      <h2>تسع محطات في ٤٥ دقيقة</h2>
+      <p>تسلسل متكامل من التهيئة إلى بطاقة الخروج، والزمن موزّع بحيث يأخذ بناء التعلم والتطبيق النصيب الأكبر.</p>
+    </div>
+    <div class="bar" role="img" aria-label="توزيع زمن الحصة على المراحل">{{bar}}</div>
+    <div class="steps">{{steps}}</div>
+  </div>
+</section>
+
+<section class="pb">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="tag saffron">ماذا تطبعين</span>
+      <h2>مطبوعات جاهزة على ورق A4</h2>
+      <p>ملف واحد من ١١ صفحة يضم كل ما توزعينه على الطالبات وما تحتاجينه لرصد تعلمهن.</p>
+    </div>
+    <div class="print-grid">
+      <div class="table-box">
+        <table>
+          <thead><tr><th>الصفحة</th><th>المحتوى</th><th>الكمية</th></tr></thead>
+          <tbody>{{printrows}}</tbody>
+        </table>
+      </div>
+      <div class="paper">{{paper}}</div>
+    </div>
+  </div>
+</section>
+
+<section class="pb">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="tag plum">لماذا تفيدك</span>
+      <h2>ما تبحث عنه المقوِّمة الخارجية… ظاهر في الحصة</h2>
+    </div>
+    <div class="values">{{values}}</div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="duo">
+      <div class="panel">
+        <span class="tag teal">ما يصلك</span>
+        <h3 style="margin-top:12px">محتويات الحقيبة</h3>
+        <ul>
+          <li><div><b>عرض PowerPoint قابل للتعديل بالكامل</b><br><span>٢٦ شريحة مع ملاحظات المعلمة تحت كل شريحة: الزمن، وما تقولينه، وخطوات التنفيذ، ودورك ودور الطالبة، والإجابات المتوقعة.</span></div></li>
+          <li><div><b>٣ أسئلة تفاعلية بتغذية راجعة فورية</b><br><span>تضغطين على إجابة الطالبات فتظهر شريحة تشرح الصواب أو تعطي تلميحًا، دون أي برنامج إضافي أو إنترنت.</span></div></li>
+          <li><div><b>ملف المطبوعات بصيغتي PDF وWord</b><br><span>بطاقات وأوراق عمل وبطاقات خروج وأدوات رصد، جاهزة للطباعة.</span></div></li>
+          <li><div><b>ملحق للمقوِّمة</b><br><span>مصفوفة المواءمة بين الأهداف والأنشطة والتقويم، وخطة الزمن، وأدوار المعلمة والطالبة.</span></div></li>
+        </ul>
+      </div>
+      <div class="panel alt">
+        <span class="tag">حسب طلبك</span>
+        <h3 style="margin-top:12px">تعديلات متاحة</h3>
+        <ul>
+          <li><div><b>اسم المعلمة والمدرسة</b><br><span>على شريحة الغلاف وعلى المطبوعات.</span></div></li>
+          <li><div><b>صور واقعية بدل الرسوم</b><br><span>استبدال الرسوم بصور ملابس ومواقف حقيقية تختارينها.</span></div></li>
+          <li><div><b>مطابقة طبعة كتابك</b><br><span>أرقام الصفحات وصياغة الأهداف كما في دليلك المعتمد.</span></div></li>
+          <li><div><b>زمن الحصة وعدد المجموعات</b><br><span>مثل حصة ٤٠ دقيقة، أو ٤ مجموعات بدل ٥.</span></div></li>
+          <li><div><b>ألوان وهوية مدرستك</b><br><span>تغيير الألوان والخطوط في العرض والمطبوعات.</span></div></li>
+        </ul>
+      </div>
+    </div>
+    <p class="note"><b>عن المحتوى:</b> الحقيبة مبنية على المعايير السبعة لدرس «اختيار الملابس» في كتاب الطالب: مواصفات اللباس الشرعي، والعادات والتقاليد، والموسم، والعمر، ولون البشرة، والقوام، والمناسبة. ويُستحسن مطابقة ترتيب المعايير وأرقام الصفحات مع طبعتك قبل الحصة.</p>
+  </div>
+</section>
+</main>
+
+<footer class="closing">
+  <div class="wrap">
+    <h2>حصة ممتعة… وتعلّم تراه المقوِّمة بعينها</h2>
+    <p>للطلب أو لطلب تعديل، تواصلي مع من أرسل إليكِ هذا الملف التعريفي.</p>
+  </div>
+</footer>
+</div>
