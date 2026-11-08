@@ -1,0 +1,502 @@
+<title>خزانة المستشارة</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=El+Messiri:wght@500;600;700&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap">
+<style>
+/* Layout: one classroom-sized game board, a wooden-free plum wardrobe of seven drawers under a swinging clothing tag; committed to a single light look for projector use */
+:root {
+  --bg: #FDF6F9;
+  --panel: #FFFFFF;
+  --ink: #2B1B33;
+  --muted: #6B5876;
+  --line: #EADCEF;
+  --plum: #5B2A6E;
+  --plum-deep: #45204F;
+  --rose: #C9476B;
+  --saffron: #F2A93B;
+  --teal: #1F8A7D;
+  --good: #1F8A7D;
+  --bad: #C2413B;
+  --font-display: "El Messiri", "Noto Naskh Arabic", "Traditional Arabic", serif;
+  --font-body: "IBM Plex Sans Arabic", "Noto Sans Arabic", "Segoe UI", Tahoma, sans-serif;
+}
+* { box-sizing: border-box; }
+html, body { height: 100%; }
+body { background: var(--bg); color: var(--ink); font-family: var(--font-body); font-size: 17px; line-height: 1.6; direction: rtl; }
+button { font: inherit; color: inherit; cursor: pointer; }
+button:focus-visible, input:focus-visible { outline: 3px solid var(--saffron); outline-offset: 2px; }
+.app { max-width: 1060px; margin-inline: auto; min-height: 100%; display: flex; flex-direction: column; gap: 18px; padding-block: 16px 24px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+h1, h2, h3 { font-family: var(--font-display); margin: 0; line-height: 1.25; text-wrap: balance; }
+
+/* top bar */
+.bar { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.brand { display: flex; align-items: center; gap: 10px; min-width: 0; }
+.brand h1 { font-size: 1.5rem; color: var(--plum); white-space: nowrap; }
+.ribbon { background: var(--saffron); color: var(--ink); font-size: .78rem; font-weight: 700; padding: 2px 12px; border-radius: 999px; white-space: nowrap; }
+.iconbtn { width: 44px; height: 44px; border-radius: 50%; border: 1px solid var(--line); background: var(--panel); display: grid; place-items: center; font-size: 1.3rem; color: var(--plum); flex: none; }
+
+/* start */
+.start { display: grid; grid-template-columns: 1.05fr .95fr; gap: 28px; align-items: center; background: var(--plum); color: #fff; border-radius: 24px; padding: 32px; }
+.start h2 { font-size: clamp(2.2rem, 6vw, 3.6rem); color: #fff; }
+.start .lead { color: #E7D3EE; margin-top: 8px; font-size: 1.05rem; }
+.start img { width: 100%; height: auto; display: block; }
+.how { list-style: none; padding: 0; margin: 18px 0 0; display: grid; gap: 10px; }
+.how li { display: grid; grid-template-columns: 34px 1fr; gap: 10px; align-items: start; color: #F6ECF9; }
+.how b { width: 30px; height: 30px; border-radius: 50%; background: var(--saffron); color: var(--ink); display: grid; place-items: center; font-family: var(--font-display); }
+.modes { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 20px; }
+.mode { border: 2px solid rgba(255,255,255,.25); background: var(--plum-deep); border-radius: 16px; padding: 12px; text-align: center; display: grid; gap: 4px; justify-items: center; color: #fff; }
+.mode .ic { font-size: 1.5rem; color: var(--saffron); }
+.mode small { color: #E7D3EE; font-size: .82rem; }
+.mode[aria-pressed="true"] { border-color: var(--saffron); background: #6E3784; }
+.teams { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px; }
+.teams label { display: grid; gap: 4px; font-size: .82rem; color: #E7D3EE; }
+.teams input { border-radius: 10px; border: 0; padding: 10px 12px; font: inherit; background: #fff; color: var(--ink); min-width: 0; }
+.cta { margin-top: 18px; width: 100%; border: 0; border-radius: 16px; background: var(--saffron); color: var(--ink); font-family: var(--font-display); font-size: 1.4rem; font-weight: 700; padding: 14px; }
+.cta:hover { filter: brightness(1.05); }
+
+/* hud */
+.hud { display: grid; grid-template-columns: auto 1fr auto; gap: 14px; align-items: center; }
+.pill { background: var(--panel); border: 1px solid var(--line); border-radius: 999px; padding: 6px 14px; font-weight: 700; font-variant-numeric: tabular-nums; white-space: nowrap; display: inline-flex; gap: 6px; align-items: center; }
+.timer { height: 12px; background: var(--line); border-radius: 999px; overflow: hidden; }
+.timer i { display: block; height: 100%; width: 100%; background: var(--teal); border-radius: 999px; transform-origin: right; }
+.timer.low i { background: var(--rose); }
+.scores { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; }
+.score { border-radius: 14px; padding: 6px 14px; font-weight: 700; display: flex; gap: 8px; align-items: center; background: var(--panel); border: 2px solid var(--line); font-variant-numeric: tabular-nums; }
+.score.a { --c: var(--rose); } .score.b { --c: var(--teal); } .score.solo { --c: var(--plum); }
+.score .n { color: var(--c); font-size: 1.25rem; font-family: var(--font-display); }
+.score.turn { border-color: var(--c); box-shadow: 0 0 0 3px color-mix(in srgb, var(--c) 22%, transparent); }
+.streak { color: var(--saffron); }
+
+/* stage */
+.stage { display: grid; justify-items: center; gap: 10px; }
+.turnline { font-weight: 700; color: var(--muted); min-height: 1.6em; }
+.tag { position: relative; background: var(--panel); border: 2px dashed #D9C6E0; border-radius: 22px; padding: 22px 36px 22px 30px; min-width: min(420px, 100%); max-width: 100%; text-align: center; box-shadow: 0 10px 24px rgba(70, 25, 85, .12); transform-origin: 50% -40px; }
+.tag::before { content: ""; position: absolute; top: 50%; right: 14px; width: 12px; height: 12px; margin-top: -6px; border-radius: 50%; background: var(--bg); border: 2px solid #D9C6E0; }
+.tag .kind { font-size: .82rem; font-weight: 700; color: var(--rose); }
+.tag .term { font-family: var(--font-display); font-size: clamp(1.9rem, 6vw, 3rem); color: var(--plum); line-height: 1.3; }
+.tag .q { font-family: var(--font-display); font-size: clamp(1.3rem, 3.6vw, 1.9rem); color: var(--plum); }
+.tag.gold { border-color: var(--saffron); border-style: solid; background: #FFF8EA; }
+.tag.gold .kind { color: #A86A07; }
+.swing { animation: swing .7s ease-out; }
+@keyframes swing { 0% { transform: rotate(-7deg) translateY(-12px); opacity: .2; } 55% { transform: rotate(3deg); opacity: 1; } 100% { transform: rotate(0); } }
+
+/* wardrobe */
+.wardrobe { background: var(--plum); border-radius: 22px; padding: 14px; display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; }
+.drawer { flex: 0 1 calc(25% - 8px); min-width: 0; position: relative; border: 0; border-radius: 14px; background: #6E3784; color: #fff; padding: 14px 10px 12px; display: grid; justify-items: center; gap: 6px; min-height: 104px; transition: transform .12s ease, background .2s; }
+.drawer::after { content: ""; position: absolute; bottom: 10px; width: 34px; height: 5px; border-radius: 999px; background: rgba(255,255,255,.35); }
+.drawer .ic { font-size: 1.8rem; color: var(--saffron); line-height: 1; }
+.drawer span { font-weight: 700; font-size: .98rem; line-height: 1.35; padding-bottom: 10px; min-width: 0; }
+.drawer:hover:not(:disabled) { transform: translateY(-3px); background: #7C4194; }
+.drawer:disabled { cursor: default; }
+.drawer.right { background: var(--good); }
+.drawer.wrong { background: var(--bad); }
+.drawer.dim { opacity: .45; }
+
+/* mcq */
+.opts { display: grid; gap: 10px; width: min(640px, 100%); }
+.opt { border: 2px solid var(--line); background: var(--panel); border-radius: 16px; padding: 14px 18px; text-align: right; font-weight: 600; font-size: 1.05rem; display: flex; gap: 12px; align-items: center; }
+.opt b { flex: none; width: 34px; height: 34px; border-radius: 50%; background: var(--plum); color: #fff; display: grid; place-items: center; font-family: var(--font-display); }
+.opt:hover:not(:disabled) { border-color: var(--plum); }
+.opt.right { border-color: var(--good); background: #E6F4F1; }
+.opt.right b { background: var(--good); }
+.opt.wrong { border-color: var(--bad); background: #FBE9E8; }
+.opt.wrong b { background: var(--bad); }
+.opt:disabled { cursor: default; }
+
+/* feedback */
+.feedback { display: flex; gap: 14px; align-items: center; justify-content: space-between; border-radius: 18px; padding: 14px 18px; background: var(--panel); border: 2px solid var(--line); }
+.feedback.ok { border-color: var(--good); }
+.feedback.no { border-color: var(--bad); }
+.feedback .msg { display: grid; gap: 2px; min-width: 0; }
+.feedback .msg strong { font-family: var(--font-display); font-size: 1.3rem; }
+.feedback.ok strong { color: var(--good); } .feedback.no strong { color: var(--bad); }
+.feedback .next { border: 0; border-radius: 14px; background: var(--plum); color: #fff; padding: 12px 22px; font-weight: 700; white-space: nowrap; flex: none; }
+
+/* end */
+.end { display: grid; gap: 18px; }
+.result { background: var(--plum); color: #fff; border-radius: 24px; padding: 28px; text-align: center; display: grid; gap: 8px; justify-items: center; }
+.result h2 { font-size: clamp(2rem, 5vw, 3rem); color: #fff; }
+.result .stars { font-size: 2.6rem; color: var(--saffron); display: flex; gap: 6px; }
+.result .stars .off { color: rgba(255,255,255,.25); }
+.result p { color: #E7D3EE; }
+.result .final { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
+.result .final .score { background: var(--plum-deep); border-color: rgba(255,255,255,.2); color: #fff; }
+.result .final .score .n { color: var(--saffron); }
+.endgrid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+.box { background: var(--panel); border: 1px solid var(--line); border-radius: 20px; padding: 20px; min-width: 0; }
+.box h3 { font-size: 1.3rem; color: var(--plum); margin-bottom: 10px; }
+.review { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+.review li { display: flex; justify-content: space-between; gap: 10px; border-bottom: 1px dashed var(--line); padding-bottom: 8px; }
+.review li span:last-child { color: var(--teal); font-weight: 700; text-align: left; }
+.kit { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+.kit li { display: grid; grid-template-columns: 26px 1fr; gap: 8px; color: var(--muted); }
+.kit li .ic { color: var(--rose); font-size: 1.2rem; line-height: 1.5; }
+.kit b { color: var(--ink); }
+.again { border: 0; border-radius: 16px; background: var(--saffron); color: var(--ink); font-family: var(--font-display); font-weight: 700; font-size: 1.25rem; padding: 12px 26px; display: inline-flex; gap: 8px; align-items: center; }
+.note { color: var(--muted); font-size: .9rem; margin-top: 12px; }
+
+canvas#fx { position: fixed; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 50; }
+
+@media (max-width: 760px) {
+  .start { grid-template-columns: 1fr; padding: 22px; }
+  .start .art { order: -1; }
+  .drawer { flex-basis: calc(50% - 5px); }
+  .wardrobe .drawer:last-child { flex-basis: 100%; }
+  .endgrid { grid-template-columns: 1fr; }
+  .hud { grid-template-columns: auto auto; }
+  .hud .timer { grid-column: 1 / -1; order: 3; }
+  .feedback { flex-direction: column; align-items: stretch; }
+  .brand h1 { font-size: 1.25rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .swing { animation: none; }
+  .drawer { transition: none; }
+}
+</style>
+
+<canvas id="fx" aria-hidden="true"></canvas>
+<div class="app" dir="rtl">
+  <header class="bar">
+    <div class="brand"><h1>خزانة المستشارة</h1><span class="ribbon">نسخة تجريبية</span></div>
+    <button class="iconbtn" id="soundBtn" type="button" aria-label="كتم الصوت">{{volume}}</button>
+  </header>
+
+  <section id="startView" class="start" aria-labelledby="startTitle">
+    <div>
+      <h2 id="startTitle">رتّبي الخزانة!</h2>
+      <p class="lead">لعبة صفية لدرس «اختيار الملابس»: تظهر بطاقة، وعليكِ وضعها في درج الأمر الذي تنتمي إليه من الأمور السبعة الواجب مراعاتها عند اختيار الملابس.</p>
+      <ol class="how">
+        <li><b>١</b><span>اقرئي البطاقة المعلّقة.</span></li>
+        <li><b>٢</b><span>اضغطي على الدرج الصحيح قبل انتهاء الوقت.</span></li>
+        <li><b>٣</b><span>البطاقة الذهبية سؤال بنقاط مضاعفة.</span></li>
+      </ol>
+      <div class="modes" role="group" aria-label="طريقة اللعب">
+        <button class="mode" id="modeSolo" type="button" aria-pressed="false"><span class="ic">{{user}}</span><strong>فردي</strong><small>طالبة واحدة أو الصف معًا</small></button>
+        <button class="mode" id="modeTeams" type="button" aria-pressed="true"><span class="ic">{{users}}</span><strong>فريقان</strong><small>تنافس بالتناوب على السبورة</small></button>
+      </div>
+      <div class="teams" id="teamFields">
+        <label for="teamA">الفريق الأول<input id="teamA" type="text" maxlength="18" value="فريق الورد"></label>
+        <label for="teamB">الفريق الثاني<input id="teamB" type="text" maxlength="18" value="فريق الياسمين"></label>
+      </div>
+      <button class="cta" id="startBtn" type="button">ابدئي اللعب</button>
+    </div>
+    <div class="art"><img src="{{rack}}" alt="خزانة ملابس عليها فساتين محتشمة ومعطف وعباءة"></div>
+  </section>
+
+  <section id="gameView" hidden aria-label="اللعبة">
+    <div style="display:grid;gap:16px">
+      <div class="hud">
+        <span class="pill" id="progress">البطاقة ١ من ١٤</span>
+        <div class="timer" id="timer" aria-hidden="true"><i id="timerFill"></i></div>
+        <span class="pill streak" id="streak" hidden>{{flame}} <span id="streakN">٣</span></span>
+      </div>
+      <div class="scores" id="scores"></div>
+      <div class="stage">
+        <div class="turnline" id="turnLine" aria-live="polite"></div>
+        <div class="tag" id="tag"><div class="kind" id="tagKind">إلى أي درج تنتمي؟</div><div class="term" id="tagText"></div></div>
+        <div class="opts" id="opts" hidden></div>
+      </div>
+      <div class="wardrobe" id="wardrobe" role="group" aria-label="أدراج الخزانة"></div>
+      <div class="feedback" id="feedback" hidden aria-live="assertive">
+        <div class="msg"><strong id="fbHead"></strong><span id="fbBody"></span></div>
+        <button class="next" id="nextBtn" type="button">البطاقة التالية</button>
+      </div>
+    </div>
+  </section>
+
+  <section id="endView" class="end" hidden aria-label="النتيجة">
+    <div class="result">
+      <div class="stars" id="stars"></div>
+      <h2 id="endTitle">مستشارة أناقة!</h2>
+      <p id="endLine"></p>
+      <div class="final" id="finalScores"></div>
+      <button class="again" id="againBtn" type="button">{{again}} العبي مرة أخرى</button>
+    </div>
+    <div class="endgrid">
+      <div class="box">
+        <h3>لنراجع معًا</h3>
+        <ul class="review" id="review"></ul>
+      </div>
+      <div class="box">
+        <h3>هذه اللعبة جزء من حقيبة درس كاملة</h3>
+        <ul class="kit">
+          <li><span class="ic">{{check}}</span><span><b>عرض المحطة الثانية</b> لمحتوى الدرس بأسئلة تفاعلية وتغذية راجعة فورية.</span></li>
+          <li><span class="ic">{{check}}</span><span><b>هذه اللعبة</b> بوضعي الفردي والفريقين، جاهزة للسبورة التفاعلية أو الجوال.</span></li>
+          <li><span class="ic">{{check}}</span><span><b>مطبوعات جاهزة</b> للنشاط التعاوني والتقويم وبطاقة الخروج.</span></li>
+          <li><span class="ic">{{check}}</span><span><b>تعديلات حسب طلبك</b> مثل اسمك واسم مدرستك وأسماء الفرق.</span></li>
+        </ul>
+        <p class="note">أعجبتكِ؟ للطلب تواصلي مع من أرسل إليكِ هذا الرابط.</p>
+      </div>
+    </div>
+  </section>
+</div>
+
+<script>
+(() => {
+  const IC = {{ICONS}};
+  const AR = (n) => String(n).replace(/\d/g, (d) => "٠١٢٣٤٥٦٧٨٩"[d]);
+  const $ = (id) => document.getElementById(id);
+
+  // the seven considerations from the teacher's mind map
+  const DRAWERS = [
+    { key: "sharia", name: "مطابقتها لمواصفات اللباس الشرعي", short: "اللباس الشرعي" },
+    { key: "customs", name: "العادات والتقاليد", short: "العادات والتقاليد" },
+    { key: "seasons", name: "المواسم", short: "المواسم" },
+    { key: "age", name: "السن", short: "السن" },
+    { key: "skin", name: "لون البشرة", short: "لون البشرة" },
+    { key: "body", name: "قوام الجسم", short: "قوام الجسم" },
+    { key: "occasion", name: "المناسبة", short: "المناسبة" },
+  ];
+  const ITEMS = {
+    sharia: ["ساتر", "فضفاض", "خالٍ من تقليد الكفار", "خالٍ من الصور ذات الأرواح"],
+    customs: ["المنطقة الشمالية", "المنطقة الجنوبية", "المنطقة الوسطى", "المنطقة الشرقية", "المنطقة الغربية"],
+    seasons: ["شتاء", "صيف"],
+    age: ["الطفولة", "المراهقة", "الرشد", "كبار السن"],
+    skin: ["بيضاء", "حنطية", "سمراء"],
+    body: ["الطويلة النحيفة", "القصيرة", "البدينة"],
+    occasion: ["ملابس المنزل", "ملابس الخروج"],
+  };
+  const GOLD = [
+    { q: "ما الملبس؟", options: ["كل أنواع الثياب والزينة التي يرتديها الإنسان في جميع أنحاء العالم", "الثياب التي نرتديها في المناسبات فقط", "الزينة التي نضعها في البيت فقط"], answer: 0, why: "الملبس: كل أنواع الثياب والزينة التي يرتديها الإنسان في جميع أنحاء العالم." },
+    { q: "أباح الإسلام أن يكون المسلم…", options: ["مهملًا لمظهره", "حسن الهيئة، كريم المظهر", "مقلّدًا لغيره في لباسه"], answer: 1, why: "أباح الإسلام أن يكون المسلم حسن الهيئة كريم المظهر، متمتعًا بما خلق الله له من زينة الثياب." },
+    { q: "كم عدد الأمور الواجب مراعاتها عند اختيار الملابس؟", options: ["خمسة", "سبعة", "تسعة"], answer: 1, why: "سبعة: اللباس الشرعي، والعادات والتقاليد، والمواسم، والسن، ولون البشرة، وقوام الجسم، والمناسبة." },
+    { q: "أيّ مما يلي من مواصفات اللباس الشرعي؟", options: ["ضيّق", "عليه صور ذات أرواح", "فضفاض"], answer: 2, why: "من مواصفات اللباس الشرعي: ساتر، فضفاض، خالٍ من تقليد الكفار، خالٍ من الصور ذات الأرواح." },
+  ];
+  const TIME = 20, SORTS = 12;
+
+  let S = { mode: "teams", teams: ["فريق الورد", "فريق الياسمين"], deck: [], i: 0, scores: [0, 0], streak: 0, correct: 0, missed: [], locked: false, t0: 0 };
+  let timerRAF = 0, muted = false;
+  try { muted = localStorage.getItem("wardrobe-muted") === "1"; } catch (e) {}
+
+  // ---------- sound ----------
+  let actx = null;
+  function tone(freqs, dur = 0.12, type = "sine", gain = 0.12) {
+    if (muted) return;
+    try {
+      actx = actx || new (window.AudioContext || window.webkitAudioContext)();
+      freqs.forEach((f, k) => {
+        const o = actx.createOscillator(), g = actx.createGain();
+        o.type = type; o.frequency.value = f;
+        const t = actx.currentTime + k * dur;
+        g.gain.setValueAtTime(gain, t); g.gain.exponentialRampToValueAtTime(0.001, t + dur * 1.6);
+        o.connect(g).connect(actx.destination); o.start(t); o.stop(t + dur * 1.7);
+      });
+    } catch (e) {}
+  }
+  const sGood = () => tone([660, 880, 1175], 0.09, "triangle");
+  const sBad = () => tone([220, 180], 0.16, "sawtooth", 0.06);
+  const sWin = () => tone([523, 659, 784, 1046, 1318], 0.12, "triangle");
+  function paintSound() { $("soundBtn").innerHTML = muted ? IC.mute : IC.volume; $("soundBtn").setAttribute("aria-label", muted ? "تشغيل الصوت" : "كتم الصوت"); }
+  $("soundBtn").addEventListener("click", () => { muted = !muted; try { localStorage.setItem("wardrobe-muted", muted ? "1" : "0"); } catch (e) {} paintSound(); });
+  paintSound();
+
+  // ---------- confetti ----------
+  const cv = $("fx"), cx = cv.getContext("2d");
+  const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  let parts = [], fxRAF = 0;
+  function confetti(n = 120) {
+    if (reduce) return;
+    cv.width = innerWidth * devicePixelRatio; cv.height = innerHeight * devicePixelRatio;
+    const cols = ["#F2A93B", "#C9476B", "#1F8A7D", "#7C5CBF", "#F7D9E3"];
+    for (let k = 0; k < n; k++) parts.push({ x: Math.random() * cv.width, y: -20 - Math.random() * cv.height * 0.3, vx: (Math.random() - 0.5) * 3, vy: 2 + Math.random() * 4, r: 4 + Math.random() * 6, c: cols[k % cols.length], a: Math.random() * 6, life: 0 });
+    if (!fxRAF) fxRAF = requestAnimationFrame(fxLoop);
+  }
+  function fxLoop() {
+    cx.clearRect(0, 0, cv.width, cv.height);
+    parts.forEach((p) => { p.x += p.vx * devicePixelRatio; p.y += p.vy * devicePixelRatio; p.a += 0.1; p.life++; cx.save(); cx.translate(p.x, p.y); cx.rotate(p.a); cx.fillStyle = p.c; cx.fillRect(-p.r, -p.r / 2, p.r * 2, p.r); cx.restore(); });
+    parts = parts.filter((p) => p.y < cv.height + 30 && p.life < 400);
+    fxRAF = parts.length ? requestAnimationFrame(fxLoop) : 0;
+    if (!parts.length) cx.clearRect(0, 0, cv.width, cv.height);
+  }
+
+  // ---------- setup ----------
+  function setMode(m) {
+    S.mode = m;
+    $("modeSolo").setAttribute("aria-pressed", m === "solo");
+    $("modeTeams").setAttribute("aria-pressed", m === "teams");
+    $("teamFields").hidden = m !== "teams";
+  }
+  $("modeSolo").addEventListener("click", () => setMode("solo"));
+  $("modeTeams").addEventListener("click", () => setMode("teams"));
+
+  const shuffle = (a) => { for (let k = a.length - 1; k > 0; k--) { const j = Math.floor(Math.random() * (k + 1)); [a[k], a[j]] = [a[j], a[k]]; } return a; };
+  function buildDeck() {
+    const pool = [];
+    Object.entries(ITEMS).forEach(([key, list]) => list.forEach((term) => pool.push({ type: "sort", term, key })));
+    const picked = [];
+    DRAWERS.forEach((d) => { const opts = shuffle(pool.filter((p) => p.key === d.key)); picked.push(opts[0]); });
+    shuffle(pool.filter((p) => !picked.includes(p))).slice(0, SORTS - picked.length).forEach((p) => picked.push(p));
+    const deck = shuffle(picked);
+    const golds = shuffle(GOLD.slice()).slice(0, 2).map((g) => ({ type: "gold", ...g }));
+    deck.splice(5, 0, golds[0]);
+    deck.splice(11, 0, golds[1]);
+    return deck;
+  }
+
+  function renderWardrobe() {
+    const w = $("wardrobe");
+    w.innerHTML = "";
+    DRAWERS.forEach((d) => {
+      const b = document.createElement("button");
+      b.type = "button"; b.className = "drawer"; b.dataset.key = d.key;
+      b.innerHTML = `<span class="ic">${IC[d.key]}</span><span>${d.short}</span>`;
+      b.setAttribute("aria-label", d.name);
+      b.addEventListener("click", () => answerSort(d.key, b));
+      w.appendChild(b);
+    });
+  }
+
+  function renderScores(target, big) {
+    const el = $(target); el.innerHTML = "";
+    const list = S.mode === "teams" ? [[S.teams[0], S.scores[0], "a"], [S.teams[1], S.scores[1], "b"]] : [["نقاطك", S.scores[0], "solo"]];
+    list.forEach(([name, sc, cls], k) => {
+      const d = document.createElement("div");
+      d.className = `score ${cls}` + (!big && S.mode === "teams" && whoseTurn() === k ? " turn" : "");
+      d.innerHTML = `<span>${escapeHTML(name)}</span><span class="n">${AR(sc)}</span>`;
+      el.appendChild(d);
+    });
+  }
+  const escapeHTML = (s) => s.replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+  const whoseTurn = () => (S.mode === "teams" ? S.i % 2 : 0);
+
+  function start() {
+    S.teams = [($("teamA").value || "الفريق الأول").trim(), ($("teamB").value || "الفريق الثاني").trim()];
+    Object.assign(S, { deck: buildDeck(), i: 0, scores: [0, 0], streak: 0, correct: 0, missed: [] });
+    $("startView").hidden = true; $("endView").hidden = true; $("gameView").hidden = false;
+    renderWardrobe();
+    show();
+  }
+  $("startBtn").addEventListener("click", () => { tone([440], 0.01, "sine", 0.0001); start(); });
+  $("againBtn").addEventListener("click", start);
+
+  function show() {
+    const c = S.deck[S.i];
+    S.locked = false;
+    $("feedback").hidden = true;
+    $("progress").textContent = `البطاقة ${AR(S.i + 1)} من ${AR(S.deck.length)}`;
+    $("turnLine").textContent = S.mode === "teams" ? `دور ${S.teams[whoseTurn()]}` : "";
+    renderScores("scores");
+    const tag = $("tag");
+    tag.classList.remove("swing"); void tag.offsetWidth; tag.classList.add("swing");
+    tag.classList.toggle("gold", c.type === "gold");
+    if (c.type === "sort") {
+      $("tagKind").textContent = "إلى أي درج تنتمي هذه البطاقة؟";
+      $("tagText").className = "term"; $("tagText").textContent = c.term;
+      $("opts").hidden = true; $("wardrobe").hidden = false;
+      document.querySelectorAll(".drawer").forEach((b) => { b.disabled = false; b.classList.remove("right", "wrong", "dim"); });
+    } else {
+      $("tagKind").textContent = "البطاقة الذهبية • نقاط مضاعفة";
+      $("tagText").className = "q"; $("tagText").textContent = c.q;
+      $("wardrobe").hidden = true;
+      const o = $("opts"); o.hidden = false; o.innerHTML = "";
+      c.options.forEach((txt, k) => {
+        const b = document.createElement("button");
+        b.type = "button"; b.className = "opt";
+        b.innerHTML = `<b>${"أبج"[k]}</b><span>${txt}</span>`;
+        b.addEventListener("click", () => answerGold(k, b));
+        o.appendChild(b);
+      });
+    }
+    startTimer();
+  }
+
+  function startTimer() {
+    cancelAnimationFrame(timerRAF);
+    S.t0 = performance.now();
+    const fill = $("timerFill"), bar = $("timer");
+    const tick = (now) => {
+      const left = Math.max(0, 1 - (now - S.t0) / (TIME * 1000));
+      fill.style.transform = `scaleX(${left})`;
+      bar.classList.toggle("low", left < 0.3);
+      if (left <= 0) return timeUp();
+      timerRAF = requestAnimationFrame(tick);
+    };
+    timerRAF = requestAnimationFrame(tick);
+  }
+
+  function award(ok, gold) {
+    cancelAnimationFrame(timerRAF);
+    const secs = (performance.now() - S.t0) / 1000;
+    let pts = 0;
+    if (ok) { pts = 10 + (secs <= 7 ? 5 : 0); if (gold) pts *= 2; S.scores[whoseTurn()] += pts; S.correct++; S.streak++; sGood(); if (S.streak && S.streak % 3 === 0) confetti(60); }
+    else { S.streak = 0; sBad(); }
+    $("streak").hidden = S.streak < 2; $("streakN").textContent = AR(S.streak);
+    renderScores("scores");
+    return pts;
+  }
+
+  const nameOf = (k) => DRAWERS.find((d) => d.key === k).name;
+  function answerSort(key, btn) {
+    if (S.locked) return; S.locked = true;
+    const c = S.deck[S.i], ok = key === c.key;
+    document.querySelectorAll(".drawer").forEach((b) => { b.disabled = true; if (b.dataset.key === c.key) b.classList.add("right"); else if (b !== btn) b.classList.add("dim"); });
+    if (!ok) btn.classList.add("wrong");
+    const pts = award(ok, false);
+    if (!ok) S.missed.push([c.term, nameOf(c.key)]);
+    feedback(ok, ok ? `أحسنتِ! +${AR(pts)}` : "ليست في هذا الدرج", `«${c.term}» من فروع: ${nameOf(c.key)}.`);
+  }
+  function answerGold(k, btn) {
+    if (S.locked) return; S.locked = true;
+    const c = S.deck[S.i], ok = k === c.answer;
+    document.querySelectorAll(".opt").forEach((b, j) => { b.disabled = true; if (j === c.answer) b.classList.add("right"); });
+    if (!ok) btn.classList.add("wrong");
+    const pts = award(ok, true);
+    if (!ok) S.missed.push([c.q, c.options[c.answer]]);
+    feedback(ok, ok ? `إجابة ذهبية! +${AR(pts)}` : "فكّري فيها مرة أخرى", c.why);
+  }
+  function timeUp() {
+    if (S.locked) return; S.locked = true;
+    const c = S.deck[S.i];
+    award(false, c.type === "gold");
+    if (c.type === "sort") {
+      document.querySelectorAll(".drawer").forEach((b) => { b.disabled = true; if (b.dataset.key === c.key) b.classList.add("right"); else b.classList.add("dim"); });
+      S.missed.push([c.term, nameOf(c.key)]);
+      feedback(false, "انتهى الوقت!", `«${c.term}» من فروع: ${nameOf(c.key)}.`);
+    } else {
+      document.querySelectorAll(".opt").forEach((b, j) => { b.disabled = true; if (j === c.answer) b.classList.add("right"); });
+      S.missed.push([c.q, c.options[c.answer]]);
+      feedback(false, "انتهى الوقت!", c.why);
+    }
+  }
+  function feedback(ok, head, body) {
+    const f = $("feedback");
+    f.className = "feedback " + (ok ? "ok" : "no");
+    $("fbHead").textContent = head; $("fbBody").textContent = body;
+    $("nextBtn").textContent = S.i === S.deck.length - 1 ? "عرض النتيجة" : "البطاقة التالية";
+    f.hidden = false;
+    $("nextBtn").focus({ preventScroll: true });
+  }
+  $("nextBtn").addEventListener("click", () => { if (S.i < S.deck.length - 1) { S.i++; show(); } else finish(); });
+
+  function finish() {
+    cancelAnimationFrame(timerRAF);
+    $("gameView").hidden = true; $("endView").hidden = false;
+    const ratio = S.correct / S.deck.length;
+    const stars = ratio >= 0.85 ? 3 : ratio >= 0.6 ? 2 : 1;
+    $("stars").innerHTML = [1, 2, 3].map((k) => `<span class="${k <= stars ? "" : "off"}">${IC.star}</span>`).join("");
+    if (S.mode === "teams") {
+      const [a, b] = S.scores;
+      $("endTitle").textContent = a === b ? "تعادل رائع!" : `فاز ${a > b ? S.teams[0] : S.teams[1]}!`;
+      $("endLine").textContent = `أجاب الصف إجابة صحيحة عن ${AR(S.correct)} من ${AR(S.deck.length)} بطاقة.`;
+    } else {
+      $("endTitle").textContent = stars === 3 ? "مستشارة أناقة!" : stars === 2 ? "اقتربتِ من اللقب!" : "بداية جميلة!";
+      $("endLine").textContent = `أجبتِ إجابة صحيحة عن ${AR(S.correct)} من ${AR(S.deck.length)} بطاقة.`;
+    }
+    renderScores("finalScores", true);
+    const r = $("review"); r.innerHTML = "";
+    if (!S.missed.length) r.innerHTML = "<li><span>لا أخطاء! رتّبتِ الخزانة كلها صحيحة.</span><span></span></li>";
+    S.missed.forEach(([a, b]) => { const li = document.createElement("li"); li.innerHTML = `<span>${a}</span><span>${b}</span>`; r.appendChild(li); });
+    sWin(); confetti(stars * 70);
+    window.scrollTo({ top: 0, behavior: reduce ? "auto" : "smooth" });
+  }
+
+  // keep a running game across a republish
+  window.claude?.hot?.snapshot?.(() => ({ S, view: !$("gameView").hidden ? "game" : !$("endView").hidden ? "end" : "start" }));
+  const boot = (data) => {
+    setMode("teams");
+    if (data && data.S && data.view === "game") { S = data.S; $("startView").hidden = true; $("gameView").hidden = false; renderWardrobe(); show(); }
+  };
+  window.claude?.hot?.ready ? window.claude.hot.ready(boot) : boot(window.claude?.hot?.data ?? {});
+})();
+</script>
