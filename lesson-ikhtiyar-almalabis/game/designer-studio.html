@@ -1,0 +1,564 @@
+<title>استوديو المصممة الصغيرة</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=El+Messiri:wght@500;600;700&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap">
+<style>
+/* Layout: a fashion atelier — client brief card, a faceless mannequin on its stand in the middle, the wardrobe rail of pieces beside it; single committed light look for classroom screens */
+:root {
+  --bg: #FBF4F7;
+  --panel: #FFFFFF;
+  --ink: #2B1B33;
+  --muted: #6B5876;
+  --line: #EADCEF;
+  --plum: #5B2A6E;
+  --plum-2: #6E3784;
+  --rose: #C9476B;
+  --saffron: #F2A93B;
+  --teal: #1F8A7D;
+  --bad: #C2413B;
+  --open: #7C5CBF;
+  --font-display: "El Messiri", "Noto Naskh Arabic", "Traditional Arabic", serif;
+  --font-body: "IBM Plex Sans Arabic", "Noto Sans Arabic", "Segoe UI", Tahoma, sans-serif;
+}
+* { box-sizing: border-box; }
+html, body { height: 100%; }
+body { background: var(--bg); color: var(--ink); font-family: var(--font-body); font-size: 16px; line-height: 1.6; direction: rtl; }
+button, input, textarea { font: inherit; color: inherit; }
+button { cursor: pointer; }
+button:focus-visible, input:focus-visible, textarea:focus-visible { outline: 3px solid var(--saffron); outline-offset: 2px; }
+h1, h2, h3 { font-family: var(--font-display); margin: 0; line-height: 1.25; text-wrap: balance; }
+.app { max-width: 1180px; margin-inline: auto; display: flex; flex-direction: column; gap: 16px; padding-block: 14px 28px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+
+.bar { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.brand { display: flex; align-items: center; gap: 10px; min-width: 0; flex-wrap: wrap; }
+.brand h1 { font-size: 1.45rem; color: var(--plum); }
+.ribbon { background: var(--saffron); color: var(--ink); font-size: .76rem; font-weight: 700; padding: 2px 12px; border-radius: 999px; white-space: nowrap; }
+.ghost { border: 1px solid var(--line); background: var(--panel); border-radius: 999px; padding: 8px 16px; font-weight: 700; color: var(--plum); white-space: nowrap; }
+
+/* home */
+.home { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+.hero { grid-column: 1 / -1; background: var(--plum); color: #fff; border-radius: 26px; padding: 28px; display: grid; grid-template-columns: 1.2fr .8fr; gap: 20px; align-items: center; }
+.hero h2 { font-size: clamp(2rem, 5.4vw, 3.4rem); color: #fff; }
+.hero p { color: #EAD8F0; font-size: 1.05rem; margin-top: 8px; max-width: 34em; }
+.hero svg { width: 100%; max-height: 300px; }
+.skills { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 14px; }
+.skills span { background: rgba(255,255,255,.12); border: 1px solid rgba(255,255,255,.22); border-radius: 999px; padding: 4px 12px; font-size: .86rem; }
+.modecard { background: var(--panel); border: 1px solid var(--line); border-radius: 22px; padding: 22px; display: grid; gap: 10px; align-content: start; text-align: right; }
+.modecard h3 { font-size: 1.5rem; color: var(--plum); }
+.modecard p { color: var(--muted); }
+.modecard .go { justify-self: start; border: 0; border-radius: 14px; background: var(--saffron); color: var(--ink); font-family: var(--font-display); font-weight: 700; font-size: 1.15rem; padding: 10px 22px; }
+.modecard .tagline { font-size: .82rem; font-weight: 700; color: var(--rose); }
+.foot { grid-column: 1 / -1; color: var(--muted); font-size: .9rem; text-align: center; }
+
+/* studio */
+.studio { display: grid; grid-template-columns: 300px minmax(0, 1fr) 360px; gap: 16px; align-items: start; }
+.panel { background: var(--panel); border: 1px solid var(--line); border-radius: 22px; padding: 16px; min-width: 0; }
+.brief { display: grid; gap: 10px; }
+.brief .who { display: flex; align-items: center; gap: 10px; }
+.brief .avatar { width: 46px; height: 46px; border-radius: 50%; background: var(--rose); color: #fff; display: grid; place-items: center; font-family: var(--font-display); font-size: 1.3rem; flex: none; }
+.brief h3 { font-size: 1.25rem; color: var(--plum); }
+.brief .req { font-size: 1.05rem; font-weight: 600; }
+.traits { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+.trait { background: var(--bg); border-radius: 12px; padding: 6px 10px; font-size: .86rem; min-width: 0; }
+.trait b { display: block; color: var(--muted); font-size: .74rem; font-weight: 600; }
+.stepper { display: flex; gap: 6px; flex-wrap: wrap; }
+.stepper button { border: 1px solid var(--line); background: var(--panel); border-radius: 999px; padding: 4px 12px; font-size: .85rem; font-weight: 600; }
+.stepper button[aria-current="true"] { background: var(--plum); color: #fff; border-color: var(--plum); }
+
+.stage { position: relative; background: radial-gradient(circle at 50% 38%, #FFFFFF 0, #F3E7EF 70%); border-radius: 26px; border: 1px solid var(--line); display: grid; justify-items: center; padding: 10px 10px 4px; min-height: 480px; }
+.stage svg { width: min(100%, 330px); height: auto; }
+.lookname { font-family: var(--font-display); font-size: 1.3rem; color: var(--plum); min-height: 1.6em; text-align: center; }
+.swing { animation: pop .35s ease-out; }
+@keyframes pop { from { transform: scale(.97); } to { transform: scale(1); } }
+
+.rail h3 { font-size: 1.05rem; color: var(--plum); margin: 4px 0 8px; }
+.tabs { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 10px; }
+.tabs button { border: 0; background: var(--bg); border-radius: 12px; padding: 6px 12px; font-weight: 700; font-size: .88rem; color: var(--muted); }
+.tabs button[aria-selected="true"] { background: var(--plum); color: #fff; }
+.items { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+.item { border: 2px solid var(--line); background: var(--panel); border-radius: 14px; padding: 6px 4px 8px; display: grid; justify-items: center; gap: 2px; font-size: .78rem; font-weight: 600; line-height: 1.35; min-width: 0; }
+.item svg { width: 100%; height: 70px; }
+.item[aria-pressed="true"] { border-color: var(--plum); background: #F5ECF8; }
+.item .none { height: 70px; display: grid; place-items: center; color: var(--muted); font-size: 1.6rem; }
+.swatches { display: flex; gap: 8px; flex-wrap: wrap; }
+.sw { width: 36px; height: 36px; border-radius: 50%; border: 3px solid #fff; box-shadow: 0 0 0 1px var(--line); }
+.sw[aria-pressed="true"] { box-shadow: 0 0 0 3px var(--plum); }
+.patterns { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; }
+.pat { border: 2px solid var(--line); background: var(--panel); border-radius: 12px; padding: 4px; font-size: .74rem; font-weight: 600; display: grid; gap: 2px; justify-items: center; }
+.pat svg { width: 100%; height: 34px; border-radius: 8px; }
+.pat[aria-pressed="true"] { border-color: var(--plum); }
+.field { display: grid; gap: 4px; margin-top: 10px; font-weight: 700; font-size: .9rem; color: var(--plum); }
+.field input, .field textarea { border: 1px solid var(--line); border-radius: 12px; padding: 10px 12px; background: var(--bg); font-weight: 400; color: var(--ink); resize: vertical; min-width: 0; }
+.primary { width: 100%; margin-top: 12px; border: 0; border-radius: 14px; background: var(--saffron); color: var(--ink); font-family: var(--font-display); font-size: 1.25rem; font-weight: 700; padding: 12px; }
+.sub { color: var(--muted); font-size: .85rem; }
+
+/* report */
+.report { display: grid; gap: 10px; }
+.report h3 { font-size: 1.35rem; color: var(--plum); }
+.stars { display: flex; gap: 4px; font-size: 1.9rem; color: var(--saffron); }
+.stars .off { color: var(--line); }
+.checks { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+.checks li { display: grid; grid-template-columns: 30px 1fr; gap: 8px; align-items: start; background: var(--bg); border-radius: 12px; padding: 8px 10px; }
+.checks .mk { width: 26px; height: 26px; border-radius: 50%; display: grid; place-items: center; color: #fff; font-weight: 700; font-size: .95rem; }
+.checks .ok .mk { background: var(--teal); }
+.checks .no .mk { background: var(--bad); }
+.checks .op .mk { background: var(--open); }
+.checks b { display: block; }
+.checks span.r { color: var(--muted); font-size: .88rem; }
+.rowbtns { display: flex; gap: 8px; flex-wrap: wrap; }
+.rowbtns button { flex: 1 1 140px; border-radius: 14px; padding: 10px; font-weight: 700; border: 1px solid var(--line); background: var(--panel); color: var(--plum); }
+.rowbtns .main { background: var(--plum); color: #fff; border-color: var(--plum); }
+
+/* spot mode */
+.pieces { display: grid; gap: 8px; }
+.piece { display: grid; grid-template-columns: 1fr auto; gap: 8px; align-items: center; border: 2px solid var(--line); border-radius: 14px; padding: 10px 12px; background: var(--panel); text-align: right; }
+.piece .lbl { font-weight: 700; }
+.piece .lbl small { display: block; color: var(--muted); font-weight: 500; }
+.piece .flag { border-radius: 999px; padding: 3px 10px; font-size: .8rem; font-weight: 700; background: var(--bg); color: var(--muted); white-space: nowrap; }
+.piece[aria-pressed="true"] { border-color: var(--bad); background: #FDF0EF; }
+.piece[aria-pressed="true"] .flag { background: var(--bad); color: #fff; }
+.piece.res-ok { border-color: var(--teal); }
+.piece.res-no { border-color: var(--bad); }
+.piece .why { grid-column: 1 / -1; font-size: .86rem; color: var(--muted); }
+.piece:disabled { cursor: default; }
+
+canvas#fx { position: fixed; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 50; }
+
+@media (max-width: 1020px) {
+  .studio { grid-template-columns: 1fr 1fr; }
+  .studio .stagecol { grid-column: 1 / -1; order: -1; }
+}
+@media (max-width: 700px) {
+  .home, .hero { grid-template-columns: 1fr; }
+  .hero svg { max-height: 220px; }
+  .studio { grid-template-columns: 1fr; }
+  .stage { min-height: 0; }
+  .stage svg { width: min(100%, 260px); }
+  .studio .stagecol { order: 0; }
+  .items { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+@media (prefers-reduced-motion: reduce) { .swing { animation: none; } }
+</style>
+
+<canvas id="fx" aria-hidden="true"></canvas>
+<div class="app" dir="rtl">
+  <header class="bar">
+    <div class="brand"><h1>استوديو المصممة الصغيرة</h1><span class="ribbon">نسخة تجريبية</span></div>
+    <button class="ghost" id="homeBtn" type="button" hidden>الصفحة الرئيسية</button>
+  </header>
+
+  <section id="homeView" class="home" aria-label="الصفحة الرئيسية">
+    <div class="hero">
+      <div>
+        <h2>صمّمي… وفكّري كمستشارة أناقة</h2>
+        <p>تصل إلى الاستوديو طلبات من عميلات. ألبسي المانيكان إطلالة تناسب كل عميلة، ثم دعي الاستوديو يقيّمها بالأمور السبعة الواجب مراعاتها عند اختيار الملابس.</p>
+        <div class="skills"><span>تفكير إبداعي</span><span>تفكير ناقد</span><span>اتخاذ قرار</span><span>تبرير</span></div>
+      </div>
+      <div id="heroArt"></div>
+    </div>
+    <div class="modecard">
+      <span class="tagline">إبداع واتخاذ قرار</span>
+      <h3>صمّمي الإطلالة</h3>
+      <p>اقرئي طلب العميلة، واختاري القطع واللون والنقش، وسمّي إطلالتك، واكتبي تبريرك. ثم يظهر تقرير التقييم.</p>
+      <button class="go" id="goDesign" type="button">ادخلي الاستوديو</button>
+    </div>
+    <div class="modecard">
+      <span class="tagline">تفكير ناقد</span>
+      <h3>المستشارة الناقدة</h3>
+      <p>إطلالات جاهزة فيها أخطاء. حدّدي القطع غير المناسبة لطلب العميلة، ثم تحققي من إجابتك وتعرّفي على السبب.</p>
+      <button class="go" id="goSpot" type="button">اكتشفي الأخطاء</button>
+    </div>
+    <p class="foot">لعبة من حقيبة درس «اختيار الملابس» للصف السادس. للطلب تواصلي مع من أرسل إليكِ هذا الرابط.</p>
+  </section>
+
+  <section id="designView" hidden aria-label="صمّمي الإطلالة">
+    <div class="studio">
+      <div class="panel brief" id="brief"></div>
+      <div class="stagecol">
+        <div class="stage"><div id="mannequin" style="width:100%;display:grid;justify-items:center"></div><div class="lookname" id="lookName"></div></div>
+      </div>
+      <div class="panel rail" id="rail">
+        <div id="railBody">
+          <div class="tabs" role="tablist" id="tabs"></div>
+          <div class="items" id="items"></div>
+          <div id="colorBox">
+            <h3>لون القطعة الأساسية</h3>
+            <div class="swatches" id="swatches"></div>
+            <h3>النقش</h3>
+            <div class="patterns" id="patterns"></div>
+          </div>
+          <label class="field" for="nameIn">اسم الإطلالة<input id="nameIn" type="text" maxlength="28" placeholder="مثال: دفء الجدّة"></label>
+          <label class="field" for="whyIn">تبريري: كيف راعيتُ سنّها ولون بشرتها وقوامها؟<textarea id="whyIn" rows="3" placeholder="اخترتُ… لأنّ…"></textarea></label>
+          <button class="primary" id="evalBtn" type="button">قيّمي إطلالتي</button>
+        </div>
+        <div class="report" id="report" hidden></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="spotView" hidden aria-label="المستشارة الناقدة">
+    <div class="studio">
+      <div class="panel brief" id="spotBrief"></div>
+      <div class="stagecol"><div class="stage"><div id="spotMannequin" style="width:100%;display:grid;justify-items:center"></div></div></div>
+      <div class="panel">
+        <h3 style="font-size:1.15rem;color:var(--plum);margin-bottom:6px">اضغطي على كل قطعة لا تناسب الطلب</h3>
+        <p class="sub" style="margin-bottom:10px">قد تكون في الإطلالة أكثر من قطعة غير مناسبة، وقد تكون بعض القطع صحيحة.</p>
+        <div class="pieces" id="pieces"></div>
+        <div id="spotResult" class="report" style="margin-top:12px" hidden></div>
+        <button class="primary" id="spotCheck" type="button">تحقّقي</button>
+      </div>
+    </div>
+  </section>
+</div>
+
+<script>
+(() => {
+  const $ = (id) => document.getElementById(id);
+  const AR = (n) => String(n).replace(/\d/g, (d) => "٠١٢٣٤٥٦٧٨٩"[d]);
+  const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  // ---------------- wardrobe data (criteria from the teacher's mind map) ----------------
+  // season: winter | summer | any ; occ: home | out | any ; sharia: null or reason ; trad: traditional dress
+  const BASE = [
+    { id: "sdress", name: "فستان صيفي طويل فضفاض", season: "summer", occ: "any", sharia: null, colorable: true },
+    { id: "wdress", name: "فستان شتوي طويل فضفاض", season: "winter", occ: "any", sharia: null, colorable: true },
+    { id: "thobe", name: "ثوب تراثي مطرّز", season: "any", occ: "any", sharia: null, trad: true, colorable: true },
+    { id: "pjs", name: "بيجامة مريحة", season: "any", occ: "home", sharia: null, colorable: true },
+    { id: "short", name: "فستان قصير ضيّق", season: "summer", occ: "any", sharia: "غير ساتر وغير فضفاض", colorable: true },
+    { id: "catshirt", name: "قميص عليه صورة قطة وتنورة", season: "any", occ: "any", sharia: "عليه صورة ذات روح", colorable: true },
+    { id: "crossshirt", name: "قميص عليه صليب وتنورة", season: "any", occ: "any", sharia: "عليه صليب؛ احذري الصليب!", colorable: true },
+  ];
+  const OUTER = [
+    { id: "none", name: "بدون", season: "any", occ: "any" },
+    { id: "abaya", name: "عباءة", season: "any", occ: "out" },
+    { id: "coat", name: "معطف شتوي", season: "winter", occ: "any" },
+  ];
+  const HEAD = [
+    { id: "none", name: "بدون", season: "any", occ: "any" },
+    { id: "tarha", name: "طرحة", season: "any", occ: "out" },
+    { id: "hat", name: "قبعة صيفية", season: "summer", occ: "any" },
+  ];
+  const SHOES = [
+    { id: "boots", name: "حذاء شتوي مغلق", season: "winter", occ: "out" },
+    { id: "sandal", name: "صندل صيفي", season: "summer", occ: "any" },
+    { id: "slipper", name: "شبشب منزلي", season: "any", occ: "home" },
+    { id: "elegant", name: "حذاء أنيق", season: "any", occ: "out" },
+  ];
+  const SLOTS = [["base", "القطعة الأساسية", BASE], ["outer", "فوقها", OUTER], ["head", "غطاء الرأس", HEAD], ["shoes", "الحذاء", SHOES]];
+  const COLORS = ["#C9476B", "#7C5CBF", "#1F8A7D", "#2F6FAE", "#F2A93B", "#8B5A3C", "#F4C6D6", "#2B2B3A"];
+  const PATTERNS = [["plain", "سادة"], ["vert", "خطوط طولية"], ["horiz", "خطوط أفقية"], ["dots", "نقوش صغيرة"]];
+
+  // client briefs built from the seven considerations
+  const BRIEFS = [
+    { n: "لمى", req: "ستزور جدتها مساءً في ليلة شتوية باردة.", season: "winter", occ: "out", age: "المراهقة", skin: "حنطية", body: "الطويلة النحيفة" },
+    { n: "سارة", req: "ستقضي يومًا صيفيًا حارًا في المنزل مع أسرتها.", season: "summer", occ: "home", age: "الطفولة", skin: "بيضاء", body: "القصيرة" },
+    { n: "نوف", req: "ستحضر احتفال المدرسة بيوم التأسيس.", season: "any", occ: "out", trad: true, age: "المراهقة", skin: "سمراء", body: "البدينة" },
+    { n: "هند", req: "ستخرج مع أسرتها إلى السوق في يوم صيفي حار.", season: "summer", occ: "out", age: "الرشد", skin: "سمراء", body: "الطويلة النحيفة" },
+    { n: "الجدة موضي", req: "ستخرج لصلاة العيد في صباح شتوي بارد.", season: "winter", occ: "out", age: "كبار السن", skin: "حنطية", body: "القصيرة" },
+  ];
+  const SEASON_AR = { winter: "شتاء", summer: "صيف", any: "أي موسم" };
+  const OCC_AR = { home: "ملابس المنزل", out: "ملابس الخروج" };
+
+  // spot-the-mistake cases
+  const CASES = [
+    { brief: { n: "غادة", req: "ستخرج إلى السوق في يوم صيفي حار.", season: "summer", occ: "out" }, look: { base: "sdress", outer: "coat", head: "none", shoes: "boots", color: "#1F8A7D", pattern: "plain" } },
+    { brief: { n: "ريم", req: "ستقضي يومًا شتويًا في المنزل.", season: "winter", occ: "home" }, look: { base: "pjs", outer: "abaya", head: "hat", shoes: "slipper", color: "#F4C6D6", pattern: "dots" } },
+    { brief: { n: "جود", req: "ستحضر احتفال المدرسة بيوم التأسيس.", season: "any", occ: "out", trad: true }, look: { base: "crossshirt", outer: "abaya", head: "tarha", shoes: "elegant", color: "#2F6FAE", pattern: "plain" } },
+    { brief: { n: "دانة", req: "ستزور صديقتها في ليلة شتوية باردة.", season: "winter", occ: "out" }, look: { base: "short", outer: "abaya", head: "tarha", shoes: "sandal", color: "#C9476B", pattern: "plain" } },
+  ];
+
+  const find = (list, id) => list.find((x) => x.id === id);
+  const shade = (hex, k) => { const n = parseInt(hex.slice(1), 16); let r = n >> 16, g = (n >> 8) & 255, b = n & 255; r = Math.round(r * k); g = Math.round(g * k); b = Math.round(b * k); return `rgb(${Math.min(255, r)},${Math.min(255, g)},${Math.min(255, b)})`; };
+
+  // ---------------- drawing ----------------
+  const SKIN = "#E7DCE3", SKIN_EDGE = "#CDBFC9";
+  function fillFor(look, uid) {
+    if (look.pattern === "plain") return { defs: "", fill: look.color };
+    const c2 = shade(look.color, 0.72);
+    const p = {
+      vert: `<pattern id="p${uid}" width="12" height="12" patternUnits="userSpaceOnUse"><rect width="12" height="12" fill="${look.color}"/><rect width="5" height="12" fill="${c2}"/></pattern>`,
+      horiz: `<pattern id="p${uid}" width="12" height="12" patternUnits="userSpaceOnUse"><rect width="12" height="12" fill="${look.color}"/><rect width="12" height="5" fill="${c2}"/></pattern>`,
+      dots: `<pattern id="p${uid}" width="14" height="14" patternUnits="userSpaceOnUse"><rect width="14" height="14" fill="${look.color}"/><circle cx="7" cy="7" r="2.4" fill="${c2}"/></pattern>`,
+    }[look.pattern];
+    return { defs: p, fill: `url(#p${uid})` };
+  }
+  const LOOSE = "M98,94 Q120,106 142,94 L166,104 L188,236 L170,240 L156,142 L158,172 L196,402 L44,402 L82,172 L84,142 L70,240 L52,236 L74,104 Z";
+  function drawBase(id, f) {
+    switch (id) {
+      case "sdress": return `<path d="${LOOSE}" fill="${f}"/><path d="M82,172 L158,172" stroke="#fff" stroke-opacity=".7" stroke-width="5"/>`;
+      case "wdress": return `<path d="${LOOSE}" fill="${f}"/><path d="M98,94 Q120,118 142,94" fill="none" stroke="#fff" stroke-opacity=".75" stroke-width="7"/><path d="M52,236 L70,240 M170,240 L188,236" stroke="#fff" stroke-opacity=".75" stroke-width="7"/>`;
+      case "thobe": return `<path d="${LOOSE}" fill="${f}"/><path d="M104,98 L120,140 L136,98" fill="none" stroke="#F2C14E" stroke-width="5"/><path d="M50,390 l12,-10 12,10 12,-10 12,10 12,-10 12,10 12,-10 12,10 12,-10 12,10 12,-10 12,10" fill="none" stroke="#F2C14E" stroke-width="4"/><path d="M82,172 l8,-6 8,6 8,-6 8,6 8,-6 8,6 8,-6 8,6 8,-6 8,6" fill="none" stroke="#F2C14E" stroke-width="3.5"/>`;
+      case "pjs": return `<path d="M98,94 Q120,106 142,94 L166,104 L186,232 L168,236 L156,146 L158,236 L82,236 L84,146 L72,236 L54,232 L74,104 Z" fill="${f}"/><path d="M84,232 L156,232 L160,402 L126,402 L120,262 L114,402 L80,402 Z" fill="${f}"/><g fill="#fff" fill-opacity=".85"><circle cx="120" cy="140" r="4"/><circle cx="120" cy="170" r="4"/><circle cx="120" cy="200" r="4"/></g>`;
+      case "short": return `<path d="M100,94 Q120,104 140,94 L156,100 L160,128 L148,130 L144,114 L148,172 L154,300 L86,300 L92,172 L96,114 L92,130 L80,128 L84,100 Z" fill="${f}"/>`;
+      case "catshirt":
+      case "crossshirt": {
+        const top = `<path d="M98,94 Q120,106 142,94 L166,104 L186,232 L168,236 L156,146 L158,226 L82,226 L84,146 L72,236 L54,232 L74,104 Z" fill="#F7F1F4"/>`;
+        const skirt = `<path d="M84,222 L156,222 L190,402 L50,402 Z" fill="${f}"/>`;
+        const mark = id === "catshirt"
+          ? `<g transform="translate(120,168)"><circle r="20" fill="#F2A93B"/><path d="M-16,-10 L-12,-26 L-2,-16 Z M16,-10 L12,-26 L2,-16 Z" fill="#F2A93B"/><circle cx="-7" cy="-3" r="3" fill="#2B1B33"/><circle cx="7" cy="-3" r="3" fill="#2B1B33"/><path d="M-5,7 Q0,11 5,7" stroke="#2B1B33" stroke-width="2" fill="none"/></g>`
+          : `<g fill="#2B1B33"><rect x="116" y="146" width="8" height="44"/><rect x="104" y="158" width="32" height="8"/></g>`;
+        return top + skirt + mark;
+      }
+    }
+    return "";
+  }
+  function drawOuter(id) {
+    if (id === "abaya") return `<path d="M96,92 Q120,104 144,92 L168,102 L192,240 L172,244 L158,146 L164,406 L126,406 L126,120 L114,120 L114,406 L76,406 L82,146 L68,244 L48,240 L72,102 Z" fill="#1E1622"/><path d="M114,120 L114,406 M126,120 L126,406" stroke="#C9A24A" stroke-width="3"/><path d="M48,240 L68,244 M172,244 L192,240" stroke="#C9A24A" stroke-width="4"/>`;
+    if (id === "coat") return `<path d="M94,92 L120,124 L146,92 L170,102 L192,244 L172,248 L160,150 L164,318 L76,318 L80,150 L68,248 L48,244 L70,102 Z" fill="#7A5240"/><path d="M120,124 L120,318" stroke="#5A3A2C" stroke-width="3"/><g fill="#E9C46A"><circle cx="128" cy="160" r="5"/><circle cx="128" cy="200" r="5"/><circle cx="128" cy="240" r="5"/><circle cx="128" cy="280" r="5"/></g><path d="M94,92 L108,140 L120,124 M146,92 L132,140 L120,124" fill="none" stroke="#5A3A2C" stroke-width="3"/>`;
+    return "";
+  }
+  function drawHead(id) {
+    if (id === "tarha") return `<path d="M120,20 C90,20 88,44 88,64 C88,96 70,104 64,126 L176,126 C170,104 152,96 152,64 C152,44 150,20 120,20 Z" fill="#2A1F2E"/><ellipse cx="120" cy="58" rx="20" ry="24" fill="${SKIN}"/>`;
+    if (id === "hat") return `<ellipse cx="120" cy="34" rx="56" ry="12" fill="#E5C27E"/><path d="M94,34 Q96,6 120,6 Q144,6 146,34 Z" fill="#E5C27E"/><path d="M95,28 L145,28" stroke="#C9476B" stroke-width="5"/>`;
+    return "";
+  }
+  function drawShoes(id) {
+    const pair = (l, r) => l + r;
+    if (id === "boots") return pair(`<path d="M92,382 L112,382 L112,414 L84,414 Q84,404 92,404 Z" fill="#4A3328"/>`, `<path d="M128,382 L148,382 L148,404 Q156,404 156,414 L128,414 Z" fill="#4A3328"/>`);
+    if (id === "sandal") return pair(`<path d="M86,410 L112,410" stroke="#C98A3E" stroke-width="5" stroke-linecap="round"/><path d="M92,410 L100,400 L108,410" fill="none" stroke="#C98A3E" stroke-width="3"/>`, `<path d="M128,410 L154,410" stroke="#C98A3E" stroke-width="5" stroke-linecap="round"/><path d="M132,410 L140,400 L148,410" fill="none" stroke="#C98A3E" stroke-width="3"/>`);
+    if (id === "slipper") return pair(`<ellipse cx="98" cy="408" rx="16" ry="8" fill="#F4A6C0"/><ellipse cx="98" cy="403" rx="10" ry="5" fill="#fff"/>`, `<ellipse cx="142" cy="408" rx="16" ry="8" fill="#F4A6C0"/><ellipse cx="142" cy="403" rx="10" ry="5" fill="#fff"/>`);
+    if (id === "elegant") return pair(`<path d="M86,404 Q100,398 112,404 L112,412 L84,412 Z" fill="#2E2A4A"/>`, `<path d="M128,404 Q140,398 154,404 L156,412 L128,412 Z" fill="#2E2A4A"/>`);
+    return "";
+  }
+  let uidc = 0;
+  function mannequinSVG(look) {
+    const uid = ++uidc;
+    const base = find(BASE, look.base);
+    const { defs, fill } = fillFor(look, uid);
+    const showsArms = look.base === "short" && look.outer === "none";
+    const showsLegs = look.base === "short" && look.outer !== "abaya";
+    let s = `<svg viewBox="30 0 180 440" role="img" aria-label="مانيكان ترتدي الإطلالة"><defs>${defs}</defs>`;
+    s += `<ellipse cx="120" cy="432" rx="52" ry="7" fill="#D9C6E0"/><rect x="116" y="404" width="8" height="28" fill="#B9A6C3"/>`;
+    s += `<rect x="112" y="80" width="16" height="18" rx="4" fill="${SKIN}"/><ellipse cx="120" cy="56" rx="22" ry="27" fill="${SKIN}" stroke="${SKIN_EDGE}"/>`;
+    s += `<path d="M84,100 Q120,92 156,100 L150,170 L156,300 L84,300 L90,170 Z" fill="${SKIN}" stroke="${SKIN_EDGE}"/>`;
+    if (showsArms) s += `<path d="M84,112 L70,236 M156,112 L170,236" stroke="${SKIN}" stroke-width="13" stroke-linecap="round"/>`;
+    if (showsLegs) s += `<path d="M106,296 L104,402 M134,296 L136,402" stroke="${SKIN}" stroke-width="15" stroke-linecap="round"/>`;
+    s += drawBase(base.id, fill);
+    s += drawOuter(look.outer);
+    s += drawShoes(look.shoes);
+    s += drawHead(look.head);
+    return s + "</svg>";
+  }
+  function itemThumb(slot, id) {
+    const look = { base: "sdress", outer: "none", head: "none", shoes: "elegant", color: state.look.color, pattern: state.look.pattern };
+    let inner = "", vb = "40 80 160 330";
+    if (slot === "base") { const { defs, fill } = fillFor(look, "t" + id); inner = `<defs>${defs}</defs>` + drawBase(id, fill); }
+    if (slot === "outer") inner = drawOuter(id);
+    if (slot === "head") { inner = drawHead(id); vb = "60 0 120 130"; }
+    if (slot === "shoes") { inner = drawShoes(id); vb = "78 392 84 26"; }
+    if (id === "none") return `<div class="none">∅</div>`;
+    return `<svg viewBox="${vb}" preserveAspectRatio="xMidYMid meet" aria-hidden="true">${inner}</svg>`;
+  }
+
+  // ---------------- evaluation (objective criteria + open reasoning) ----------------
+  function judge(brief, look) {
+    const base = find(BASE, look.base), outer = find(OUTER, look.outer), head = find(HEAD, look.head), shoes = find(SHOES, look.shoes);
+    const worn = [base, outer, head, shoes].filter((x) => x && x.id !== "none");
+    const res = [];
+    // 1 sharia
+    res.push(base.sharia ? { k: "no", t: "مطابقتها لمواصفات اللباس الشرعي", r: `«${base.name}»: ${base.sharia}.` } : { k: "ok", t: "مطابقتها لمواصفات اللباس الشرعي", r: "ساتر، فضفاض، خالٍ من الصور ذات الأرواح ومن تقليد الكفار." });
+    // 2 customs
+    if (brief.trad) res.push(base.trad ? { k: "ok", t: "العادات والتقاليد", r: "اخترتِ الثوب التراثي لاحتفال يوم التأسيس." } : { k: "no", t: "العادات والتقاليد", r: "احتفال يوم التأسيس يناسبه الثوب التراثي." });
+    else if (brief.occ === "out") res.push(look.outer === "abaya" && look.head === "tarha" ? { k: "ok", t: "العادات والتقاليد", r: "العباءة والطرحة للخروج كما اعتدنا في مجتمعنا." } : { k: "no", t: "العادات والتقاليد", r: "عند الخروج نرتدي العباءة والطرحة كما اعتدنا في مجتمعنا." });
+    else res.push({ k: "ok", t: "العادات والتقاليد", r: "إطلالة منزلية تناسب عاداتنا." });
+    // 3 seasons
+    if (brief.season === "any") res.push({ k: "ok", t: "المواسم", r: "المناسبة لا ترتبط بموسم محدد." });
+    else {
+      const other = brief.season === "winter" ? "summer" : "winter";
+      const clash = worn.filter((x) => x.season === other);
+      const hasWinter = worn.some((x) => x.season === "winter");
+      if (clash.length) res.push({ k: "no", t: "المواسم", r: `${clash.map((x) => "«" + x.name + "»").join(" و")} ${clash.length > 1 ? "لا تناسبان" : "لا يناسب"} ${SEASON_AR[brief.season]}.` });
+      else if (brief.season === "winter" && !hasWinter) res.push({ k: "no", t: "المواسم", r: "الطقس شتوي: أضيفي قطعة شتوية تدفئها." });
+      else res.push({ k: "ok", t: "المواسم", r: `القطع تناسب ${SEASON_AR[brief.season]}.` });
+    }
+    // 4 occasion
+    const wrongOcc = worn.filter((x) => x.occ !== "any" && x.occ !== brief.occ);
+    res.push(wrongOcc.length ? { k: "no", t: "المناسبة", r: `${wrongOcc.map((x) => "«" + x.name + "»").join(" و")} من ${OCC_AR[wrongOcc[0].occ]}، والطلب ${OCC_AR[brief.occ]}.` } : { k: "ok", t: "المناسبة", r: `الإطلالة من ${OCC_AR[brief.occ]}.` });
+    // 5-7 open reasoning (no single right answer in the lesson)
+    return res;
+  }
+
+  // ---------------- confetti ----------------
+  const cv = $("fx"), cx = cv.getContext("2d"); let parts = [], raf = 0;
+  function confetti(n) {
+    if (reduce) return;
+    cv.width = innerWidth * devicePixelRatio; cv.height = innerHeight * devicePixelRatio;
+    const cols = ["#F2A93B", "#C9476B", "#1F8A7D", "#7C5CBF", "#F4C6D6"];
+    for (let k = 0; k < n; k++) parts.push({ x: Math.random() * cv.width, y: -20 - Math.random() * cv.height * .3, vx: (Math.random() - .5) * 3, vy: 2 + Math.random() * 4, r: 4 + Math.random() * 6, c: cols[k % 5], a: Math.random() * 6, l: 0 });
+    if (!raf) raf = requestAnimationFrame(loop);
+  }
+  function loop() {
+    cx.clearRect(0, 0, cv.width, cv.height);
+    parts.forEach((p) => { p.x += p.vx * devicePixelRatio; p.y += p.vy * devicePixelRatio; p.a += .1; p.l++; cx.save(); cx.translate(p.x, p.y); cx.rotate(p.a); cx.fillStyle = p.c; cx.fillRect(-p.r, -p.r / 2, p.r * 2, p.r); cx.restore(); });
+    parts = parts.filter((p) => p.y < cv.height + 30 && p.l < 400);
+    raf = parts.length ? requestAnimationFrame(loop) : 0;
+  }
+
+  // ---------------- state & views ----------------
+  const state = { view: "home", bi: 0, look: { base: "sdress", outer: "none", head: "none", shoes: "elegant", color: "#C9476B", pattern: "plain" }, tab: "base", name: "", why: "", ci: 0, flagged: [] };
+  function go(view) {
+    state.view = view;
+    $("homeView").hidden = view !== "home"; $("designView").hidden = view !== "design"; $("spotView").hidden = view !== "spot";
+    $("homeBtn").hidden = view === "home";
+    if (view === "design") renderDesign();
+    if (view === "spot") renderSpot();
+    window.scrollTo({ top: 0, behavior: "auto" });
+  }
+  $("homeBtn").addEventListener("click", () => go("home"));
+  $("goDesign").addEventListener("click", () => go("design"));
+  $("goSpot").addEventListener("click", () => go("spot"));
+  $("heroArt").innerHTML = mannequinSVG({ base: "thobe", outer: "none", head: "none", shoes: "elegant", color: "#1F8A7D", pattern: "plain" });
+
+  function briefHTML(b, i, total, stepIds) {
+    const traits = [["الطلب", OCC_AR[b.occ]], ["الموسم", SEASON_AR[b.season]]];
+    if (b.age) traits.push(["السن", b.age], ["لون البشرة", b.skin], ["القوام", b.body]);
+    const steps = stepIds ? `<div class="stepper" role="group" aria-label="العميلات">${Array.from({ length: total }, (_, k) => `<button type="button" data-k="${k}" aria-current="${k === i}">${AR(k + 1)}</button>`).join("")}</div>` : `<p class="sub">الحالة ${AR(i + 1)} من ${AR(total)}</p>`;
+    return `<div class="who"><div class="avatar">${b.n[0] === "ا" ? b.n.split(" ")[1][0] : b.n[0]}</div><div><span class="sub">طلب عميلة</span><h3>${b.n}</h3></div></div>
+      <p class="req">${b.req}</p>
+      <div class="traits">${traits.map(([k, v]) => `<div class="trait"><b>${k}</b>${v}</div>`).join("")}</div>${steps}`;
+  }
+
+  // design mode
+  function renderDesign() {
+    const b = BRIEFS[state.bi];
+    $("brief").innerHTML = briefHTML(b, state.bi, BRIEFS.length, true);
+    $("brief").querySelectorAll(".stepper button").forEach((btn) => btn.addEventListener("click", () => { state.bi = +btn.dataset.k; resetLook(); renderDesign(); }));
+    renderTabs(); renderItems(); renderColors(); paintMannequin();
+    $("nameIn").value = state.name; $("whyIn").value = state.why;
+    $("railBody").hidden = false; $("report").hidden = true;
+  }
+  function resetLook() { state.look = { base: "sdress", outer: "none", head: "none", shoes: "elegant", color: state.look.color, pattern: "plain" }; state.name = ""; state.why = ""; state.tab = "base"; }
+  function renderTabs() {
+    const t = $("tabs"); t.innerHTML = "";
+    SLOTS.forEach(([key, label]) => {
+      const b = document.createElement("button"); b.type = "button"; b.role = "tab"; b.textContent = label;
+      b.setAttribute("aria-selected", state.tab === key);
+      b.addEventListener("click", () => { state.tab = key; renderTabs(); renderItems(); });
+      t.appendChild(b);
+    });
+    $("colorBox").hidden = state.tab !== "base";
+  }
+  function renderItems() {
+    const list = SLOTS.find((s) => s[0] === state.tab)[2];
+    const box = $("items"); box.innerHTML = "";
+    list.forEach((it) => {
+      const b = document.createElement("button"); b.type = "button"; b.className = "item";
+      b.setAttribute("aria-pressed", state.look[state.tab] === it.id);
+      b.innerHTML = itemThumb(state.tab, it.id) + `<span>${it.name}</span>`;
+      b.addEventListener("click", () => { state.look[state.tab] = it.id; renderItems(); paintMannequin(); });
+      box.appendChild(b);
+    });
+  }
+  function renderColors() {
+    const sw = $("swatches"); sw.innerHTML = "";
+    COLORS.forEach((c) => {
+      const b = document.createElement("button"); b.type = "button"; b.className = "sw"; b.style.background = c;
+      b.setAttribute("aria-label", "لون"); b.setAttribute("aria-pressed", state.look.color === c);
+      b.addEventListener("click", () => { state.look.color = c; renderColors(); renderItems(); paintMannequin(); });
+      sw.appendChild(b);
+    });
+    const pt = $("patterns"); pt.innerHTML = "";
+    PATTERNS.forEach(([id, label]) => {
+      const { defs, fill } = fillFor({ color: state.look.color, pattern: id }, "pp" + id);
+      const b = document.createElement("button"); b.type = "button"; b.className = "pat";
+      b.setAttribute("aria-pressed", state.look.pattern === id);
+      b.innerHTML = `<svg viewBox="0 0 60 30" aria-hidden="true"><defs>${defs}</defs><rect width="60" height="30" rx="6" fill="${fill}"/></svg><span>${label}</span>`;
+      b.addEventListener("click", () => { state.look.pattern = id; renderColors(); renderItems(); paintMannequin(); });
+      pt.appendChild(b);
+    });
+  }
+  function paintMannequin() {
+    const m = $("mannequin"); m.innerHTML = mannequinSVG(state.look);
+    m.classList.remove("swing"); void m.offsetWidth; m.classList.add("swing");
+    $("lookName").textContent = state.name ? `«${state.name}»` : "";
+  }
+  $("nameIn").addEventListener("input", (e) => { state.name = e.target.value.trim(); $("lookName").textContent = state.name ? `«${state.name}»` : ""; });
+  $("whyIn").addEventListener("input", (e) => { state.why = e.target.value; });
+
+  $("evalBtn").addEventListener("click", () => {
+    const b = BRIEFS[state.bi];
+    const res = judge(b, state.look);
+    const why = state.why.trim();
+    const open = [["السن", b.age], ["لون البشرة", b.skin], ["قوام الجسم", b.body]];
+    const hasWhy = why.length >= 15;
+    open.forEach(([t, v]) => res.push({ k: "op", t, r: hasWhy ? `عميلتك: ${v}. ناقشي تبريرك مع زميلاتك ومعلمتك.` : `عميلتك: ${v}. اكتبي في التبرير كيف راعيتِ ذلك.` }));
+    const okN = res.filter((x) => x.k === "ok").length, objN = res.filter((x) => x.k !== "op").length;
+    const stars = okN === objN ? (hasWhy ? 3 : 2) : okN >= objN - 1 ? 2 : 1;
+    const mk = { ok: "✓", no: "✗", op: "✎" };
+    $("report").innerHTML = `<h3>تقرير المستشارة${state.name ? `: «${escapeHTML(state.name)}»` : ""}</h3>
+      <div class="stars">${[1, 2, 3].map((k) => `<span class="${k <= stars ? "" : "off"}">★</span>`).join("")}</div>
+      <p class="sub">${okN === objN ? "إطلالة موفّقة في كل الأمور التي لها إجابة محددة!" : "راجعي الأمور المعلّمة بـ✗ وعدّلي إطلالتك."}</p>
+      <ul class="checks">${res.map((x) => `<li class="${x.k}"><span class="mk">${mk[x.k]}</span><div><b>${x.t}</b><span class="r">${x.r}</span></div></li>`).join("")}</ul>
+      ${hasWhy ? `<div class="trait"><b>تبريرك</b>${escapeHTML(why)}</div>` : ""}
+      <div class="rowbtns"><button type="button" id="editBtn">عدّلي الإطلالة</button><button type="button" class="main" id="nextBrief">العميلة التالية</button></div>`;
+    $("railBody").hidden = true; $("report").hidden = false;
+    $("editBtn").addEventListener("click", () => { $("railBody").hidden = false; $("report").hidden = true; });
+    $("nextBrief").addEventListener("click", () => { state.bi = (state.bi + 1) % BRIEFS.length; resetLook(); renderDesign(); window.scrollTo({ top: 0 }); });
+    if (okN === objN) confetti(stars * 50);
+    $("report").scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "nearest" });
+  });
+  const escapeHTML = (s) => s.replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+
+  // spot mode
+  function pieceList(look) {
+    return [["base", find(BASE, look.base)], ["outer", find(OUTER, look.outer)], ["head", find(HEAD, look.head)], ["shoes", find(SHOES, look.shoes)]];
+  }
+  function pieceVerdict(slot, it, brief, look) {
+    if (slot === "base" && it.sharia) return [false, `يخالف مواصفات اللباس الشرعي: ${it.sharia}.`];
+    if (slot === "base" && brief.trad && !it.trad) return [false, "احتفال يوم التأسيس يناسبه الثوب التراثي (العادات والتقاليد)."];
+    if (it.id === "none") {
+      if (brief.occ === "out" && slot === "outer" && !brief.trad) return [false, "عند الخروج نرتدي العباءة (العادات والتقاليد)."];
+      if (brief.occ === "out" && slot === "head") return [false, "عند الخروج نرتدي الطرحة (العادات والتقاليد)."];
+      return [true, "لا تحتاج العميلة هذه القطعة."];
+    }
+    if (brief.season !== "any" && it.season !== "any" && it.season !== brief.season) return [false, `قطعة ${SEASON_AR[it.season]} والطقس ${SEASON_AR[brief.season]} (المواسم).`];
+    if (it.occ !== "any" && it.occ !== brief.occ) return [false, `من ${OCC_AR[it.occ]} والطلب ${OCC_AR[brief.occ]} (المناسبة).`];
+    if (slot === "outer" && brief.occ === "out" && it.id === "coat" && !brief.trad) return [false, "عند الخروج نرتدي العباءة (العادات والتقاليد)."];
+    return [true, "قطعة مناسبة للطلب."];
+  }
+  function renderSpot() {
+    const c = CASES[state.ci];
+    $("spotBrief").innerHTML = briefHTML(c.brief, state.ci, CASES.length, false);
+    $("spotMannequin").innerHTML = mannequinSVG(c.look);
+    state.flagged = [];
+    const box = $("pieces"); box.innerHTML = "";
+    const names = { base: "القطعة الأساسية", outer: "فوقها", head: "غطاء الرأس", shoes: "الحذاء" };
+    pieceList(c.look).forEach(([slot, it]) => {
+      const b = document.createElement("button"); b.type = "button"; b.className = "piece"; b.dataset.slot = slot;
+      b.setAttribute("aria-pressed", "false");
+      b.innerHTML = `<span class="lbl">${it.id === "none" ? "بدون" : it.name}<small>${names[slot]}</small></span><span class="flag">غير مناسبة؟</span>`;
+      b.addEventListener("click", () => { const on = b.getAttribute("aria-pressed") !== "true"; b.setAttribute("aria-pressed", on); });
+      box.appendChild(b);
+    });
+    $("spotResult").hidden = true;
+    $("spotCheck").textContent = "تحقّقي"; $("spotCheck").dataset.state = "check";
+  }
+  $("spotCheck").addEventListener("click", () => {
+    const btn = $("spotCheck");
+    if (btn.dataset.state === "next") { state.ci = (state.ci + 1) % CASES.length; renderSpot(); window.scrollTo({ top: 0 }); return; }
+    const c = CASES[state.ci]; let right = 0, total = 0;
+    document.querySelectorAll(".piece").forEach((el) => {
+      const slot = el.dataset.slot; const it = pieceList(c.look).find((p) => p[0] === slot)[1];
+      const [ok, why] = pieceVerdict(slot, it, c.brief, c.look);
+      const flagged = el.getAttribute("aria-pressed") === "true";
+      const correct = flagged !== ok; total++; if (correct) right++;
+      el.disabled = true; el.classList.add(ok ? "res-ok" : "res-no");
+      el.querySelector(".flag").textContent = ok ? "مناسبة" : "غير مناسبة";
+      el.insertAdjacentHTML("beforeend", `<span class="why">${correct ? "✓ أصبتِ: " : "✗ "}${why}</span>`);
+    });
+    const r = $("spotResult");
+    r.innerHTML = `<h3>${right === total ? "عين ناقدة!" : `أصبتِ في ${AR(right)} من ${AR(total)}`}</h3><p class="sub">${right === total ? "اكتشفتِ كل القطع غير المناسبة." : "اقرئي سبب كل قطعة، ثم انتقلي إلى الحالة التالية."}</p>`;
+    r.hidden = false;
+    if (right === total) confetti(120);
+    btn.textContent = "الحالة التالية"; btn.dataset.state = "next";
+  });
+
+  window.claude?.hot?.snapshot?.(() => ({ state }));
+  const boot = (data) => {
+    if (data && data.state) Object.assign(state, data.state);
+    go(state.view || "home");
+  };
+  window.claude?.hot?.ready ? window.claude.hot.ready(boot) : boot(window.claude?.hot?.data ?? {});
+})();
+</script>
