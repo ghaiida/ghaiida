@@ -50,6 +50,8 @@ h1, h2, h3 { font-family: var(--font-display); margin: 0; line-height: 1.25; tex
 .modecard .go { justify-self: start; border: 0; border-radius: 14px; background: var(--saffron); color: var(--ink); font-family: var(--font-display); font-weight: 700; font-size: 1.15rem; padding: 10px 22px; }
 .modecard .tagline { font-size: .82rem; font-weight: 700; color: var(--rose); }
 .foot { grid-column: 1 / -1; color: var(--muted); font-size: .9rem; text-align: center; }
+.foot b { color: var(--plum); }
+.rights { text-align: center; color: var(--muted); font-size: .82rem; }
 
 /* studio */
 .studio { display: grid; grid-template-columns: 300px minmax(0, 1fr) 360px; gap: 16px; align-items: start; }
@@ -144,7 +146,7 @@ canvas#fx { position: fixed; inset: 0; width: 100%; height: 100%; pointer-events
 <canvas id="fx" aria-hidden="true"></canvas>
 <div class="app" dir="rtl">
   <header class="bar">
-    <div class="brand"><h1>استوديو المصممة الصغيرة</h1><span class="ribbon">نسخة تجريبية</span></div>
+    <div class="brand"><h1>استوديو المصممة الصغيرة</h1><span class="ribbon">نسخة تجريبية</span><span class="sub">من منصة راء</span></div>
     <button class="ghost" id="homeBtn" type="button" hidden>الصفحة الرئيسية</button>
   </header>
 
@@ -169,7 +171,7 @@ canvas#fx { position: fixed; inset: 0; width: 100%; height: 100%; pointer-events
       <p>إطلالات جاهزة فيها أخطاء. حدّدي القطع غير المناسبة لطلب العميلة، ثم تحققي من إجابتك وتعرّفي على السبب.</p>
       <button class="go" id="goSpot" type="button">اكتشفي الأخطاء</button>
     </div>
-    <p class="foot">لعبة من حقيبة درس «اختيار الملابس» للصف السادس. للطلب تواصلي مع من أرسل إليكِ هذا الرابط.</p>
+    <p class="foot">لعبة من حقيبة درس «اختيار الملابس» للصف السادس. للطلب تواصلي مع من أرسل إليكِ هذا الرابط.<br><b>جميع الحقوق محفوظة © منصة راء ٢٠٢٦</b></p>
   </section>
 
   <section id="designView" hidden aria-label="صمّمي الإطلالة">
@@ -210,6 +212,7 @@ canvas#fx { position: fixed; inset: 0; width: 100%; height: 100%; pointer-events
       </div>
     </div>
   </section>
+  <p class="rights" id="rights" hidden>جميع الحقوق محفوظة © منصة راء ٢٠٢٦</p>
 </div>
 
 <script>
@@ -227,7 +230,7 @@ canvas#fx { position: fixed; inset: 0; width: 100%; height: 100%; pointer-events
     { id: "pjs", name: "بيجامة مريحة", season: "any", occ: "home", sharia: null, colorable: true },
     { id: "short", name: "فستان قصير ضيّق", season: "summer", occ: "any", sharia: "غير ساتر وغير فضفاض", colorable: true },
     { id: "catshirt", name: "قميص عليه صورة قطة وتنورة", season: "any", occ: "any", sharia: "عليه صورة ذات روح", colorable: true },
-    { id: "crossshirt", name: "قميص عليه صليب وتنورة", season: "any", occ: "any", sharia: "عليه صليب؛ احذري الصليب!", colorable: true },
+    { id: "crossshirt", name: "قميص عليه صليب وتنورة", season: "any", occ: "any", sharia: "عليه صليب، والصليب من تقليد الكفار", colorable: true },
   ];
   const OUTER = [
     { id: "none", name: "بدون", season: "any", occ: "any" },
@@ -245,7 +248,7 @@ canvas#fx { position: fixed; inset: 0; width: 100%; height: 100%; pointer-events
     { id: "slipper", name: "شبشب منزلي", season: "any", occ: "home" },
     { id: "elegant", name: "حذاء أنيق", season: "any", occ: "out" },
   ];
-  const SLOTS = [["base", "القطعة الأساسية", BASE], ["outer", "فوقها", OUTER], ["head", "غطاء الرأس", HEAD], ["shoes", "الحذاء", SHOES]];
+  const SLOTS = [["base", "القطعة الأساسية", BASE], ["outer", "العباءة والمعطف", OUTER], ["head", "غطاء الرأس", HEAD], ["shoes", "الحذاء", SHOES]];
   const COLORS = ["#C9476B", "#7C5CBF", "#1F8A7D", "#2F6FAE", "#F2A93B", "#8B5A3C", "#F4C6D6", "#2B2B3A"];
   const PATTERNS = [["plain", "سادة"], ["vert", "خطوط طولية"], ["horiz", "خطوط أفقية"], ["dots", "نقوش صغيرة"]];
 
@@ -258,6 +261,8 @@ canvas#fx { position: fixed; inset: 0; width: 100%; height: 100%; pointer-events
     { n: "الجدة موضي", req: "ستخرج لصلاة العيد في صباح شتوي بارد.", season: "winter", occ: "out", age: "كبار السن", skin: "حنطية", body: "القصيرة" },
   ];
   const SEASON_AR = { winter: "شتاء", summer: "صيف", any: "أي موسم" };
+  const SEASON_DEF = { winter: "الشتاء", summer: "الصيف" }, SEASON_ADJ = { winter: "شتوية", summer: "صيفية" }, WEATHER = { winter: "شتوي", summer: "صيفي" };
+  const OCC_CTX = { home: "والعميلة ستبقى في المنزل", out: "والعميلة ستخرج" };
   const OCC_AR = { home: "ملابس المنزل", out: "ملابس الخروج" };
 
   // spot-the-mistake cases
@@ -368,13 +373,13 @@ canvas#fx { position: fixed; inset: 0; width: 100%; height: 100%; pointer-events
       const other = brief.season === "winter" ? "summer" : "winter";
       const clash = worn.filter((x) => x.season === other);
       const hasWinter = worn.some((x) => x.season === "winter");
-      if (clash.length) res.push({ k: "no", t: "المواسم", r: `${clash.map((x) => "«" + x.name + "»").join(" و")} ${clash.length > 1 ? "لا تناسبان" : "لا يناسب"} ${SEASON_AR[brief.season]}.` });
+      if (clash.length) res.push({ k: "no", t: "المواسم", r: `${clash.length > 1 ? "هذه القطع لا تناسب" : "هذه القطعة لا تناسب"} ${SEASON_DEF[brief.season]}: ${clash.map((x) => "«" + x.name + "»").join("، ")}.` });
       else if (brief.season === "winter" && !hasWinter) res.push({ k: "no", t: "المواسم", r: "الطقس شتوي: أضيفي قطعة شتوية تدفئها." });
-      else res.push({ k: "ok", t: "المواسم", r: `القطع تناسب ${SEASON_AR[brief.season]}.` });
+      else res.push({ k: "ok", t: "المواسم", r: `القطع تناسب ${SEASON_DEF[brief.season]}.` });
     }
     // 4 occasion
     const wrongOcc = worn.filter((x) => x.occ !== "any" && x.occ !== brief.occ);
-    res.push(wrongOcc.length ? { k: "no", t: "المناسبة", r: `${wrongOcc.map((x) => "«" + x.name + "»").join(" و")} من ${OCC_AR[wrongOcc[0].occ]}، والطلب ${OCC_AR[brief.occ]}.` } : { k: "ok", t: "المناسبة", r: `الإطلالة من ${OCC_AR[brief.occ]}.` });
+    res.push(wrongOcc.length ? { k: "no", t: "المناسبة", r: `${wrongOcc.map((x) => "«" + x.name + "»").join("، ")} من ${OCC_AR[wrongOcc[0].occ]}، ${OCC_CTX[brief.occ]}.` } : { k: "ok", t: "المناسبة", r: `الإطلالة من ${OCC_AR[brief.occ]}.` });
     // 5-7 open reasoning (no single right answer in the lesson)
     return res;
   }
@@ -400,7 +405,7 @@ canvas#fx { position: fixed; inset: 0; width: 100%; height: 100%; pointer-events
   function go(view) {
     state.view = view;
     $("homeView").hidden = view !== "home"; $("designView").hidden = view !== "design"; $("spotView").hidden = view !== "spot";
-    $("homeBtn").hidden = view === "home";
+    $("homeBtn").hidden = view === "home"; $("rights").hidden = view === "home";
     if (view === "design") renderDesign();
     if (view === "spot") renderSpot();
     window.scrollTo({ top: 0, behavior: "auto" });
@@ -411,7 +416,7 @@ canvas#fx { position: fixed; inset: 0; width: 100%; height: 100%; pointer-events
   $("heroArt").innerHTML = mannequinSVG({ base: "thobe", outer: "none", head: "none", shoes: "elegant", color: "#1F8A7D", pattern: "plain" });
 
   function briefHTML(b, i, total, stepIds) {
-    const traits = [["الطلب", OCC_AR[b.occ]], ["الموسم", SEASON_AR[b.season]]];
+    const traits = [["المناسبة", OCC_AR[b.occ]], ["الموسم", SEASON_AR[b.season]]];
     if (b.age) traits.push(["السن", b.age], ["لون البشرة", b.skin], ["القوام", b.body]);
     const steps = stepIds ? `<div class="stepper" role="group" aria-label="العميلات">${Array.from({ length: total }, (_, k) => `<button type="button" data-k="${k}" aria-current="${k === i}">${AR(k + 1)}</button>`).join("")}</div>` : `<p class="sub">الحالة ${AR(i + 1)} من ${AR(total)}</p>`;
     return `<div class="who"><div class="avatar">${b.n[0] === "ا" ? b.n.split(" ")[1][0] : b.n[0]}</div><div><span class="sub">طلب عميلة</span><h3>${b.n}</h3></div></div>
@@ -488,7 +493,7 @@ canvas#fx { position: fixed; inset: 0; width: 100%; height: 100%; pointer-events
     const mk = { ok: "✓", no: "✗", op: "✎" };
     $("report").innerHTML = `<h3>تقرير المستشارة${state.name ? `: «${escapeHTML(state.name)}»` : ""}</h3>
       <div class="stars">${[1, 2, 3].map((k) => `<span class="${k <= stars ? "" : "off"}">★</span>`).join("")}</div>
-      <p class="sub">${okN === objN ? "إطلالة موفّقة في كل الأمور التي لها إجابة محددة!" : "راجعي الأمور المعلّمة بـ✗ وعدّلي إطلالتك."}</p>
+      <p class="sub">${okN !== objN ? "راجعي الأمور المعلّمة بـ✗ وعدّلي إطلالتك." : hasWhy ? "إطلالة موفّقة في كل الأمور التي لها إجابة محددة!" : "إطلالة موفّقة! اكتبي تبريرك لتحصلي على النجمة الثالثة."}</p>
       <ul class="checks">${res.map((x) => `<li class="${x.k}"><span class="mk">${mk[x.k]}</span><div><b>${x.t}</b><span class="r">${x.r}</span></div></li>`).join("")}</ul>
       ${hasWhy ? `<div class="trait"><b>تبريرك</b>${escapeHTML(why)}</div>` : ""}
       <div class="rowbtns"><button type="button" id="editBtn">عدّلي الإطلالة</button><button type="button" class="main" id="nextBrief">العميلة التالية</button></div>`;
@@ -512,8 +517,8 @@ canvas#fx { position: fixed; inset: 0; width: 100%; height: 100%; pointer-events
       if (brief.occ === "out" && slot === "head") return [false, "عند الخروج نرتدي الطرحة (العادات والتقاليد)."];
       return [true, "لا تحتاج العميلة هذه القطعة."];
     }
-    if (brief.season !== "any" && it.season !== "any" && it.season !== brief.season) return [false, `قطعة ${SEASON_AR[it.season]} والطقس ${SEASON_AR[brief.season]} (المواسم).`];
-    if (it.occ !== "any" && it.occ !== brief.occ) return [false, `من ${OCC_AR[it.occ]} والطلب ${OCC_AR[brief.occ]} (المناسبة).`];
+    if (brief.season !== "any" && it.season !== "any" && it.season !== brief.season) return [false, `قطعة ${SEASON_ADJ[it.season]} والطقس ${WEATHER[brief.season]} (المواسم).`];
+    if (it.occ !== "any" && it.occ !== brief.occ) return [false, `من ${OCC_AR[it.occ]}، ${OCC_CTX[brief.occ]} (المناسبة).`];
     if (slot === "outer" && brief.occ === "out" && it.id === "coat" && !brief.trad) return [false, "عند الخروج نرتدي العباءة (العادات والتقاليد)."];
     return [true, "قطعة مناسبة للطلب."];
   }
@@ -523,7 +528,7 @@ canvas#fx { position: fixed; inset: 0; width: 100%; height: 100%; pointer-events
     $("spotMannequin").innerHTML = mannequinSVG(c.look);
     state.flagged = [];
     const box = $("pieces"); box.innerHTML = "";
-    const names = { base: "القطعة الأساسية", outer: "فوقها", head: "غطاء الرأس", shoes: "الحذاء" };
+    const names = { base: "القطعة الأساسية", outer: "العباءة والمعطف", head: "غطاء الرأس", shoes: "الحذاء" };
     pieceList(c.look).forEach(([slot, it]) => {
       const b = document.createElement("button"); b.type = "button"; b.className = "piece"; b.dataset.slot = slot;
       b.setAttribute("aria-pressed", "false");
